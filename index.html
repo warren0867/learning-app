@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>학습 노트 / LearnNote</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+:root{--primary:#6366f1;--primary-light:#e0e1ff;--primary-dark:#4f46e5;--secondary:#f59e0b;--secondary-light:#fef3c7;--accent:#14b8a6;--accent-light:#ccfbf1;--bg:#f8fafc;--card:#ffffff;--text:#1e293b;--text-secondary:#64748b;--border:#e2e8f0;--danger:#ef4444;--danger-light:#fee2e2;--shadow:0 2px 12px rgba(0,0,0,0.06);--radius:14px;--nav-height:64px;--header-height:52px;--gami-height:38px;--mkt-color:#6366f1;--dev-color:#06b6d4}
+[data-theme="dark"]{--primary:#818cf8;--primary-light:#1e1b4b;--primary-dark:#a5b4fc;--secondary:#fbbf24;--secondary-light:#292524;--accent:#2dd4bf;--accent-light:#042f2e;--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--text-secondary:#94a3b8;--border:#334155;--danger:#f87171;--danger-light:#450a0a;--shadow:0 2px 12px rgba(0,0,0,0.3);--mkt-color:#818cf8;--dev-color:#22d3ee}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
+#app-header{position:fixed;top:0;left:0;right:0;height:var(--header-height);background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:100;box-shadow:0 2px 8px rgba(99,102,241,.3)}
+#app-header .app-title{font-size:17px;font-weight:700}
+#app-header .app-title span{font-size:11px;font-weight:400;opacity:.8}
+#app-header .header-right{display:flex;gap:8px;align-items:center}
+.header-btn{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#gami-bar{position:fixed;top:var(--header-height);left:0;right:0;height:var(--gami-height);background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:99;font-size:13px;transition:background .3s}
+#gami-bar .gami-level{font-weight:800;color:var(--primary);font-size:14px}
+#gami-bar .gami-xp-wrap{flex:1;margin:0 10px;max-width:120px}
+#gami-bar .gami-xp-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+#gami-bar .gami-xp-fill{height:100%;background:linear-gradient(90deg,var(--secondary),#ff9800);border-radius:3px;transition:width .5s}
+#gami-bar .gami-xp-text{font-size:9px;color:var(--text-secondary);text-align:center}
+#gami-bar .gami-streak{font-weight:700;color:#ff6b35}
+#gami-bar .gami-tree{font-size:17px}
+#app-content{margin-top:calc(var(--header-height) + var(--gami-height));margin-bottom:var(--nav-height);padding:12px 16px 20px;min-height:calc(100vh - var(--header-height) - var(--gami-height) - var(--nav-height))}
+.tab-content{display:none;animation:fadeIn .25s ease}.tab-content.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-height);background:var(--card);display:flex;border-top:1px solid var(--border);z-index:100;padding-bottom:env(safe-area-inset-bottom,0);transition:background .3s}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--text-secondary);cursor:pointer;transition:all .2s;border:none;background:none}
+.nav-item .nav-icon{font-size:22px;margin-bottom:2px}
+.nav-item.active{color:var(--primary)}.nav-item.active .nav-icon{transform:scale(1.15)}
+.nav-item .nav-label{font-weight:600}
+.subject-filter{display:flex;gap:6px;margin-bottom:14px;justify-content:center}
+.sf-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text)}
+.sf-btn.active{border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+.sf-btn[data-s="mkt"].active{border-color:var(--mkt-color);color:var(--mkt-color)}
+.sf-btn[data-s="dev"].active{border-color:var(--dev-color);color:var(--dev-color)}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .15s,background .3s}
+.card:active{transform:scale(.985)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:active{background:var(--primary-dark)}
+.btn-secondary{background:var(--secondary-light);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-full{width:100%}.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}
+.progress-bar{width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#10b981);border-radius:4px;transition:width .5s}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag-mkt{background:#ede9fe;color:#6366f1}
+.tag-dev{background:#cffafe;color:#0891b2}
+[data-theme="dark"] .tag-mkt{background:#1e1b4b;color:#a5b4fc}
+[data-theme="dark"] .tag-dev{background:#042f2e;color:#22d3ee}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;justify-content:center;align-items:flex-end;animation:fadeIn .2s}
+.modal-overlay.show{display:flex}
+.modal-content{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-height:85vh;overflow-y:auto;animation:slideUp .3s;transition:background .3s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-header h3{font-size:17px}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;font-size:14px;z-index:300;color:#fff;white-space:nowrap;animation:toastIn .3s,toastOut .3s 1.7s forwards}
+.toast-success{background:#10b981}.toast-error{background:var(--danger)}.toast-info{background:var(--text)}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-secondary)}
+.empty-state .emoji{font-size:48px;display:block;margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.6}
+.track-card{padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.track-icon{font-size:28px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.track-info{flex:1;min-width:0}
+.track-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.track-sub{font-size:12px;color:var(--text-secondary)}
+.track-progress{margin-top:6px}
+.lesson-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.lesson-item:last-child{border-bottom:none}
+.lesson-item:active{background:var(--bg)}
+.lesson-item.locked{opacity:.4;pointer-events:none}
+.lesson-num{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lesson-item.locked .lesson-num{background:var(--border);color:var(--text-secondary)}
+.lesson-item.completed .lesson-num{background:var(--accent)}
+.lesson-info{flex:1;min-width:0}
+.lesson-title{font-size:14px;font-weight:600}
+.lesson-title-en{font-size:11px;color:var(--text-secondary)}
+.lesson-status{font-size:16px}
+.lesson-viewer{padding:0}
+.lesson-viewer .lv-header{padding:16px;border-bottom:1px solid var(--border)}
+.lesson-viewer .lv-title{font-size:18px;font-weight:700;margin-bottom:2px}
+.lesson-viewer .lv-subtitle{font-size:13px;color:var(--text-secondary)}
+.lesson-viewer .lv-body{padding:16px;font-size:14px;line-height:1.8;color:var(--text)}
+.lesson-viewer .lv-body h4{font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--primary)}
+.lesson-viewer .lv-body p{margin-bottom:12px}
+.lesson-viewer .lv-body ul{padding-left:20px;margin-bottom:12px}
+.lesson-viewer .lv-body li{margin-bottom:4px}
+.lesson-viewer .lv-body code{background:var(--border);padding:2px 6px;border-radius:4px;font-size:13px}
+.term-card{background:var(--bg);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.term-en{font-weight:700;color:var(--primary);font-size:14px}
+.term-ko{font-size:13px;color:var(--text-secondary)}
+.term-def{font-size:12px;margin-top:4px;line-height:1.5}
+.quiz-option{padding:14px 16px;border-radius:12px;border:2px solid var(--border);background:var(--card);font-size:15px;cursor:pointer;text-align:left;transition:all .2s;color:var(--text);margin-bottom:8px;display:block;width:100%}
+.quiz-option:active{transform:scale(.98)}
+.quiz-option.correct{border-color:var(--accent);background:var(--accent-light)}
+.quiz-option.wrong{border-color:var(--danger);background:var(--danger-light)}
+.quiz-option.disabled{pointer-events:none}
+.quiz-progress-bar{display:flex;gap:3px;margin-bottom:16px}
+.quiz-progress-bar .qp-dot{flex:1;height:4px;border-radius:2px;background:var(--border)}
+.quiz-progress-bar .qp-dot.done{background:var(--accent)}
+.quiz-progress-bar .qp-dot.current{background:var(--primary)}
+.quiz-progress-bar .qp-dot.wrong-dot{background:var(--danger)}
+.quiz-explain{background:var(--bg);border-radius:10px;padding:12px;margin-top:12px;font-size:13px;line-height:1.6;border-left:3px solid var(--primary)}
+.fill-input{width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:16px;text-align:center;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
+.fill-input:focus{border-color:var(--primary)}
+.ox-options{display:flex;gap:12px;justify-content:center}
+.ox-btn{flex:1;max-width:140px;padding:20px;border-radius:14px;border:2px solid var(--border);background:var(--card);font-size:24px;cursor:pointer;text-align:center;transition:all .2s}
+.ox-btn:active{transform:scale(.95)}
+.ox-btn.correct{border-color:var(--accent);background:var(--accent-light)}
+.ox-btn.wrong{border-color:var(--danger);background:var(--danger-light)}
+.fc-container{perspective:800px;margin:20px auto;max-width:340px}
+.fc-card{position:relative;width:100%;min-height:220px;cursor:pointer;transform-style:preserve-3d;transition:transform .5s}
+.fc-card.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;top:0;left:0;right:0;bottom:0;backface-visibility:hidden;border-radius:16px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px solid var(--border);background:var(--card)}
+.fc-back{transform:rotateY(180deg)}
+.fc-front .fc-main{font-size:22px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.fc-front .fc-sub{font-size:14px;color:var(--text-secondary)}
+.fc-back .fc-main{font-size:18px;font-weight:700;margin-bottom:8px}
+.fc-back .fc-sub{font-size:14px;color:var(--text-secondary);line-height:1.5}
+.fc-hint{font-size:12px;color:var(--text-secondary);margin-top:12px;opacity:.6}
+.fc-actions{display:flex;gap:12px;justify-content:center;margin-top:16px}
+.fc-action-btn{padding:12px 28px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.fc-know{background:var(--accent);color:#fff}
+.fc-dunno{background:var(--danger);color:#fff}
+.fc-box-indicator{display:flex;gap:4px;justify-content:center;margin-bottom:12px}
+.fc-box-dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.fc-box-dot.active{background:var(--secondary)}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-header{text-align:center;font-size:11px;font-weight:700;color:var(--text-secondary);padding:6px 0}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;border-radius:8px;transition:background .15s}
+.cal-day.today{background:var(--primary-light);font-weight:700}
+.cal-day.attended{position:relative}.cal-day.attended::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:1px}
+.cal-day.other-month{opacity:.3}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.badge-item{text-align:center;padding:10px 4px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
+.badge-item.earned{background:var(--secondary-light);border-color:var(--secondary)}
+.badge-item .badge-icon{font-size:24px;display:block;margin-bottom:4px}
+.badge-item .badge-name{font-size:10px;color:var(--text-secondary)}
+.badge-item.earned .badge-name{color:var(--text);font-weight:600}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-label{font-size:13px;color:var(--text-secondary)}
+.stat-value{font-size:16px;font-weight:700}
+.home-section{margin-bottom:20px}
+.home-section-title{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.today-term-card{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--radius);padding:20px;text-align:center;position:relative;overflow:hidden}
+.today-term-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1)}
+.search-bar{display:flex;gap:8px;margin-bottom:14px}
+.search-bar input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--primary)}
+.setting-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-item:last-child{border-bottom:none}
+.setting-label{font-size:14px;font-weight:600}
+.setting-desc{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.toggle-switch{width:50px;height:28px;border-radius:14px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .3s}
+.toggle-switch.on{background:var(--accent)}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-switch.on::after{transform:translateX(22px)}
+.sub-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--border);border-radius:12px;padding:3px}
+.sub-tab{flex:1;padding:8px 4px;border-radius:10px;border:none;background:none;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.sub-tab.active{background:var(--card);color:var(--primary);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.offline-banner{position:fixed;top:calc(var(--header-height) + var(--gami-height));left:0;right:0;background:var(--danger);color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:600;z-index:98;display:none}
+.offline-banner.show{display:block}
+.levelup-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#ffd700,#ff9800);color:#fff;padding:20px 32px;border-radius:20px;font-size:18px;font-weight:800;z-index:500;text-align:center;box-shadow:0 8px 32px rgba(255,215,0,.4);animation:levelupAnim .6s,fadeOut2 .4s 2s forwards}
+@keyframes levelupAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}60%{transform:translate(-50%,-50%) scale(1.1)}100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes fadeOut2{to{opacity:0;transform:translate(-50%,-50%) scale(.8)}}
+.quiz-mode-card{padding:16px;text-align:center;cursor:pointer;transition:transform .2s;border:2px solid var(--border)}
+.quiz-mode-card:active{transform:scale(.97)}
+.quiz-mode-icon{font-size:32px;display:block;margin-bottom:6px}
+.quiz-mode-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.quiz-mode-desc{font-size:11px;color:var(--text-secondary)}
+.bookmark-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px}
+/* Game modes */
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.game-card{padding:16px;text-align:center;cursor:pointer;transition:transform .2s;border:2px solid var(--border);position:relative;overflow:hidden}
+.game-card:active{transform:scale(.97)}
+.game-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;opacity:.06;z-index:0}
+.game-card.gc-daily::before{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+.game-card.gc-speed::before{background:linear-gradient(135deg,#ef4444,#f97316)}
+.game-card.gc-match::before{background:linear-gradient(135deg,#14b8a6,#06b6d4)}
+.game-card.gc-survival::before{background:linear-gradient(135deg,#f59e0b,#eab308)}
+.game-card.gc-flip::before{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
+.game-card.gc-wrong::before{background:linear-gradient(135deg,#64748b,#475569)}
+.game-card>*{position:relative;z-index:1}
+.game-icon{font-size:32px;display:block;margin-bottom:6px}
+.game-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.game-desc{font-size:11px;color:var(--text-secondary)}
+.game-badge{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;z-index:2}
+.speed-timer{font-size:48px;font-weight:800;text-align:center;margin:8px 0;font-variant-numeric:tabular-nums}
+.speed-timer.urgent{color:var(--danger);animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.lives{display:flex;gap:4px;justify-content:center;margin-bottom:12px;font-size:24px}
+.combo-display{text-align:center;font-size:14px;font-weight:700;color:var(--secondary);margin-bottom:8px}
+.combo-display.hot{animation:pulse .3s;color:#ef4444}
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:340px;margin:12px auto}
+.memory-cell{aspect-ratio:1;border-radius:12px;border:2px solid var(--border);background:var(--primary);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;padding:4px;text-align:center;word-break:keep-all;user-select:none}
+.memory-cell.revealed{background:var(--card);color:var(--text);border-color:var(--primary)}
+.memory-cell.matched{background:var(--accent-light);color:var(--accent);border-color:var(--accent);pointer-events:none}
+.memory-cell.wrong-flash{border-color:var(--danger);background:var(--danger-light)}
+/* Vocab tab */
+.vocab-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.vocab-item:active{background:var(--bg)}
+.vocab-term{flex:1;min-width:0}
+.vocab-en{font-size:14px;font-weight:700;color:var(--primary)}
+.vocab-ko{font-size:13px;color:var(--text)}
+.vocab-def{font-size:11px;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vocab-box{font-size:10px;padding:2px 6px;border-radius:8px;background:var(--border);color:var(--text-secondary);font-weight:700}
+.vocab-box.mastered{background:var(--accent-light);color:var(--accent)}
+/* Practical tips */
+.tip-box{background:linear-gradient(135deg,var(--secondary-light),var(--accent-light));border-radius:10px;padding:12px;margin-top:12px;border-left:3px solid var(--secondary)}
+.tip-box .tip-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.tip-box ul{padding-left:16px;font-size:12px;line-height:1.6}
+.tool-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tool-chip{padding:4px 10px;border-radius:16px;background:var(--card);border:1px solid var(--border);font-size:11px;font-weight:600}
+@media(min-width:480px){#app-content{max-width:480px;margin-left:auto;margin-right:auto}#bottom-nav{max-width:480px;left:50%;transform:translateX(-50%)}#app-header{max-width:480px;left:50%;transform:translateX(-50%)}#gami-bar{max-width:480px;left:50%;transform:translateX(-50%)}.modal-content{max-width:480px}}
+</style>
+</head>
+<body>
+
+<header id="app-header">
+<div class="app-title">학습 노트 <span>LearnNote</span></div>
+<div class="header-right">
+<button class="header-btn" onclick="openSearch()">🔍</button>
+<button class="header-btn" onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+
+<div id="gami-bar">
+<span class="gami-level" id="gami-level">Lv.0</span>
+<div class="gami-xp-wrap"><div class="gami-xp-bar"><div class="gami-xp-fill" id="gami-xp-fill" style="width:0%"></div></div><div class="gami-xp-text" id="gami-xp-text">0/100 XP</div></div>
+<span class="gami-streak" id="gami-streak">🔥0</span>
+<span class="gami-tree" id="gami-tree">🌰</span>
+</div>
+
+<div class="offline-banner" id="offline-banner">오프라인 상태입니다</div>
+
+<main id="app-content">
+
+<!-- HOME TAB -->
+<section id="tab-home" class="tab-content active">
+<div id="home-content"></div>
+</section>
+
+<!-- VOCAB TAB -->
+<section id="tab-vocab" class="tab-content">
+<div class="subject-filter">
+<button class="sf-btn active" data-s="all" onclick="setSubjectFilter('all')">📚 전체</button>
+<button class="sf-btn" data-s="mkt" onclick="setSubjectFilter('mkt')">📊 마케팅</button>
+<button class="sf-btn" data-s="dev" onclick="setSubjectFilter('dev')">💻 앱개발</button>
+</div>
+<div id="vocab-content"></div>
+</section>
+
+<!-- LEARN TAB -->
+<section id="tab-learn" class="tab-content">
+<div class="subject-filter">
+<button class="sf-btn active" data-s="all" onclick="setSubjectFilter('all')">📚 전체</button>
+<button class="sf-btn" data-s="mkt" onclick="setSubjectFilter('mkt')">📊 마케팅</button>
+<button class="sf-btn" data-s="dev" onclick="setSubjectFilter('dev')">💻 앱개발</button>
+</div>
+<div id="learn-content"></div>
+</section>
+
+<!-- GAME TAB -->
+<section id="tab-game" class="tab-content">
+<div class="subject-filter">
+<button class="sf-btn active" data-s="all" onclick="setSubjectFilter('all')">📚 전체</button>
+<button class="sf-btn" data-s="mkt" onclick="setSubjectFilter('mkt')">📊 마케팅</button>
+<button class="sf-btn" data-s="dev" onclick="setSubjectFilter('dev')">💻 앱개발</button>
+</div>
+<div id="game-content"></div>
+</section>
+
+<!-- MY TAB -->
+<section id="tab-my" class="tab-content">
+<div id="my-content"></div>
+</section>
+
+</main>
+
+<nav id="bottom-nav">
+<button class="nav-item active" data-tab="home" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label">홈</span></button>
+<button class="nav-item" data-tab="vocab" onclick="switchTab('vocab')"><span class="nav-icon">📝</span><span class="nav-label">단어장</span></button>
+<button class="nav-item" data-tab="learn" onclick="switchTab('learn')"><span class="nav-icon">📖</span><span class="nav-label">학습</span></button>
+<button class="nav-item" data-tab="game" onclick="switchTab('game')"><span class="nav-icon">🎮</span><span class="nav-label">게임</span></button>
+<button class="nav-item" data-tab="my" onclick="switchTab('my')"><span class="nav-icon">👤</span><span class="nav-label">마이</span></button>
+</nav>
+
+<!-- Search Modal -->
+<div id="search-modal" class="modal-overlay">
+<div class="modal-content">
+<div class="modal-header"><h3>🔍 통합 검색</h3><button class="modal-close" onclick="closeModal('search-modal')">✕</button></div>
+<div class="search-bar"><input type="text" id="search-input" placeholder="레슨, 용어, 퀴즈 검색..." oninput="doSearch(this.value)"></div>
+<div id="search-results"></div>
+</div>
+</div>
+
+<!-- Lesson Viewer Modal -->
+<div id="lesson-modal" class="modal-overlay">
+<div class="modal-content" style="max-height:92vh">
+<div id="lesson-viewer-content"></div>
+</div>
+</div>
+
+<script>
+/* ===== CORE UTILITIES ===== */
+const $=id=>document.getElementById(id);
+const LS={get(k,d=null){try{const v=localStorage.getItem('ln_'+k);return v?JSON.parse(v):d}catch{return d}},set(k,v){try{localStorage.setItem('ln_'+k,JSON.stringify(v))}catch{}}};
+const today=()=>new Date().toISOString().slice(0,10);
+let currentTab='home',subjectFilter='all';
+function toast(msg,type='info'){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+function switchTab(tab){currentTab=tab;document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));$('tab-'+tab).classList.add('active');document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');renderTab(tab)}
+function setSubjectFilter(f){subjectFilter=f;document.querySelectorAll('.sf-btn').forEach(b=>{b.classList.toggle('active',b.dataset.s===f)});renderTab(currentTab)}
+function toggleTheme(){const d=document.documentElement;const isDark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',isDark?'':'dark');LS.set('theme',isDark?'':'dark');document.querySelector('.header-btn:nth-child(2)').textContent=isDark?'🌙':'☀️'}
+function openModal(id){$(id).classList.add('show')}
+function closeModal(id){$(id).classList.remove('show')}
+function openSearch(){openModal('search-modal');setTimeout(()=>$('search-input').focus(),100)}
+
+/* ===== TRACK & SUBJECT DEFINITIONS ===== */
+const SUBJECTS={mkt:{name:'디지털 마케팅',nameEn:'Digital Marketing',icon:'📊',color:'#6366f1'},dev:{name:'앱개발',nameEn:'App Development',icon:'💻',color:'#06b6d4'}};
+const TRACKS=[
+['seo','mkt','🔍','SEO (검색엔진최적화)','Search Engine Optimization'],
+['sem','mkt','💰','SEM/PPC (검색광고)','Search Engine Marketing'],
+['sns','mkt','📱','SNS 마케팅','Social Media Marketing'],
+['cm','mkt','📝','콘텐츠 마케팅','Content Marketing'],
+['em','mkt','📧','이메일 마케팅','Email Marketing'],
+['ana','mkt','📈','분석 & 데이터','Analytics & Data'],
+['cro','mkt','🎯','전환 최적화','Conversion Optimization'],
+['ma','mkt','🤖','마케팅 자동화','Marketing Automation'],
+['brand','mkt','💎','브랜딩 & 전략','Branding & Strategy'],
+['arch','dev','🏗️','앱 아키텍처 패턴','App Architecture Patterns'],
+['fe','dev','🌐','프론트엔드 기초','Frontend Basics'],
+['mobile','dev','📲','모바일 개발','Mobile Development'],
+['uiux','dev','🎨','UI/UX 디자인 원칙','UI/UX Design Principles'],
+['api','dev','🔌','API & 백엔드 기초','API & Backend Basics'],
+['db','dev','🗄️','데이터베이스','Database & Data Management'],
+['git','dev','🔀','버전 관리 (Git)','Version Control (Git)'],
+['test','dev','🧪','테스팅 & QA','Testing & QA'],
+['cicd','dev','🚀','배포 & CI/CD','Deployment & CI/CD'],
+['perf','dev','⚡','성능 최적화','Performance Optimization']
+];
+// TRACKS: [id, subject, icon, nameKo, nameEn]
+
+/* ===== LESSONS DATA (57 lessons) ===== */
+// [trackId, lessonNum, level, titleKo, titleEn, contentHTML, [[termEn,termKo,def],...]]
+const LESSONS=[
+// SEO
+['seo',1,0,'검색엔진 작동 원리','How Search Engines Work','<h4>검색엔진이란?</h4><p>검색엔진(Search Engine)은 웹상의 콘텐츠를 크롤링하고, 인덱싱하여 사용자의 검색어에 가장 관련성 높은 결과를 보여주는 시스템입니다.</p><h4>3단계 프로세스</h4><ul><li><b>크롤링(Crawling)</b>: 검색엔진 봇이 웹페이지를 방문하여 콘텐츠를 수집</li><li><b>인덱싱(Indexing)</b>: 수집한 콘텐츠를 분석하고 데이터베이스에 저장</li><li><b>랭킹(Ranking)</b>: 검색어와의 관련성, 페이지 품질 등을 기반으로 순위 결정</li></ul><p>Google은 200개 이상의 랭킹 요소를 사용하며, 페이지의 콘텐츠 품질, 백링크, 사용자 경험 등이 핵심입니다.</p>',[['Crawling','크롤링','검색엔진 봇이 웹페이지를 방문하여 콘텐츠를 수집하는 과정'],['Indexing','인덱싱','수집된 웹페이지를 분석하고 검색 데이터베이스에 저장하는 과정'],['SERP','검색결과페이지','Search Engine Results Page - 검색 결과가 표시되는 페이지']]],
+['seo',2,0,'온페이지 SEO 핵심','On-Page SEO Essentials','<h4>온페이지 SEO란?</h4><p>웹페이지 자체를 최적화하여 검색 순위를 높이는 기법입니다. 제목 태그, 메타 설명, 헤딩 구조, 이미지 최적화 등이 포함됩니다.</p><h4>핵심 요소</h4><ul><li><b>Title Tag</b>: 60자 이내, 주요 키워드 포함</li><li><b>Meta Description</b>: 155자 이내, 클릭을 유도하는 설명</li><li><b>H1~H6 구조</b>: 논리적 계층 구조로 콘텐츠 정리</li><li><b>URL 구조</b>: 짧고 키워드를 포함한 깔끔한 URL</li><li><b>이미지 Alt 텍스트</b>: 검색엔진이 이미지를 이해할 수 있게 설명</li></ul>',[['Title Tag','타이틀 태그','HTML의 <title> 요소로 검색결과에 표시되는 페이지 제목'],['Meta Description','메타 설명','검색결과에서 제목 아래 표시되는 페이지 요약 설명'],['Alt Text','대체 텍스트','이미지가 로드되지 않을 때 표시되거나 스크린리더가 읽는 텍스트']]],
+['seo',3,0,'키워드 리서치 기초','Keyword Research Basics','<h4>키워드 리서치란?</h4><p>사람들이 검색엔진에 입력하는 단어와 구문을 조사하고 분석하는 과정입니다. 효과적인 SEO 전략의 기초입니다.</p><h4>키워드 유형</h4><ul><li><b>Short-tail</b>: 1~2단어 ("마케팅") - 검색량 많지만 경쟁 치열</li><li><b>Long-tail</b>: 3단어 이상 ("소규모 사업 디지털 마케팅 방법") - 검색량 적지만 전환율 높음</li><li><b>LSI Keywords</b>: 의미적으로 관련된 키워드</li></ul><p>Google Keyword Planner, Ahrefs, SEMrush 등의 도구를 활용하여 검색량, 경쟁도, 키워드 난이도를 분석합니다.</p>',[['Long-tail Keyword','롱테일 키워드','3단어 이상의 구체적인 검색어로 전환율이 높은 키워드'],['Search Volume','검색량','특정 키워드가 일정 기간 동안 검색된 횟수'],['Keyword Difficulty','키워드 난이도','특정 키워드로 상위 랭킹을 달성하기 위한 경쟁 수준']]],
+// SEM
+['sem',1,0,'검색광고 기초','SEM Basics - Google Ads','<h4>SEM이란?</h4><p>SEM(Search Engine Marketing)은 검색엔진에 유료 광고를 집행하여 웹사이트 트래픽을 늘리는 마케팅 기법입니다. Google Ads가 대표적인 플랫폼입니다.</p><h4>핵심 개념</h4><ul><li><b>PPC(Pay-Per-Click)</b>: 광고 클릭당 비용을 지불하는 모델</li><li><b>CPC(Cost Per Click)</b>: 한 번 클릭당 실제 지불 비용</li><li><b>CTR(Click-Through Rate)</b>: 노출 대비 클릭 비율</li></ul><p>검색광고는 사용자가 이미 관련 키워드를 검색하는 시점에 노출되므로 구매 의도가 높은 트래픽을 확보할 수 있습니다.</p>',[['PPC','클릭당 과금','Pay-Per-Click: 광고가 클릭될 때마다 비용을 지불하는 광고 모델'],['CPC','클릭당 비용','Cost Per Click: 광고 한 번 클릭에 드는 평균 비용'],['CTR','클릭률','Click-Through Rate: 광고 노출수 대비 클릭수의 비율']]],
+['sem',2,0,'PPC 캠페인 구조','PPC Campaign Structure','<h4>캠페인 계층 구조</h4><p>Google Ads는 캠페인 → 광고그룹 → 키워드/광고의 3단계 구조로 운영됩니다.</p><ul><li><b>캠페인</b>: 예산, 지역, 기기 등 전체 설정</li><li><b>광고그룹</b>: 관련 키워드와 광고를 묶은 단위</li><li><b>키워드</b>: 광고가 노출될 검색어</li><li><b>광고</b>: 사용자에게 보여지는 텍스트/이미지</li></ul><h4>키워드 매치 타입</h4><ul><li>Broad Match: 넓은 범위의 관련 검색어</li><li>Phrase Match: 구문이 포함된 검색어</li><li>Exact Match: 정확히 일치하는 검색어</li></ul>',[['Campaign','캠페인','광고 목표, 예산, 타겟팅을 설정하는 최상위 단위'],['Ad Group','광고그룹','관련 키워드와 광고를 묶어 관리하는 중간 단위'],['Match Type','매치 타입','키워드와 사용자 검색어의 일치 범위를 결정하는 설정']]],
+['sem',3,0,'광고 입찰과 품질점수','Ad Bidding & Quality Score','<h4>광고 경매 시스템</h4><p>Google Ads는 경매(Auction) 방식으로 광고 순위를 결정합니다. 단순히 높은 입찰가만으로는 상위에 노출되지 않습니다.</p><h4>광고 순위 공식</h4><p><code>Ad Rank = 입찰가 × 품질점수</code></p><ul><li><b>품질점수(Quality Score)</b>: 1~10점으로 광고 품질을 평가</li><li>예상 CTR, 광고 관련성, 랜딩페이지 경험으로 구성</li><li>품질점수가 높으면 더 낮은 비용으로 높은 순위 가능</li></ul>',[['Quality Score','품질점수','Google이 광고의 품질을 1-10으로 평가한 점수'],['Ad Rank','광고 순위','입찰가와 품질점수를 곱하여 결정되는 광고 게재 순위'],['Bid','입찰가','광고주가 클릭 한 번에 지불할 의향이 있는 최대 금액']]],
+// SNS
+['sns',1,0,'소셜미디어 마케팅 기초','Social Media Marketing Basics','<h4>SNS 마케팅이란?</h4><p>소셜미디어 플랫폼을 활용하여 브랜드 인지도를 높이고, 고객과 소통하며, 매출을 증가시키는 마케팅 활동입니다.</p><h4>주요 플랫폼 특성</h4><ul><li><b>Instagram</b>: 비주얼 중심, 20~30대, 라이프스타일/패션</li><li><b>YouTube</b>: 영상 콘텐츠, 전 연령, 교육/엔터테인먼트</li><li><b>TikTok</b>: 숏폼 영상, 10~20대, 바이럴 콘텐츠</li><li><b>LinkedIn</b>: B2B, 전문가 네트워킹, 채용</li></ul><p>플랫폼마다 사용자층과 콘텐츠 형식이 다르므로 타겟에 맞는 채널 선택이 중요합니다.</p>',[['Engagement','참여율','좋아요, 댓글, 공유 등 사용자의 콘텐츠 상호작용 비율'],['Organic Reach','자연 도달','광고 없이 콘텐츠가 도달하는 사용자 수'],['Viral','바이럴','콘텐츠가 SNS를 통해 빠르게 확산되는 현상']]],
+['sns',2,0,'콘텐츠 전략과 캘린더','Content Strategy & Calendar','<h4>콘텐츠 전략 수립</h4><p>효과적인 SNS 운영을 위해서는 일관된 콘텐츠 전략과 게시 일정이 필요합니다.</p><h4>콘텐츠 믹스</h4><ul><li><b>교육형</b>: 팁, 가이드, How-to (40%)</li><li><b>참여형</b>: 설문, 퀴즈, 질문 (20%)</li><li><b>홍보형</b>: 제품/서비스 소개 (20%)</li><li><b>엔터형</b>: 밈, 트렌드, 비하인드 (20%)</li></ul><p>콘텐츠 캘린더를 사용하면 일관성 유지와 중요 일정 관리가 쉬워집니다. Notion, Trello 등의 도구를 활용하세요.</p>',[['Content Calendar','콘텐츠 캘린더','SNS 게시물의 주제, 일정, 채널을 계획하는 일정표'],['Content Mix','콘텐츠 믹스','다양한 유형의 콘텐츠를 균형 있게 배합하는 전략'],['UGC','사용자 생성 콘텐츠','User-Generated Content: 고객이 직접 만든 브랜드 관련 콘텐츠']]],
+['sns',3,0,'SNS 광고 기초','Social Media Advertising','<h4>유료 SNS 광고</h4><p>오가닉 도달이 줄어드는 추세에서 유료 광고는 필수입니다. 정교한 타겟팅이 SNS 광고의 최대 강점입니다.</p><h4>타겟팅 옵션</h4><ul><li><b>데모그래픽</b>: 나이, 성별, 지역</li><li><b>관심사</b>: 사용자 행동과 관심 기반</li><li><b>리타게팅</b>: 웹사이트 방문자 재타겟</li><li><b>유사 타겟</b>: 기존 고객과 유사한 사용자</li></ul>',[['Retargeting','리타겟팅','이전에 웹사이트를 방문한 사용자에게 다시 광고를 노출하는 기법'],['Lookalike Audience','유사 타겟','기존 고객과 특성이 비슷한 새로운 잠재 고객 그룹'],['CPM','1000회 노출당 비용','Cost Per Mille: 광고가 1000번 노출될 때 지불하는 비용']]],
+// Content Marketing
+['cm',1,0,'콘텐츠 마케팅이란?','What is Content Marketing?','<h4>정의</h4><p>가치 있고 관련성 높은 콘텐츠를 지속적으로 제작·배포하여 타겟 오디언스를 유치하고 유지하는 전략적 마케팅 접근법입니다.</p><h4>왜 중요한가?</h4><ul><li>광고와 달리 장기적 자산으로 누적 효과</li><li>신뢰와 전문성 구축</li><li>SEO와 시너지 효과</li><li>리드 생성 및 전환 지원</li></ul><p>핵심은 "판매가 아닌 가치 제공"입니다. 고객의 문제를 해결하는 콘텐츠가 결국 매출로 이어집니다.</p>',[['Content Marketing','콘텐츠 마케팅','가치 있는 콘텐츠를 통해 고객을 유치하고 유지하는 마케팅 전략'],['Inbound Marketing','인바운드 마케팅','고객이 자발적으로 찾아오게 만드는 마케팅 방식'],['Lead Magnet','리드 자석','이메일 주소 등을 얻기 위해 무료로 제공하는 가치 있는 콘텐츠']]],
+['cm',2,0,'콘텐츠 유형과 포맷','Content Types & Formats','<h4>주요 콘텐츠 유형</h4><ul><li><b>블로그 포스트</b>: SEO 기반 장기 트래픽 확보</li><li><b>영상 콘텐츠</b>: 높은 참여율과 공유 가능성</li><li><b>인포그래픽</b>: 복잡한 정보를 시각적으로 전달</li><li><b>팟캐스트</b>: 이동 중 소비 가능한 오디오 콘텐츠</li><li><b>전자책/가이드</b>: 리드 생성용 심층 콘텐츠</li><li><b>케이스 스터디</b>: 실제 성공 사례로 신뢰 구축</li></ul>',[['Blog Post','블로그 포스트','웹사이트에 게시하는 글 형태의 콘텐츠'],['Infographic','인포그래픽','데이터나 정보를 시각적으로 표현한 이미지 콘텐츠'],['Case Study','케이스 스터디','실제 고객의 성공 사례를 상세히 기술한 콘텐츠']]],
+['cm',3,0,'스토리텔링과 브랜드 보이스','Storytelling & Brand Voice','<h4>스토리텔링의 힘</h4><p>사람의 뇌는 사실보다 이야기를 22배 더 잘 기억합니다. 브랜드 스토리텔링은 감정적 연결을 만듭니다.</p><h4>브랜드 보이스 구축</h4><ul><li><b>톤(Tone)</b>: 공식적 vs 캐주얼, 진지 vs 유머</li><li><b>인격(Personality)</b>: 브랜드가 사람이라면 어떤 성격?</li><li><b>일관성</b>: 모든 채널에서 동일한 목소리 유지</li></ul>',[['Brand Voice','브랜드 보이스','브랜드의 커뮤니케이션에서 일관되게 유지하는 어조와 스타일'],['Storytelling','스토리텔링','이야기 형식으로 메시지를 전달하여 감정적 연결을 만드는 기법'],['Tone of Voice','어조','브랜드가 커뮤니케이션할 때 사용하는 감정적 톤']]],
+// Email Marketing
+['em',1,0,'이메일 마케팅 기초','Email Marketing Basics','<h4>이메일 마케팅의 가치</h4><p>이메일 마케팅은 ROI가 $1당 $36으로 모든 마케팅 채널 중 가장 높습니다. 직접 소유한 채널이라는 점도 큰 장점입니다.</p><h4>핵심 지표</h4><ul><li><b>오픈율(Open Rate)</b>: 이메일을 열어본 비율 (업계 평균 ~20%)</li><li><b>클릭률(Click Rate)</b>: 이메일 내 링크 클릭 비율 (~2.5%)</li><li><b>구독 해지율</b>: 수신 거부 비율 (<0.5% 유지 권장)</li></ul>',[['Open Rate','오픈율','발송된 이메일 중 수신자가 열어본 비율'],['Click Rate','클릭률','이메일 내 링크를 클릭한 수신자의 비율'],['Unsubscribe Rate','구독해지율','이메일 수신을 거부한 수신자의 비율']]],
+['em',2,0,'효과적인 이메일 작성법','Writing Effective Emails','<h4>제목줄(Subject Line) 작성</h4><ul><li>50자 이내로 간결하게</li><li>긴급성 또는 호기심 유발</li><li>개인화 (이름 포함)</li><li>스팸 단어 피하기 (무료, 긴급, 100%)</li></ul><h4>본문 구조</h4><ul><li>프리헤더 텍스트 활용</li><li>1개의 명확한 CTA(Call to Action)</li><li>모바일 최적화 (60% 이상이 모바일에서 확인)</li><li>이미지와 텍스트 균형</li></ul>',[['Subject Line','제목줄','이메일 제목으로 오픈율에 가장 큰 영향을 미치는 요소'],['CTA','행동유도문안','Call to Action: 수신자가 취하길 원하는 구체적 행동을 유도하는 문구/버튼'],['Preheader','프리헤더','이메일 목록에서 제목줄 다음에 미리 보이는 텍스트']]],
+['em',3,0,'이메일 리스트 구축','Building an Email List','<h4>리스트 구축 전략</h4><ul><li><b>옵트인 폼</b>: 웹사이트에 구독 양식 배치</li><li><b>리드 마그넷</b>: 무료 전자책, 템플릿, 체크리스트 제공</li><li><b>팝업</b>: 이탈 의도 감지 팝업</li><li><b>소셜미디어</b>: SNS에서 구독 유도</li></ul><h4>리스트 관리</h4><p>구독자의 행동, 관심사, 구매 이력에 따라 세그멘테이션하면 오픈율과 전환율을 크게 높일 수 있습니다.</p>',[['Opt-in','옵트인','사용자가 자발적으로 이메일 수신에 동의하는 것'],['Segmentation','세그멘테이션','구독자를 특성별로 그룹화하여 맞춤형 이메일을 보내는 기법'],['Double Opt-in','더블 옵트인','이메일 구독 후 확인 메일을 통해 2차 동의를 받는 방식']]],
+// Analytics
+['ana',1,0,'웹 분석 기초','Web Analytics Basics','<h4>웹 분석이란?</h4><p>웹사이트 방문자의 행동 데이터를 수집, 분석하여 비즈니스 의사결정에 활용하는 것입니다. Google Analytics가 대표적입니다.</p><h4>GA4 핵심 개념</h4><ul><li><b>이벤트 기반 추적</b>: 페이지뷰, 클릭, 스크롤 등 모든 상호작용을 이벤트로 추적</li><li><b>사용자 vs 세션</b>: 사용자는 고유 방문자, 세션은 방문 횟수</li><li><b>전환(Conversion)</b>: 구매, 회원가입 등 비즈니스 목표 달성</li></ul>',[['Session','세션','사용자가 웹사이트를 방문하여 활동하는 하나의 기간'],['Bounce Rate','이탈률','한 페이지만 보고 사이트를 떠나는 방문자의 비율'],['Conversion','전환','웹사이트에서 원하는 목표 행동이 완료되는 것']]],
+['ana',2,0,'핵심 지표 이해하기','Understanding Key Metrics','<h4>트래픽 지표</h4><ul><li><b>페이지뷰</b>: 페이지가 조회된 총 횟수</li><li><b>유니크 방문자</b>: 고유 방문자 수</li><li><b>평균 세션 시간</b>: 사이트에 머문 평균 시간</li></ul><h4>행동 지표</h4><ul><li><b>이탈률</b>: 한 페이지만 보고 떠나는 비율</li><li><b>페이지/세션</b>: 세션당 조회 페이지 수</li></ul><h4>전환 지표</h4><ul><li><b>전환율</b>: 목표를 달성한 방문자 비율</li><li><b>CPA</b>: 전환 하나당 비용</li></ul>',[['KPI','핵심성과지표','Key Performance Indicator: 비즈니스 목표 달성도를 측정하는 핵심 지표'],['Pageview','페이지뷰','웹페이지가 로드된 횟수'],['CPA','전환당 비용','Cost Per Acquisition: 한 건의 전환을 얻는 데 드는 평균 비용']]],
+['ana',3,0,'데이터 기반 의사결정','Data-Driven Decision Making','<h4>데이터 → 인사이트 → 액션</h4><p>데이터 자체보다 그로부터 인사이트를 도출하고 실행하는 것이 중요합니다.</p><h4>분석 프레임워크</h4><ul><li><b>What</b>: 무슨 일이 일어났는가? (지표 확인)</li><li><b>Why</b>: 왜 일어났는가? (원인 분석)</li><li><b>How</b>: 어떻게 개선할 수 있는가? (액션 도출)</li></ul><p>대시보드를 구축하여 핵심 지표를 실시간으로 모니터링하고, 정기적으로 리포트를 작성하는 습관이 중요합니다.</p>',[['Dashboard','대시보드','핵심 지표를 한눈에 볼 수 있는 시각적 보고 화면'],['Attribution','어트리뷰션','전환에 기여한 마케팅 채널과 터치포인트를 파악하는 분석'],['Funnel Analysis','퍼널 분석','사용자가 목표를 달성하기까지의 단계별 이탈률을 분석하는 기법']]],
+// CRO
+['cro',1,0,'전환 최적화 기초','CRO Basics','<h4>CRO란?</h4><p>CRO(Conversion Rate Optimization)는 웹사이트 방문자 중 원하는 행동을 취하는 비율을 높이는 체계적인 프로세스입니다.</p><h4>전환 최적화 프로세스</h4><ul><li><b>1. 분석</b>: 현재 데이터 분석으로 문제점 파악</li><li><b>2. 가설</b>: 개선안 수립 (A를 B로 바꾸면 C가 개선될 것)</li><li><b>3. 테스트</b>: A/B 테스트로 가설 검증</li><li><b>4. 학습</b>: 결과 분석 후 다음 실험 계획</li></ul>',[['CRO','전환최적화','Conversion Rate Optimization: 웹사이트의 전환율을 체계적으로 높이는 프로세스'],['Conversion Rate','전환율','전체 방문자 중 목표 행동을 완료한 비율 (%)'],['Hypothesis','가설','테스트하고자 하는 개선안에 대한 예측 문장']]],
+['cro',2,0,'랜딩 페이지 최적화','Landing Page Optimization','<h4>좋은 랜딩 페이지의 요소</h4><ul><li><b>명확한 헤드라인</b>: 가치 제안을 한 문장으로 전달</li><li><b>단일 CTA</b>: 하나의 명확한 행동 유도</li><li><b>소셜 프루프</b>: 후기, 수치, 로고</li><li><b>최소한의 폼</b>: 필수 필드만 요구</li><li><b>모바일 최적화</b>: 반응형 디자인 필수</li></ul><h4>심리적 원칙</h4><p>긴급성(한정 수량), 사회적 증거(1만명이 선택), 상호성(무료 제공) 등의 심리 원칙을 활용합니다.</p>',[['Landing Page','랜딩 페이지','광고 클릭 후 방문자가 도착하는 특정 목적의 웹페이지'],['Social Proof','소셜 프루프','다른 사람들의 선택이나 후기를 보여주어 신뢰를 주는 기법'],['Above the Fold','스크롤 전 영역','스크롤 없이 바로 보이는 화면 영역']]],
+['cro',3,0,'A/B 테스트 기초','A/B Testing Basics','<h4>A/B 테스트란?</h4><p>두 가지 버전(A원본 vs B변형)을 동시에 무작위로 보여주고 어떤 것이 더 나은 성과를 내는지 통계적으로 비교하는 실험입니다.</p><h4>A/B 테스트 순서</h4><ul><li>가설 설정 → 변수 선택 → 테스트 설계 → 실행 → 결과 분석</li></ul><h4>테스트 요소 예시</h4><ul><li>버튼 색상, 크기, 문구</li><li>헤드라인 변경</li><li>이미지 변경</li><li>가격 표시 방법</li></ul>',[['A/B Test','A/B 테스트','두 버전을 비교하여 어떤 것이 더 효과적인지 검증하는 실험'],['Control','대조군','A/B 테스트에서 변경하지 않은 기존 버전 (A)'],['Statistical Significance','통계적 유의성','테스트 결과가 우연이 아닌 실제 차이인지 판단하는 통계 기준']]],
+// Marketing Automation
+['ma',1,0,'마케팅 자동화란?','What is Marketing Automation?','<h4>마케팅 자동화의 정의</h4><p>반복적인 마케팅 작업을 소프트웨어로 자동화하여 효율성을 높이고 개인화된 경험을 대규모로 제공하는 기술입니다.</p><h4>자동화 가능 영역</h4><ul><li><b>이메일</b>: 환영 메일, 장바구니 이탈 알림</li><li><b>SNS</b>: 게시물 예약, 자동 응답</li><li><b>리드 관리</b>: 스코어링, 너처링</li><li><b>리포팅</b>: 자동 보고서 생성</li></ul><p>대표 도구: HubSpot, Mailchimp, ActiveCampaign</p>',[['Marketing Automation','마케팅 자동화','반복적 마케팅 작업을 소프트웨어로 자동 수행하는 기술'],['Workflow','워크플로','특정 조건에 따라 자동으로 실행되는 일련의 마케팅 액션'],['Trigger','트리거','자동화 워크플로를 시작시키는 조건이나 이벤트']]],
+['ma',2,0,'이메일 자동화 워크플로','Email Automation Workflows','<h4>대표적인 자동화 시퀀스</h4><ul><li><b>웰컴 시리즈</b>: 신규 구독자에게 3~5개 이메일 순차 발송</li><li><b>장바구니 이탈</b>: 구매 미완료 시 리마인더 발송</li><li><b>리인게이지먼트</b>: 비활성 구독자 재활성화</li><li><b>생일/기념일</b>: 개인화된 축하 메일</li></ul><h4>워크플로 설계 원칙</h4><ul><li>명확한 목표 설정</li><li>적절한 타이밍과 빈도</li><li>개인화된 콘텐츠</li></ul>',[['Drip Campaign','드립 캠페인','시간 간격을 두고 순차적으로 발송하는 자동 이메일 시리즈'],['Nurturing','너처링','잠재 고객을 점진적으로 교육하고 관계를 발전시키는 과정'],['Abandoned Cart','장바구니 이탈','온라인 쇼핑에서 상품을 담고 결제하지 않고 떠나는 행동']]],
+['ma',3,0,'리드 스코어링 기초','Lead Scoring Basics','<h4>리드 스코어링이란?</h4><p>잠재 고객(리드)의 행동과 특성에 점수를 부여하여 구매 준비 정도를 판단하는 방법론입니다.</p><h4>스코어링 기준</h4><ul><li><b>행동 점수</b>: 이메일 오픈(+1), 링크 클릭(+3), 데모 요청(+10)</li><li><b>인구통계 점수</b>: 직책, 회사 규모, 산업 등</li><li><b>부정 점수</b>: 구독 해지(-5), 장기 미활동(-3)</li></ul><p>점수가 임계값에 도달하면 영업팀에 자동으로 전달합니다.</p>',[['Lead Scoring','리드 스코어링','잠재 고객의 행동/특성에 점수를 부여하여 구매 가능성을 판단하는 방법'],['MQL','마케팅적격리드','Marketing Qualified Lead: 마케팅 활동으로 확보한 유망 잠재 고객'],['SQL','영업적격리드','Sales Qualified Lead: 영업팀이 직접 접촉할 준비가 된 잠재 고객']]],
+// Branding
+['brand',1,0,'브랜드 전략 기초','Brand Strategy Basics','<h4>브랜드란?</h4><p>브랜드는 단순한 로고가 아닙니다. 고객의 마음속에 형성되는 인식, 감정, 경험의 총합입니다.</p><h4>브랜드 전략 요소</h4><ul><li><b>미션</b>: 왜 존재하는가?</li><li><b>비전</b>: 어디로 가고 있는가?</li><li><b>가치</b>: 무엇을 중요하게 여기는가?</li><li><b>포지셔닝</b>: 시장에서 어떤 위치를 차지할 것인가?</li><li><b>차별화</b>: 경쟁자와 무엇이 다른가?</li></ul>',[['Brand Identity','브랜드 아이덴티티','로고, 색상, 폰트 등 브랜드의 시각적 표현 체계'],['Positioning','포지셔닝','타겟 시장에서 브랜드가 차지하는 고유한 위치'],['USP','고유판매제안','Unique Selling Proposition: 경쟁자와 차별화되는 고유한 가치 제안']]],
+['brand',2,0,'타겟 오디언스 정의','Defining Target Audience','<h4>타겟 오디언스란?</h4><p>제품이나 서비스를 구매할 가능성이 가장 높은 특정 집단입니다. 모든 사람을 타겟으로 하면 아무도 타겟이 아닌 것과 같습니다.</p><h4>페르소나 구성 요소</h4><ul><li><b>인구통계</b>: 나이, 성별, 직업, 소득</li><li><b>심리통계</b>: 가치관, 관심사, 라이프스타일</li><li><b>행동 패턴</b>: 구매 습관, 미디어 소비</li><li><b>페인 포인트</b>: 해결하고 싶은 문제</li></ul>',[['Persona','페르소나','타겟 고객을 대표하는 가상의 인물 프로필'],['Demographics','인구통계','나이, 성별, 소득, 교육 수준 등의 인구통계학적 특성'],['Pain Point','페인 포인트','타겟 고객이 겪고 있는 문제점이나 불편함']]],
+['brand',3,0,'마케팅 퍼널과 고객 여정','Marketing Funnel & Customer Journey','<h4>마케팅 퍼널</h4><ul><li><b>인지(Awareness)</b>: 브랜드를 알게 되는 단계</li><li><b>관심(Interest)</b>: 더 알고 싶어하는 단계</li><li><b>고려(Consideration)</b>: 비교 검토 단계</li><li><b>전환(Conversion)</b>: 구매 결정 단계</li><li><b>충성(Loyalty)</b>: 재구매 및 추천 단계</li></ul><p>각 단계별로 적합한 마케팅 전략과 콘텐츠가 필요합니다.</p>',[['Marketing Funnel','마케팅 퍼널','고객이 인지에서 구매까지 이동하는 단계적 모델'],['Customer Journey','고객 여정','고객이 브랜드와 접점을 통해 경험하는 전체 과정'],['Touchpoint','터치포인트','고객이 브랜드와 접촉하는 모든 지점']]],
+// App Architecture
+['arch',1,0,'앱 아키텍처 패턴 개요','App Architecture Overview','<h4>아키텍처란?</h4><p>소프트웨어 아키텍처는 앱의 구조와 구성 요소들의 관계를 정의합니다. 좋은 아키텍처는 유지보수성, 확장성, 테스트 용이성을 보장합니다.</p><h4>왜 중요한가?</h4><ul><li>코드 복잡도 관리</li><li>팀 협업 효율성</li><li>버그 감소와 테스트 용이</li><li>기능 추가/변경의 유연성</li></ul><p>대표적 패턴: MVC, MVVM, Clean Architecture, Flux/Redux 등</p>',[['Architecture','아키텍처','소프트웨어의 구조, 구성요소, 관계를 정의하는 설계 청사진'],['Separation of Concerns','관심사 분리','각 모듈이 하나의 명확한 책임만 가지도록 분리하는 원칙'],['Scalability','확장성','사용자 증가나 기능 추가에 유연하게 대응할 수 있는 능력']]],
+['arch',2,0,'MVC 패턴 이해하기','Understanding MVC Pattern','<h4>MVC란?</h4><p>Model-View-Controller 패턴은 앱을 세 가지 역할로 분리합니다.</p><ul><li><b>Model</b>: 데이터와 비즈니스 로직 담당</li><li><b>View</b>: 사용자에게 보이는 화면(UI) 담당</li><li><b>Controller</b>: Model과 View를 연결하고 사용자 입력 처리</li></ul><h4>장단점</h4><ul><li>장점: 역할 분리 명확, 협업 용이</li><li>단점: Controller가 비대해질 수 있음 (Massive View Controller)</li></ul>',[['Model','모델','데이터와 비즈니스 로직을 담당하는 아키텍처 구성요소'],['View','뷰','사용자에게 보이는 UI를 담당하는 구성요소'],['Controller','컨트롤러','사용자 입력을 처리하고 Model과 View를 연결하는 구성요소']]],
+['arch',3,0,'MVVM과 데이터 바인딩','MVVM & Data Binding','<h4>MVVM이란?</h4><p>Model-View-ViewModel 패턴은 MVC의 진화된 형태로, 특히 리액티브 UI 프레임워크에서 많이 사용됩니다.</p><ul><li><b>ViewModel</b>: View를 위한 데이터와 로직을 제공</li><li><b>Data Binding</b>: ViewModel 변경이 자동으로 View에 반영</li></ul><h4>주요 사용 환경</h4><ul><li>Android: Jetpack ViewModel + LiveData</li><li>iOS: SwiftUI + Combine</li><li>Web: Vue.js, React(유사)</li></ul>',[['ViewModel','뷰모델','View를 위한 데이터를 준비하고 비즈니스 로직을 처리하는 계층'],['Data Binding','데이터 바인딩','UI와 데이터를 연결하여 자동으로 동기화하는 기술'],['Reactive Programming','반응형 프로그래밍','데이터 변경에 자동으로 반응하여 업데이트가 전파되는 프로그래밍 패러다임']]],
+// Frontend
+['fe',1,0,'HTML 기초 - 웹의 뼈대','HTML Basics','<h4>HTML이란?</h4><p>HyperText Markup Language - 웹페이지의 구조와 콘텐츠를 정의하는 마크업 언어입니다.</p><h4>핵심 요소</h4><ul><li><b>시맨틱 태그</b>: header, nav, main, section, article, footer</li><li><b>텍스트</b>: h1~h6, p, span, a, strong, em</li><li><b>미디어</b>: img, video, audio</li><li><b>폼</b>: form, input, button, select, textarea</li><li><b>목록</b>: ul, ol, li</li></ul><p>시맨틱 태그를 사용하면 접근성과 SEO가 향상됩니다.</p>',[['Semantic HTML','시맨틱 HTML','의미를 가진 HTML 태그를 사용하여 콘텐츠의 구조를 명확히 하는 것'],['DOM','문서 객체 모델','Document Object Model: HTML 문서를 트리 구조로 표현한 프로그래밍 인터페이스'],['Element','요소','HTML 태그로 정의되는 문서의 구성 단위']]],
+['fe',2,0,'CSS 기초 - 스타일과 레이아웃','CSS Basics','<h4>CSS란?</h4><p>Cascading Style Sheets - HTML 요소의 시각적 표현을 정의합니다.</p><h4>핵심 개념</h4><ul><li><b>선택자</b>: 요소(div), 클래스(.class), ID(#id)</li><li><b>박스 모델</b>: content → padding → border → margin</li><li><b>Flexbox</b>: 1차원 레이아웃 (행 또는 열)</li><li><b>Grid</b>: 2차원 레이아웃 (행과 열 동시)</li><li><b>반응형</b>: @media 쿼리로 화면 크기별 스타일 적용</li></ul>',[['Box Model','박스 모델','모든 HTML 요소를 content, padding, border, margin으로 구성된 박스로 보는 개념'],['Flexbox','플렉스박스','유연한 1차원 레이아웃을 구성하는 CSS 모듈'],['Responsive Design','반응형 디자인','다양한 화면 크기에 맞게 레이아웃이 자동 조절되는 디자인 기법']]],
+['fe',3,0,'JavaScript 기초 - 동적 웹','JavaScript Basics','<h4>JavaScript란?</h4><p>웹페이지에 동적 기능을 추가하는 프로그래밍 언어입니다. 브라우저에서 실행되며, Node.js로 서버에서도 사용합니다.</p><h4>핵심 개념</h4><ul><li><b>변수</b>: let, const (var 지양)</li><li><b>함수</b>: function 선언, 화살표 함수 (=&gt;)</li><li><b>DOM 조작</b>: querySelector, addEventListener</li><li><b>비동기</b>: Promise, async/await</li><li><b>이벤트</b>: click, input, submit 등</li></ul>',[['Variable','변수','데이터를 저장하는 이름이 붙은 메모리 공간'],['Function','함수','재사용 가능한 코드 블록으로 입력을 받아 출력을 반환'],['Event Listener','이벤트 리스너','특정 이벤트 발생 시 실행될 함수를 등록하는 메커니즘']]],
+// Mobile
+['mobile',1,0,'모바일 개발 환경','Mobile Dev Landscape','<h4>모바일 앱 유형</h4><ul><li><b>네이티브 앱</b>: iOS(Swift), Android(Kotlin) - 최고 성능</li><li><b>크로스플랫폼</b>: React Native, Flutter - 하나의 코드로 양 플랫폼</li><li><b>하이브리드</b>: Ionic, Cordova - 웹기술 + 네이티브 래핑</li><li><b>PWA</b>: Progressive Web App - 웹으로 앱 경험 제공</li></ul><p>각 방식마다 개발 속도, 성능, 비용, 접근성이 다르므로 프로젝트 요구사항에 따라 선택합니다.</p>',[['Native App','네이티브 앱','특정 플랫폼(iOS/Android)의 기본 언어와 SDK로 개발된 앱'],['Cross-platform','크로스플랫폼','하나의 코드베이스로 여러 플랫폼 앱을 개발하는 방식'],['PWA','프로그레시브 웹 앱','웹 기술로 네이티브 앱과 유사한 경험을 제공하는 웹 앱']]],
+['mobile',2,0,'네이티브 vs 크로스플랫폼','Native vs Cross-Platform','<h4>네이티브 개발</h4><ul><li>장점: 최고 성능, 플랫폼 최신 기능, 우수한 UX</li><li>단점: 2개 코드베이스, 높은 비용, 긴 개발 기간</li></ul><h4>크로스플랫폼 개발</h4><ul><li><b>React Native</b>: JavaScript 기반, Meta 개발, 큰 생태계</li><li><b>Flutter</b>: Dart 기반, Google 개발, 자체 렌더링 엔진</li></ul><ul><li>장점: 단일 코드베이스, 빠른 개발, 비용 절감</li><li>단점: 네이티브 대비 약간의 성능 차이</li></ul>',[['React Native','리액트 네이티브','JavaScript와 React로 네이티브 모바일 앱을 개발하는 프레임워크'],['Flutter','플러터','Dart 언어 기반 Google의 크로스플랫폼 UI 프레임워크'],['SDK','소프트웨어 개발 키트','Software Development Kit: 앱 개발에 필요한 도구와 라이브러리 모음']]],
+['mobile',3,0,'반응형 디자인과 모바일 우선','Responsive & Mobile First','<h4>모바일 우선 접근법</h4><p>Mobile First는 모바일 화면부터 디자인하고, 점진적으로 더 큰 화면으로 확장하는 전략입니다.</p><h4>핵심 기법</h4><ul><li><b>미디어 쿼리</b>: <code>@media (min-width: 768px)</code></li><li><b>유동적 그리드</b>: %와 fr 단위 사용</li><li><b>유동적 이미지</b>: max-width: 100%</li><li><b>뷰포트 설정</b>: meta viewport 태그</li></ul><p>전체 웹 트래픽의 60% 이상이 모바일이므로 모바일 최적화는 필수입니다.</p>',[['Mobile First','모바일 우선','모바일 화면부터 디자인하고 점진적으로 큰 화면으로 확장하는 접근법'],['Viewport','뷰포트','사용자가 웹페이지를 볼 수 있는 영역의 크기'],['Breakpoint','브레이크포인트','미디어 쿼리에서 레이아웃이 변경되는 화면 너비 기준점']]],
+// UI/UX
+['uiux',1,0,'UI/UX 디자인 기초','UI/UX Design Basics','<h4>UI vs UX</h4><ul><li><b>UI(User Interface)</b>: 사용자가 보고 상호작용하는 시각적 요소</li><li><b>UX(User Experience)</b>: 사용자가 제품을 사용하며 느끼는 전체 경험</li></ul><p>좋은 UI는 아름답고, 좋은 UX는 쉽습니다. 둘 다 갖춰야 훌륭한 제품이 됩니다.</p><h4>디자인 사고(Design Thinking)</h4><ul><li>공감(Empathize) → 정의(Define) → 아이디에이션(Ideate) → 프로토타입(Prototype) → 테스트(Test)</li></ul>',[['UI','사용자 인터페이스','User Interface: 사용자가 보고 상호작용하는 화면의 시각적 요소'],['UX','사용자 경험','User Experience: 제품 사용 전반에 걸친 사용자의 인식과 감정'],['Design Thinking','디자인 사고','사용자 중심으로 문제를 해결하는 5단계 창의적 방법론']]],
+['uiux',2,0,'사용성 원칙과 휴리스틱','Usability Principles','<h4>닐슨의 10가지 휴리스틱</h4><ul><li><b>시스템 상태 가시성</b>: 현재 상태를 항상 알 수 있게</li><li><b>현실 세계와의 일치</b>: 사용자 언어로 소통</li><li><b>사용자 제어와 자유</b>: 실수를 되돌릴 수 있게</li><li><b>일관성과 표준</b>: 같은 동작은 같은 결과</li><li><b>오류 예방</b>: 실수가 일어나기 전에 방지</li><li><b>인식 vs 회상</b>: 기억보다 인식에 의존</li></ul>',[['Usability','사용성','사용자가 제품을 얼마나 쉽고 효율적으로 사용할 수 있는지의 정도'],['Heuristic','휴리스틱','경험에 기반한 일반적인 사용성 평가 원칙'],['Affordance','어포던스','물체가 사용 방법을 직관적으로 알려주는 디자인 특성']]],
+['uiux',3,0,'와이어프레임과 프로토타이핑','Wireframing & Prototyping','<h4>와이어프레임</h4><p>화면의 구조와 레이아웃을 단순하게 스케치한 것입니다. 색상이나 디자인 없이 배치와 기능에 집중합니다.</p><h4>프로토타입</h4><ul><li><b>Lo-fi</b>: 종이 스케치, 기본 와이어프레임</li><li><b>Hi-fi</b>: 실제와 유사한 인터랙티브 프로토타입</li></ul><h4>주요 도구</h4><ul><li>Figma, Sketch, Adobe XD</li><li>Balsamiq (와이어프레임)</li><li>InVision (프로토타입)</li></ul>',[['Wireframe','와이어프레임','화면 구조와 레이아웃을 단순화하여 표현한 설계도'],['Prototype','프로토타입','실제 제품처럼 동작하는 시뮬레이션 모델'],['Figma','피그마','웹 기반 실시간 협업이 가능한 UI/UX 디자인 도구']]],
+// API
+['api',1,0,'API란 무엇인가?','What is an API?','<h4>API의 정의</h4><p>API(Application Programming Interface)는 서로 다른 소프트웨어 간에 데이터를 주고받기 위한 약속된 인터페이스입니다.</p><h4>API 비유</h4><p>식당에서 웨이터가 고객(클라이언트)의 주문을 주방(서버)에 전달하고, 음식(데이터)을 가져다주는 것과 같습니다.</p><h4>API 유형</h4><ul><li><b>REST API</b>: 가장 보편적, HTTP 기반</li><li><b>GraphQL</b>: 클라이언트가 원하는 데이터만 요청</li><li><b>WebSocket</b>: 실시간 양방향 통신</li></ul>',[['API','응용 프로그래밍 인터페이스','소프트웨어 간 데이터를 주고받기 위한 표준화된 인터페이스'],['Endpoint','엔드포인트','API에서 특정 리소스에 접근하기 위한 URL 경로'],['Request/Response','요청/응답','클라이언트가 서버에 보내는 요청과 서버가 돌려주는 응답']]],
+['api',2,0,'REST API 기초','REST API Basics','<h4>REST란?</h4><p>Representational State Transfer - 웹의 장점을 최대한 활용하는 아키텍처 스타일입니다.</p><h4>HTTP 메서드</h4><ul><li><b>GET</b>: 데이터 조회 (읽기)</li><li><b>POST</b>: 데이터 생성</li><li><b>PUT</b>: 데이터 전체 수정</li><li><b>PATCH</b>: 데이터 부분 수정</li><li><b>DELETE</b>: 데이터 삭제</li></ul><h4>상태 코드</h4><ul><li>200: 성공, 201: 생성됨, 400: 잘못된 요청, 401: 인증 필요, 404: 없음, 500: 서버 오류</li></ul>',[['REST','레스트','웹의 장점을 활용하는 API 아키텍처 스타일'],['HTTP Method','HTTP 메서드','GET/POST/PUT/DELETE 등 서버에 요청하는 동작 유형'],['Status Code','상태 코드','서버가 요청 처리 결과를 알려주는 3자리 숫자 코드']]],
+['api',3,0,'인증과 보안 기초','Auth & Security Basics','<h4>인증 방식</h4><ul><li><b>API Key</b>: 간단한 키 기반 인증</li><li><b>JWT</b>: JSON Web Token - 토큰 기반 인증</li><li><b>OAuth 2.0</b>: 제3자 인증 (Google, Facebook 로그인)</li></ul><h4>보안 핵심</h4><ul><li>HTTPS 필수 사용</li><li>비밀번호 해싱 (bcrypt)</li><li>SQL Injection 방지 (파라미터화 쿼리)</li><li>XSS 방지 (입력 sanitize)</li><li>CORS 설정</li></ul>',[['JWT','JSON 웹 토큰','JSON 형식의 토큰으로 사용자 인증 정보를 안전하게 전달하는 표준'],['OAuth','오쓰','제3자 앱에 안전하게 접근 권한을 부여하는 인증 프로토콜'],['CORS','교차 출처 리소스 공유','다른 도메인의 리소스에 접근을 허용하는 보안 메커니즘']]],
+// Database
+['db',1,0,'데이터베이스 기초','Database Basics','<h4>데이터베이스란?</h4><p>구조화된 데이터를 효율적으로 저장, 관리, 검색하기 위한 시스템입니다.</p><h4>DBMS 종류</h4><ul><li><b>관계형(RDBMS)</b>: MySQL, PostgreSQL, Oracle - 테이블 기반, SQL 사용</li><li><b>문서형(NoSQL)</b>: MongoDB - JSON 형태 문서 저장</li><li><b>키-값</b>: Redis - 캐시, 세션 관리</li><li><b>그래프</b>: Neo4j - 관계 중심 데이터</li></ul><p>대부분의 웹/앱은 관계형 DB로 시작하며, 필요에 따라 NoSQL을 추가합니다.</p>',[['Database','데이터베이스','구조화된 데이터를 효율적으로 저장하고 관리하는 시스템'],['SQL','구조화 질의 언어','Structured Query Language: 관계형 DB에서 데이터를 다루는 표준 언어'],['CRUD','생성/읽기/수정/삭제','Create, Read, Update, Delete: 데이터의 기본 4가지 연산']]],
+['db',2,0,'SQL vs NoSQL','SQL vs NoSQL','<h4>SQL(관계형) 특징</h4><ul><li>고정된 스키마, 테이블 기반</li><li>JOIN으로 테이블 간 관계 표현</li><li>ACID 트랜잭션 보장</li><li>적합: 금융, ERP, 정형 데이터</li></ul><h4>NoSQL 특징</h4><ul><li>유연한 스키마, 문서/키-값/그래프</li><li>수평적 확장 용이</li><li>BASE (Eventually Consistent)</li><li>적합: SNS, IoT, 대규모 비정형 데이터</li></ul>',[['Schema','스키마','데이터베이스의 구조와 제약 조건을 정의한 설계도'],['ACID','에이시드','원자성/일관성/고립성/지속성 - 트랜잭션의 안전성을 보장하는 4가지 속성'],['NoSQL','노에스큐엘','Not Only SQL: 관계형이 아닌 다양한 형태의 데이터베이스 통칭']]],
+['db',3,0,'데이터 모델링 기초','Data Modeling Basics','<h4>데이터 모델링이란?</h4><p>현실 세계의 데이터를 DB 구조로 변환하는 과정입니다.</p><h4>3단계</h4><ul><li><b>개념적 모델링</b>: 엔티티와 관계 정의 (ER 다이어그램)</li><li><b>논리적 모델링</b>: 테이블, 컬럼, 키 정의</li><li><b>물리적 모델링</b>: 실제 DB에 맞는 구현 설계</li></ul><h4>관계 유형</h4><ul><li>1:1 (사용자-프로필)</li><li>1:N (부서-직원)</li><li>M:N (학생-수업)</li></ul>',[['Entity','엔티티','데이터베이스에서 관리하는 실세계의 객체나 개념'],['Primary Key','기본키','테이블에서 각 행을 고유하게 식별하는 컬럼'],['Foreign Key','외래키','다른 테이블의 기본키를 참조하여 관계를 형성하는 컬럼']]],
+// Git
+['git',1,0,'Git 기초 - 버전 관리의 시작','Git Basics','<h4>Git이란?</h4><p>분산 버전 관리 시스템(DVCS)으로, 파일의 변경 이력을 추적하고 여러 사람이 협업할 수 있게 합니다.</p><h4>기본 명령어</h4><ul><li><code>git init</code>: 저장소 초기화</li><li><code>git add</code>: 스테이징 영역에 추가</li><li><code>git commit</code>: 변경사항 저장</li><li><code>git status</code>: 현재 상태 확인</li><li><code>git log</code>: 커밋 이력 조회</li></ul>',[['Repository','저장소','Git으로 관리되는 프로젝트 폴더와 버전 이력 데이터'],['Commit','커밋','파일의 변경 사항을 저장소에 기록하는 행위'],['Staging Area','스테이징 영역','커밋할 변경 사항을 준비하는 중간 영역']]],
+['git',2,0,'브랜치와 머지','Branches & Merging','<h4>브랜치란?</h4><p>독립적인 작업 공간을 만드는 기능입니다. 메인 코드에 영향 없이 새 기능을 개발하거나 버그를 수정할 수 있습니다.</p><h4>핵심 명령어</h4><ul><li><code>git branch feature</code>: 브랜치 생성</li><li><code>git checkout feature</code>: 브랜치 전환</li><li><code>git merge feature</code>: 브랜치 병합</li></ul><h4>머지 충돌</h4><p>같은 파일의 같은 부분을 다르게 수정했을 때 발생합니다. 수동으로 충돌을 해결하고 다시 커밋합니다.</p>',[['Branch','브랜치','독립적인 개발 라인을 만드는 Git의 핵심 기능'],['Merge','머지','분리된 브랜치의 변경 사항을 하나로 합치는 작업'],['Conflict','충돌','같은 부분이 다르게 수정되어 자동 병합이 불가능한 상태']]],
+['git',3,0,'원격 저장소와 협업','Remote Repos & Collaboration','<h4>원격 저장소</h4><p>GitHub, GitLab 등 클라우드에 호스팅된 저장소입니다. 팀 협업과 코드 백업의 핵심입니다.</p><h4>핵심 명령어</h4><ul><li><code>git clone</code>: 원격 저장소 복제</li><li><code>git push</code>: 로컬 변경을 원격에 업로드</li><li><code>git pull</code>: 원격 변경을 로컬에 다운로드</li></ul><h4>Pull Request (PR)</h4><p>코드 리뷰를 위해 변경 사항의 병합을 요청하는 기능입니다. 코드 품질 유지의 핵심 도구입니다.</p>',[['Remote','원격 저장소','클라우드에 호스팅된 Git 저장소 (GitHub, GitLab 등)'],['Pull Request','풀 리퀘스트','브랜치 병합을 요청하며 코드 리뷰를 받는 협업 프로세스'],['Clone','클론','원격 저장소의 전체 내용을 로컬에 복제하는 작업']]],
+// Testing
+['test',1,0,'소프트웨어 테스팅 기초','Software Testing Basics','<h4>왜 테스트하는가?</h4><p>버그를 조기에 발견하고, 코드 품질을 보장하며, 리팩토링에 대한 안전망을 제공합니다.</p><h4>테스트 레벨</h4><ul><li><b>단위 테스트</b>: 개별 함수/메서드 테스트</li><li><b>통합 테스트</b>: 모듈 간 상호작용 테스트</li><li><b>E2E 테스트</b>: 사용자 관점의 전체 흐름 테스트</li></ul><h4>테스트 피라미드</h4><p>단위 테스트를 가장 많이, E2E를 가장 적게 - 비용과 속도의 균형</p>',[['Unit Test','단위 테스트','코드의 가장 작은 단위(함수/메서드)를 독립적으로 검증하는 테스트'],['Integration Test','통합 테스트','여러 모듈이 함께 올바르게 작동하는지 검증하는 테스트'],['E2E Test','엔드투엔드 테스트','사용자 관점에서 전체 시스템을 처음부터 끝까지 테스트']]],
+['test',2,0,'단위 테스트와 통합 테스트','Unit & Integration Testing','<h4>단위 테스트 작성법</h4><ul><li><b>AAA 패턴</b>: Arrange(준비) → Act(실행) → Assert(검증)</li><li>하나의 테스트는 하나만 검증</li><li>외부 의존성은 Mock으로 대체</li></ul><h4>주요 프레임워크</h4><ul><li>JavaScript: Jest, Mocha</li><li>Python: pytest, unittest</li><li>Java: JUnit, Mockito</li></ul>',[['Mock','목','테스트에서 실제 의존성을 대신하는 가짜 객체'],['Assertion','어설션','테스트의 기대 결과를 검증하는 조건문'],['Test Coverage','테스트 커버리지','테스트가 코드의 어느 정도를 실행하는지 나타내는 비율']]],
+['test',3,0,'테스트 자동화 기초','Test Automation Basics','<h4>자동화의 이점</h4><ul><li>반복 테스트의 일관성과 속도</li><li>CI/CD 파이프라인 통합</li><li>회귀 테스트 자동 실행</li></ul><h4>자동화 도구</h4><ul><li><b>Selenium</b>: 웹 브라우저 자동화</li><li><b>Cypress</b>: 모던 E2E 테스트</li><li><b>Playwright</b>: 크로스 브라우저 테스트</li><li><b>Appium</b>: 모바일 앱 테스트</li></ul>',[['CI','지속적 통합','Continuous Integration: 코드 변경이 자동으로 빌드/테스트되는 프로세스'],['Regression Test','회귀 테스트','코드 변경 후 기존 기능이 깨지지 않았는지 확인하는 테스트'],['Selenium','셀레니움','웹 브라우저를 프로그래밍으로 제어하는 자동화 프레임워크']]],
+// CI/CD
+['cicd',1,0,'배포 기초','Deployment Basics','<h4>배포란?</h4><p>개발한 코드를 사용자가 접근할 수 있는 서버 환경에 설치하고 실행하는 과정입니다.</p><h4>배포 환경</h4><ul><li><b>Development</b>: 개발자 로컬 환경</li><li><b>Staging</b>: 운영과 동일한 테스트 환경</li><li><b>Production</b>: 실제 사용자가 접근하는 환경</li></ul><h4>배포 방법</h4><ul><li>FTP (구식) → SSH → 자동화 배포 → 컨테이너</li></ul>',[['Deployment','배포','코드를 서버에 설치하고 사용자가 접근할 수 있게 하는 과정'],['Environment','환경','개발/스테이징/운영 등 코드가 실행되는 서버 설정'],['Rollback','롤백','배포 후 문제 발생 시 이전 버전으로 되돌리는 작업']]],
+['cicd',2,0,'CI/CD 파이프라인','CI/CD Pipelines','<h4>CI (Continuous Integration)</h4><p>개발자들이 코드를 자주 통합하고, 자동으로 빌드/테스트하는 프로세스입니다.</p><h4>CD (Continuous Delivery/Deployment)</h4><ul><li><b>Continuous Delivery</b>: 자동 빌드/테스트 후 수동 배포</li><li><b>Continuous Deployment</b>: 테스트 통과 시 자동 배포</li></ul><h4>주요 도구</h4><ul><li>GitHub Actions, Jenkins, GitLab CI, CircleCI</li></ul>',[['Pipeline','파이프라인','코드가 빌드/테스트/배포되는 자동화된 일련의 단계'],['CI/CD','지속적 통합/배포','코드 변경을 자동으로 빌드, 테스트, 배포하는 소프트웨어 개발 방법론'],['GitHub Actions','깃허브 액션','GitHub에 내장된 CI/CD 자동화 도구']]],
+['cicd',3,0,'컨테이너와 Docker','Containers & Docker','<h4>컨테이너란?</h4><p>앱과 실행에 필요한 모든 것(코드, 라이브러리, 설정)을 하나로 패키징하는 기술입니다.</p><h4>Docker 핵심</h4><ul><li><b>Dockerfile</b>: 컨테이너 이미지 빌드 명세</li><li><b>Image</b>: 실행 가능한 패키지(템플릿)</li><li><b>Container</b>: 이미지의 실행 인스턴스</li></ul><h4>장점</h4><ul><li>"내 컴에서는 되는데" 문제 해결</li><li>환경 일관성 보장</li><li>빠른 배포와 확장</li></ul>',[['Container','컨테이너','앱과 실행 환경을 하나로 패키징하는 격리된 실행 단위'],['Docker','도커','컨테이너를 빌드, 배포, 실행하는 가장 대중적인 플랫폼'],['Image','이미지','컨테이너를 생성하기 위한 불변의 템플릿']]],
+// Performance
+['perf',1,0,'웹 성능 최적화 기초','Web Performance Basics','<h4>왜 성능이 중요한가?</h4><ul><li>페이지 로딩 3초 이상 → 53%의 모바일 사용자 이탈</li><li>1초 지연 → 전환율 7% 감소</li><li>Google 검색 순위에 영향</li></ul><h4>핵심 지표 (Core Web Vitals)</h4><ul><li><b>LCP</b>: Largest Contentful Paint - 최대 콘텐츠 로딩 (2.5초 이내)</li><li><b>FID</b>: First Input Delay - 첫 입력 반응 (100ms 이내)</li><li><b>CLS</b>: Cumulative Layout Shift - 레이아웃 안정성 (0.1 이하)</li></ul>',[['Core Web Vitals','코어 웹 바이탈','Google이 정의한 웹 성능의 3가지 핵심 지표 (LCP, FID, CLS)'],['LCP','최대 콘텐츠풀 페인트','페이지에서 가장 큰 콘텐츠 요소가 로드되는 시간'],['CLS','누적 레이아웃 시프트','페이지 로드 중 예기치 않은 레이아웃 변경 정도를 측정한 값']]],
+['perf',2,0,'프론트엔드 성능 최적화','Frontend Performance','<h4>렌더링 최적화</h4><ul><li>CSS를 head에, JS를 body 끝에 배치</li><li><code>defer</code>, <code>async</code> 속성 활용</li><li>크리티컬 CSS 인라이닝</li></ul><h4>리소스 최적화</h4><ul><li>이미지: WebP 포맷, lazy loading, 적절한 크기</li><li>코드: 미니파이, 트리 쉐이킹, 코드 분할</li><li>폰트: font-display: swap, 서브셋</li></ul>',[['Lazy Loading','지연 로딩','화면에 보이는 시점에 리소스를 로드하는 최적화 기법'],['Minification','미니파이','공백, 주석 등을 제거하여 파일 크기를 줄이는 최적화'],['Tree Shaking','트리 쉐이킹','사용하지 않는 코드를 빌드 결과에서 제거하는 기법']]],
+['perf',3,0,'네트워크와 로딩 최적화','Network & Loading','<h4>네트워크 최적화</h4><ul><li><b>CDN</b>: 전 세계 서버에 콘텐츠 캐싱</li><li><b>캐싱</b>: 브라우저/서버 캐시 전략 설정</li><li><b>압축</b>: Gzip/Brotli로 전송 크기 감소</li><li><b>HTTP/2</b>: 멀티플렉싱으로 병렬 요청</li></ul><h4>로딩 전략</h4><ul><li>프리로드: 중요 리소스 미리 로드</li><li>프리페치: 다음 페이지 리소스 미리 가져오기</li><li>Service Worker: 오프라인 캐싱</li></ul>',[['CDN','콘텐츠 전송 네트워크','Content Delivery Network: 전 세계 서버에 콘텐츠를 캐싱하여 빠르게 전달하는 시스템'],['Caching','캐싱','자주 사용되는 데이터를 빠르게 접근할 수 있는 곳에 임시 저장하는 기법'],['Service Worker','서비스 워커','브라우저 백그라운드에서 실행되어 캐싱, 오프라인 지원 등을 제공하는 스크립트']]]
+];
+
+/* ===== QUIZ DATA (171 questions: 3 per lesson) ===== */
+// [trackId, lessonNum, type, questionKo, options/answer, correctIdx, explanationKo]
+// type: 'mc'=multiple choice, 'ox'=true/false, 'fill'=fill blank
+const QUIZ_POOL=[
+// SEO L1
+['seo',1,'mc','검색엔진의 3단계 프로세스 순서로 올바른 것은?',['크롤링→인덱싱→랭킹','인덱싱→크롤링→랭킹','랭킹→크롤링→인덱싱','크롤링→랭킹→인덱싱'],0,'검색엔진은 크롤링(수집)→인덱싱(저장)→랭킹(순위결정) 순서로 작동합니다.'],
+['seo',1,'ox','SERP는 Search Engine Results Page의 약자이다.',null,1,'SERP는 검색결과페이지(Search Engine Results Page)의 약자입니다.'],
+['seo',1,'fill','검색엔진 봇이 웹페이지를 방문하여 콘텐츠를 수집하는 과정을 ___이라 한다.','크롤링',0,'크롤링(Crawling)은 검색엔진 봇이 웹을 탐색하며 콘텐츠를 수집하는 과정입니다.'],
+// SEO L2
+['seo',2,'mc','검색결과에 표시되는 페이지 제목은 어떤 HTML 요소인가?',['Meta Description','Title Tag','H1 Tag','Alt Text'],1,'Title Tag(<title>)는 검색결과에 표시되는 페이지 제목입니다.'],
+['seo',2,'ox','Meta Description의 권장 길이는 300자 이내이다.',null,0,'Meta Description의 권장 길이는 155자 이내입니다.'],
+['seo',2,'fill','이미지에 대한 설명을 제공하여 접근성과 SEO를 향상시키는 속성을 ___ 텍스트라 한다.','Alt',0,'Alt 텍스트(대체 텍스트)는 이미지를 설명하여 접근성과 SEO에 기여합니다.'],
+// SEO L3
+['seo',3,'mc','전환율이 높은 구체적인 3단어 이상의 키워드를 무엇이라 하는가?',['Short-tail 키워드','LSI 키워드','Long-tail 키워드','Branded 키워드'],2,'Long-tail 키워드는 3단어 이상의 구체적인 검색어로 전환율이 높습니다.'],
+['seo',3,'ox','Short-tail 키워드는 검색량이 적지만 전환율이 높다.',null,0,'Short-tail 키워드는 검색량이 많지만 경쟁이 치열하고 전환율이 낮습니다.'],
+['seo',3,'fill','특정 키워드가 일정 기간 동안 검색된 횟수를 ___이라 한다.','검색량',0,'검색량(Search Volume)은 특정 키워드의 검색 빈도를 나타냅니다.'],
+// SEM L1
+['sem',1,'mc','PPC 광고 모델의 과금 기준은?',['노출수','클릭수','전환수','시청시간'],1,'PPC(Pay-Per-Click)는 광고가 클릭될 때마다 비용을 지불하는 모델입니다.'],
+['sem',1,'ox','CTR은 클릭수를 노출수로 나눈 비율이다.',null,1,'CTR(Click-Through Rate)은 클릭수/노출수 × 100으로 계산합니다.'],
+['sem',1,'fill','광고 한 번 클릭에 드는 평균 비용을 ___라 한다.','CPC',0,'CPC(Cost Per Click)는 클릭당 비용입니다.'],
+// SEM L2
+['sem',2,'mc','Google Ads의 캠페인 구조 순서는?',['키워드→광고그룹→캠페인','캠페인→키워드→광고그룹','캠페인→광고그룹→키워드/광고','광고그룹→캠페인→키워드'],2,'Google Ads는 캠페인→광고그룹→키워드/광고의 3단계 구조입니다.'],
+['sem',2,'ox','Exact Match는 가장 넓은 범위의 검색어에 광고를 노출한다.',null,0,'Exact Match는 정확히 일치하는 검색어에만 노출합니다. 가장 넓은 것은 Broad Match입니다.'],
+['sem',2,'fill','관련 키워드와 광고를 묶어 관리하는 중간 단위를 ___이라 한다.','광고그룹',0,'광고그룹(Ad Group)은 관련 키워드와 광고를 묶어 관리하는 중간 단위입니다.'],
+// SEM L3
+['sem',3,'mc','Google Ads의 광고 순위(Ad Rank) 결정 공식은?',['입찰가 + 품질점수','입찰가 × 품질점수','입찰가 / 품질점수','입찰가 - 품질점수'],1,'Ad Rank = 입찰가 × 품질점수로 결정됩니다.'],
+['sem',3,'ox','품질점수가 높으면 더 낮은 비용으로 높은 순위를 얻을 수 있다.',null,1,'품질점수가 높으면 같은 입찰가로도 더 높은 Ad Rank를 얻을 수 있습니다.'],
+['sem',3,'fill','Google이 광고의 품질을 1-10으로 평가한 점수를 ___라 한다.','품질점수',0,'품질점수(Quality Score)는 예상 CTR, 광고 관련성, 랜딩페이지 경험으로 구성됩니다.'],
+// SNS L1
+['sns',1,'mc','B2B 전문가 네트워킹에 가장 적합한 플랫폼은?',['Instagram','TikTok','LinkedIn','YouTube'],2,'LinkedIn은 B2B와 전문가 네트워킹에 특화된 플랫폼입니다.'],
+['sns',1,'ox','Organic Reach는 유료 광고를 통해 도달하는 사용자 수이다.',null,0,'Organic Reach는 광고 없이 자연적으로 콘텐츠가 도달하는 사용자 수입니다.'],
+['sns',1,'fill','좋아요, 댓글, 공유 등 사용자의 콘텐츠 상호작용 비율을 ___이라 한다.','참여율',0,'참여율(Engagement Rate)은 사용자의 콘텐츠 상호작용 비율입니다.'],
+// SNS L2
+['sns',2,'mc','콘텐츠 믹스에서 교육형 콘텐츠의 권장 비율은?',['10%','20%','40%','60%'],2,'교육형 콘텐츠(팁, 가이드 등)는 약 40% 비율을 권장합니다.'],
+['sns',2,'ox','UGC는 기업이 직접 제작한 콘텐츠를 의미한다.',null,0,'UGC(User-Generated Content)는 고객이 직접 만든 콘텐츠를 의미합니다.'],
+['sns',2,'fill','SNS 게시물의 주제와 일정을 계획하는 일정표를 콘텐츠 ___이라 한다.','캘린더',0,'콘텐츠 캘린더는 게시물의 주제, 일정, 채널을 계획하는 도구입니다.'],
+// SNS L3
+['sns',3,'mc','이전에 웹사이트를 방문한 사용자에게 다시 광고를 노출하는 기법은?',['리타겟팅','유사 타겟','데모그래픽 타겟팅','관심사 타겟팅'],0,'리타겟팅은 이전 방문자에게 다시 광고를 노출하는 기법입니다.'],
+['sns',3,'ox','CPM은 광고 1회 클릭당 비용을 의미한다.',null,0,'CPM은 1000회 노출당 비용(Cost Per Mille)입니다. 클릭당 비용은 CPC입니다.'],
+['sns',3,'fill','기존 고객과 특성이 비슷한 새로운 잠재 고객 그룹을 ___ 타겟이라 한다.','유사',0,'유사 타겟(Lookalike Audience)은 기존 고객과 유사한 특성을 가진 그룹입니다.'],
+// CM L1
+['cm',1,'mc','콘텐츠 마케팅의 핵심 접근법은?',['직접적인 제품 판매','가치 있는 콘텐츠 제공','할인 쿠폰 배포','대량 광고 집행'],1,'콘텐츠 마케팅의 핵심은 판매가 아닌 가치 제공입니다.'],
+['cm',1,'ox','콘텐츠 마케팅은 단기적 효과만 있고 장기적 자산이 되지 않는다.',null,0,'콘텐츠 마케팅은 장기적 자산으로 누적 효과를 발생시킵니다.'],
+['cm',1,'fill','이메일 주소를 얻기 위해 무료로 제공하는 가치 있는 콘텐츠를 리드 ___이라 한다.','자석',0,'리드 마그넷(Lead Magnet)은 구독자 확보를 위해 무료로 제공하는 콘텐츠입니다.'],
+// CM L2
+['cm',2,'mc','복잡한 정보를 시각적으로 표현한 이미지 콘텐츠는?',['블로그 포스트','인포그래픽','팟캐스트','케이스 스터디'],1,'인포그래픽은 데이터나 정보를 시각적으로 표현한 콘텐츠입니다.'],
+['cm',2,'ox','블로그 포스트는 SEO를 통한 장기 트래픽 확보에 효과적이다.',null,1,'블로그 포스트는 SEO 기반 장기 트래픽 확보에 매우 효과적입니다.'],
+['cm',2,'fill','실제 고객의 성공 사례를 상세히 기술한 콘텐츠를 케이스 ___라 한다.','스터디',0,'케이스 스터디(Case Study)는 실제 성공 사례를 기반으로 한 콘텐츠입니다.'],
+// CM L3
+['cm',3,'mc','사람의 뇌가 사실보다 이야기를 기억하는 비율은?',['2배','10배','22배','50배'],2,'연구에 따르면 사람의 뇌는 사실보다 이야기를 22배 더 잘 기억합니다.'],
+['cm',3,'ox','브랜드 보이스는 채널마다 다른 톤을 사용하는 것이 좋다.',null,0,'브랜드 보이스는 모든 채널에서 일관성을 유지해야 합니다.'],
+['cm',3,'fill','브랜드의 커뮤니케이션에서 일관되게 유지하는 어조와 스타일을 브랜드 ___라 한다.','보이스',0,'브랜드 보이스는 브랜드의 일관된 커뮤니케이션 스타일입니다.'],
+// EM L1
+['em',1,'mc','이메일 마케팅의 평균 ROI는 $1당 약 얼마인가?',['$4','$12','$36','$100'],2,'이메일 마케팅은 $1당 약 $36의 ROI로 가장 높은 수준입니다.'],
+['em',1,'ox','업계 평균 이메일 오픈율은 약 50%이다.',null,0,'업계 평균 이메일 오픈율은 약 20%입니다.'],
+['em',1,'fill','발송된 이메일 중 수신자가 열어본 비율을 ___이라 한다.','오픈율',0,'오픈율(Open Rate)은 이메일을 열어본 수신자의 비율입니다.'],
+// EM L2
+['em',2,'mc','이메일 제목줄(Subject Line)의 권장 길이는?',['10자 이내','30자 이내','50자 이내','100자 이내'],2,'제목줄은 50자 이내로 간결하게 작성하는 것을 권장합니다.'],
+['em',2,'ox','이메일 하나에 여러 개의 CTA를 넣는 것이 효과적이다.',null,0,'하나의 명확한 CTA가 여러 CTA보다 효과적입니다.'],
+['em',2,'fill','수신자가 취하길 원하는 행동을 유도하는 문구를 ___(Call to Action)이라 한다.','CTA',0,'CTA(Call to Action)는 사용자에게 구체적 행동을 유도하는 문구입니다.'],
+// EM L3
+['em',3,'mc','구독자를 특성별로 그룹화하여 맞춤형 이메일을 보내는 기법은?',['A/B 테스트','세그멘테이션','리타겟팅','퍼널 분석'],1,'세그멘테이션은 구독자를 특성별로 그룹화하는 기법입니다.'],
+['em',3,'ox','Double Opt-in은 구독 확인 메일을 통해 2차 동의를 받는 방식이다.',null,1,'Double Opt-in은 구독 후 확인 이메일로 2차 동의를 받는 방식입니다.'],
+['em',3,'fill','사용자가 자발적으로 이메일 수신에 동의하는 것을 ___이라 한다.','옵트인',0,'옵트인(Opt-in)은 사용자의 자발적 수신 동의입니다.'],
+// ANA L1
+['ana',1,'mc','GA4의 데이터 추적 방식은?',['페이지 기반','세션 기반','이벤트 기반','사용자 기반'],2,'GA4는 모든 상호작용을 이벤트로 추적하는 이벤트 기반 모델입니다.'],
+['ana',1,'ox','세션(Session)은 고유 방문자 수를 의미한다.',null,0,'세션은 방문 횟수를 의미하며, 고유 방문자는 사용자(User)입니다.'],
+['ana',1,'fill','한 페이지만 보고 사이트를 떠나는 방문자의 비율을 ___이라 한다.','이탈률',0,'이탈률(Bounce Rate)은 한 페이지만 보고 떠나는 비율입니다.'],
+// ANA L2
+['ana',2,'mc','전환 하나당 비용을 나타내는 지표는?',['CTR','CPC','CPA','CPM'],2,'CPA(Cost Per Acquisition)는 전환 하나를 얻는 데 드는 비용입니다.'],
+['ana',2,'ox','KPI는 Key Performance Indicator의 약자이다.',null,1,'KPI는 핵심성과지표(Key Performance Indicator)의 약자입니다.'],
+['ana',2,'fill','웹페이지가 로드된 횟수를 ___라 한다.','페이지뷰',0,'페이지뷰(Pageview)는 웹페이지가 로드(조회)된 횟수입니다.'],
+// ANA L3
+['ana',3,'mc','전환에 기여한 마케팅 채널을 파악하는 분석 방법은?',['퍼널 분석','어트리뷰션','세그멘테이션','코호트 분석'],1,'어트리뷰션(Attribution)은 전환에 기여한 채널과 터치포인트를 파악하는 분석입니다.'],
+['ana',3,'ox','데이터 분석에서 가장 중요한 것은 데이터 수집 자체이다.',null,0,'데이터 수집보다 인사이트 도출과 실행이 더 중요합니다.'],
+['ana',3,'fill','핵심 지표를 한눈에 볼 수 있는 시각적 보고 화면을 ___라 한다.','대시보드',0,'대시보드(Dashboard)는 핵심 지표를 시각적으로 보여주는 화면입니다.'],
+// CRO L1
+['cro',1,'mc','CRO는 무엇의 약자인가?',['Cost Reduction Optimization','Conversion Rate Optimization','Customer Retention Optimization','Content Resource Optimization'],1,'CRO는 Conversion Rate Optimization(전환율 최적화)의 약자입니다.'],
+['cro',1,'ox','전환율은 전체 방문자 중 목표 행동을 완료한 비율이다.',null,1,'전환율은 방문자 중 원하는 행동(구매, 가입 등)을 완료한 비율입니다.'],
+['cro',1,'fill','CRO 프로세스에서 개선안의 효과를 검증하는 단계를 ___라 한다.','테스트',0,'가설을 세운 후 A/B 테스트 등으로 검증하는 것이 CRO의 핵심입니다.'],
+// CRO L2
+['cro',2,'mc','좋은 랜딩 페이지의 핵심 원칙이 아닌 것은?',['명확한 헤드라인','다수의 CTA','소셜 프루프','모바일 최적화'],1,'랜딩 페이지에는 하나의 명확한 CTA가 효과적입니다.'],
+['cro',2,'ox','Above the Fold는 스크롤 없이 바로 보이는 화면 영역이다.',null,1,'Above the Fold는 스크롤 전에 바로 보이는 화면 영역을 의미합니다.'],
+['cro',2,'fill','다른 사람들의 후기나 수치를 보여주어 신뢰를 주는 기법을 소셜 ___라 한다.','프루프',0,'소셜 프루프(Social Proof)는 사회적 증거를 활용한 신뢰 구축 기법입니다.'],
+// CRO L3
+['cro',3,'mc','A/B 테스트에서 변경하지 않은 기존 버전을 무엇이라 하는가?',['변형군','대조군','실험군','표본군'],1,'대조군(Control)은 변경하지 않은 기존 버전(A)입니다.'],
+['cro',3,'ox','A/B 테스트는 3개 이상의 버전을 동시에 비교하는 실험이다.',null,0,'A/B 테스트는 2개 버전(A vs B)을 비교합니다. 3개 이상은 다변량 테스트입니다.'],
+['cro',3,'fill','테스트 결과가 우연이 아닌 실제 차이인지 판단하는 기준을 통계적 ___이라 한다.','유의성',0,'통계적 유의성은 결과가 우연이 아님을 확인하는 통계 기준입니다.'],
+// MA L1
+['ma',1,'mc','마케팅 자동화 도구가 아닌 것은?',['HubSpot','Mailchimp','Photoshop','ActiveCampaign'],2,'Photoshop은 이미지 편집 도구이며 마케팅 자동화 도구가 아닙니다.'],
+['ma',1,'ox','마케팅 자동화는 이메일 발송만 자동화하는 기술이다.',null,0,'이메일 외에도 SNS, 리드 관리, 리포팅 등 다양한 영역을 자동화합니다.'],
+['ma',1,'fill','특정 조건에 따라 자동으로 실행되는 일련의 마케팅 액션을 ___라 한다.','워크플로',0,'워크플로(Workflow)는 조건 기반 자동 마케팅 액션의 흐름입니다.'],
+// MA L2
+['ma',2,'mc','온라인 쇼핑에서 상품을 담고 결제하지 않고 떠나는 행동은?',['이탈','장바구니 이탈','바운스','이탈률'],1,'장바구니 이탈(Abandoned Cart)은 상품을 담고 구매 완료하지 않는 행동입니다.'],
+['ma',2,'ox','드립 캠페인은 한 번에 모든 이메일을 동시 발송하는 방식이다.',null,0,'드립 캠페인은 시간 간격을 두고 순차적으로 발송합니다.'],
+['ma',2,'fill','잠재 고객을 점진적으로 교육하고 관계를 발전시키는 과정을 ___이라 한다.','너처링',0,'너처링(Nurturing)은 잠재 고객과의 관계를 점진적으로 발전시키는 과정입니다.'],
+// MA L3
+['ma',3,'mc','MQL은 무엇의 약자인가?',['Marketing Quality Lead','Marketing Qualified Lead','Management Qualified Lead','Marketing Quantified Lead'],1,'MQL은 Marketing Qualified Lead(마케팅적격리드)의 약자입니다.'],
+['ma',3,'ox','리드 스코어링에서 구독 해지는 양(+)의 점수를 부여한다.',null,0,'구독 해지는 부정적 행동이므로 음(-)의 점수를 부여합니다.'],
+['ma',3,'fill','잠재 고객의 행동/특성에 점수를 부여하여 구매 가능성을 판단하는 방법을 리드 ___이라 한다.','스코어링',0,'리드 스코어링은 리드에 점수를 부여하여 구매 준비도를 판단합니다.'],
+// BRAND L1
+['brand',1,'mc','브랜드 전략에서 "시장에서 어떤 위치를 차지할 것인가"를 정의하는 것은?',['미션','비전','포지셔닝','차별화'],2,'포지셔닝은 타겟 시장에서 브랜드가 차지하는 고유한 위치를 정의합니다.'],
+['brand',1,'ox','브랜드는 로고와 동일한 개념이다.',null,0,'브랜드는 로고를 넘어 고객 마음속의 인식, 감정, 경험의 총합입니다.'],
+['brand',1,'fill','경쟁자와 차별화되는 고유한 가치 제안을 ___(Unique Selling Proposition)이라 한다.','USP',0,'USP는 경쟁자와 구별되는 고유한 판매 제안입니다.'],
+// BRAND L2
+['brand',2,'mc','타겟 고객을 대표하는 가상의 인물 프로필은?',['세그먼트','페르소나','데모그래픽','코호트'],1,'페르소나는 타겟 고객을 대표하는 가상의 인물 프로필입니다.'],
+['brand',2,'ox','모든 사람을 타겟으로 하는 것이 효과적인 마케팅 전략이다.',null,0,'모든 사람을 타겟으로 하면 아무도 타겟이 아닌 것과 같습니다.'],
+['brand',2,'fill','타겟 고객이 겪고 있는 문제점이나 불편함을 페인 ___라 한다.','포인트',0,'페인 포인트(Pain Point)는 고객이 겪는 문제점입니다.'],
+// BRAND L3
+['brand',3,'mc','마케팅 퍼널에서 고객이 브랜드를 처음 알게 되는 단계는?',['관심','인지','고려','전환'],1,'인지(Awareness) 단계에서 고객은 브랜드를 처음 알게 됩니다.'],
+['brand',3,'ox','고객 여정은 구매 시점에서 끝난다.',null,0,'구매 후 충성(Loyalty) 단계까지 이어지며, 재구매와 추천을 포함합니다.'],
+['brand',3,'fill','고객이 브랜드와 접촉하는 모든 지점을 ___라 한다.','터치포인트',0,'터치포인트(Touchpoint)는 고객과 브랜드의 모든 접점입니다.'],
+// ARCH L1
+['arch',1,'mc','소프트웨어 아키텍처가 보장하는 것이 아닌 것은?',['유지보수성','확장성','자동 코딩','테스트 용이성'],2,'아키텍처는 유지보수성, 확장성, 테스트 용이성을 보장하지만 자동 코딩은 아닙니다.'],
+['arch',1,'ox','관심사 분리는 각 모듈이 여러 책임을 함께 처리하는 원칙이다.',null,0,'관심사 분리는 각 모듈이 하나의 명확한 책임만 가지도록 분리하는 원칙입니다.'],
+['arch',1,'fill','사용자 증가나 기능 추가에 유연하게 대응할 수 있는 능력을 ___이라 한다.','확장성',0,'확장성(Scalability)은 시스템이 성장에 유연하게 대응하는 능력입니다.'],
+// ARCH L2
+['arch',2,'mc','MVC에서 사용자 입력을 처리하는 구성요소는?',['Model','View','Controller','Service'],2,'Controller는 사용자 입력을 처리하고 Model과 View를 연결합니다.'],
+['arch',2,'ox','MVC에서 View는 비즈니스 로직을 담당한다.',null,0,'비즈니스 로직은 Model이 담당하며, View는 UI를 담당합니다.'],
+['arch',2,'fill','MVC에서 데이터와 비즈니스 로직을 담당하는 구성요소를 ___이라 한다.','모델',0,'Model은 데이터와 비즈니스 로직을 담당합니다.'],
+// ARCH L3
+['arch',3,'mc','MVVM 패턴에서 View와 ViewModel을 자동으로 연결하는 기술은?',['이벤트 리스너','데이터 바인딩','미들웨어','라우팅'],1,'데이터 바인딩은 ViewModel 변경이 자동으로 View에 반영되게 합니다.'],
+['arch',3,'ox','반응형 프로그래밍은 데이터 변경에 자동 반응하는 패러다임이다.',null,1,'반응형 프로그래밍은 데이터 변경에 자동으로 반응하여 업데이트를 전파합니다.'],
+['arch',3,'fill','View를 위한 데이터를 준비하고 비즈니스 로직을 처리하는 계층을 ___이라 한다.','뷰모델',0,'ViewModel은 View를 위한 데이터와 로직을 제공하는 계층입니다.'],
+// FE L1
+['fe',1,'mc','의미를 가진 HTML 태그를 사용하는 것을 무엇이라 하는가?',['Dynamic HTML','Semantic HTML','Reactive HTML','Structured HTML'],1,'Semantic HTML은 의미 있는 태그를 사용하여 콘텐츠 구조를 명확히 합니다.'],
+['fe',1,'ox','DOM은 HTML 문서를 트리 구조로 표현한 인터페이스이다.',null,1,'DOM(Document Object Model)은 HTML 문서의 트리 구조 표현입니다.'],
+['fe',1,'fill','HTML에서 페이지의 주요 탐색 링크를 담는 시맨틱 태그는 ___이다.','nav',0,'<nav>는 네비게이션 링크를 담는 시맨틱 태그입니다.'],
+// FE L2
+['fe',2,'mc','CSS에서 요소를 content→padding→border→margin으로 구성하는 개념은?',['Grid 모델','Flex 모델','박스 모델','블록 모델'],2,'박스 모델은 모든 요소를 content, padding, border, margin으로 구성합니다.'],
+['fe',2,'ox','Flexbox는 2차원(행과 열) 레이아웃을 위한 CSS 모듈이다.',null,0,'Flexbox는 1차원(행 또는 열) 레이아웃이며, 2차원은 Grid입니다.'],
+['fe',2,'fill','다양한 화면 크기에 맞게 레이아웃이 자동 조절되는 것을 ___ 디자인이라 한다.','반응형',0,'반응형 디자인(Responsive Design)은 화면 크기에 맞게 레이아웃이 조절됩니다.'],
+// FE L3
+['fe',3,'mc','JavaScript에서 변수 선언 시 권장하는 키워드는?',['var','let/const','global','static'],1,'var 대신 let(변경 가능)과 const(상수)를 사용하는 것을 권장합니다.'],
+['fe',3,'ox','async/await는 비동기 처리를 위한 JavaScript 문법이다.',null,1,'async/await는 Promise 기반 비동기 처리를 간결하게 작성하는 문법입니다.'],
+['fe',3,'fill','특정 이벤트 발생 시 실행될 함수를 등록하는 메커니즘을 이벤트 ___라 한다.','리스너',0,'이벤트 리스너(Event Listener)는 이벤트 발생 시 실행할 함수를 등록합니다.'],
+// MOBILE L1
+['mobile',1,'mc','웹 기술로 네이티브 앱과 유사한 경험을 제공하는 앱은?',['네이티브 앱','하이브리드 앱','PWA','위젯'],2,'PWA(Progressive Web App)는 웹 기술로 앱 경험을 제공합니다.'],
+['mobile',1,'ox','네이티브 앱은 하나의 코드로 iOS와 Android를 모두 지원한다.',null,0,'네이티브 앱은 각 플랫폼별 별도 개발이 필요합니다. 하나의 코드는 크로스플랫폼입니다.'],
+['mobile',1,'fill','하나의 코드베이스로 여러 플랫폼 앱을 개발하는 방식을 ___이라 한다.','크로스플랫폼',0,'크로스플랫폼은 단일 코드로 여러 플랫폼을 지원하는 개발 방식입니다.'],
+// MOBILE L2
+['mobile',2,'mc','Dart 언어 기반 Google의 크로스플랫폼 프레임워크는?',['React Native','Flutter','Ionic','Xamarin'],1,'Flutter는 Dart 언어 기반의 Google 크로스플랫폼 프레임워크입니다.'],
+['mobile',2,'ox','React Native는 Dart 언어를 기반으로 한다.',null,0,'React Native는 JavaScript 기반이며, Dart 기반은 Flutter입니다.'],
+['mobile',2,'fill','앱 개발에 필요한 도구와 라이브러리 모음을 ___(Software Development Kit)라 한다.','SDK',0,'SDK는 소프트웨어 개발에 필요한 도구와 라이브러리 모음입니다.'],
+// MOBILE L3
+['mobile',3,'mc','Mobile First 접근법은 어떤 화면부터 디자인하는가?',['데스크톱','태블릿','모바일','TV'],2,'Mobile First는 모바일 화면부터 디자인하고 큰 화면으로 확장합니다.'],
+['mobile',3,'ox','전체 웹 트래픽의 약 60% 이상이 모바일에서 발생한다.',null,1,'모바일 웹 트래픽은 전체의 60% 이상을 차지합니다.'],
+['mobile',3,'fill','미디어 쿼리에서 레이아웃이 변경되는 화면 너비 기준점을 ___라 한다.','브레이크포인트',0,'브레이크포인트는 레이아웃이 변경되는 화면 너비 기준입니다.'],
+// UIUX L1
+['uiux',1,'mc','사용자가 제품을 사용하며 느끼는 전체 경험을 무엇이라 하는가?',['UI','UX','CX','DX'],1,'UX(User Experience)는 제품 사용 전반의 경험입니다.'],
+['uiux',1,'ox','UI는 사용자 경험의 전체를 포함하는 개념이다.',null,0,'UI는 시각적 인터페이스이며, 전체 경험은 UX입니다.'],
+['uiux',1,'fill','사용자 중심으로 문제를 해결하는 5단계 방법론을 디자인 ___이라 한다.','사고',0,'디자인 사고(Design Thinking)는 공감→정의→아이디에이션→프로토타입→테스트의 5단계입니다.'],
+// UIUX L2
+['uiux',2,'mc','닐슨의 휴리스틱에서 "실수를 되돌릴 수 있게" 하는 원칙은?',['일관성과 표준','오류 예방','사용자 제어와 자유','시스템 상태 가시성'],2,'사용자 제어와 자유는 실수를 되돌릴 수 있게 하는 원칙입니다.'],
+['uiux',2,'ox','어포던스는 물체가 사용 방법을 직관적으로 알려주는 특성이다.',null,1,'어포던스(Affordance)는 디자인이 사용 방법을 직관적으로 전달하는 특성입니다.'],
+['uiux',2,'fill','경험에 기반한 일반적인 사용성 평가 원칙을 ___이라 한다.','휴리스틱',0,'휴리스틱(Heuristic)은 경험 기반 사용성 평가 원칙입니다.'],
+// UIUX L3
+['uiux',3,'mc','화면 구조를 단순화하여 표현한 설계도는?',['프로토타입','목업','와이어프레임','스토리보드'],2,'와이어프레임은 화면 구조를 단순화하여 표현한 설계도입니다.'],
+['uiux',3,'ox','Hi-fi 프로토타입은 종이 스케치 수준의 간단한 프로토타입이다.',null,0,'Hi-fi는 실제와 유사한 인터랙티브 프로토타입이며, 종이 스케치는 Lo-fi입니다.'],
+['uiux',3,'fill','웹 기반 실시간 협업이 가능한 대표적인 UI/UX 디자인 도구는 ___이다.','Figma',0,'Figma는 웹 기반 실시간 협업 UI/UX 디자인 도구입니다.'],
+// API L1
+['api',1,'mc','API를 식당에 비유할 때 웨이터의 역할에 해당하는 것은?',['클라이언트','서버','API','데이터베이스'],2,'API는 클라이언트(고객)와 서버(주방) 사이의 웨이터 역할을 합니다.'],
+['api',1,'ox','GraphQL은 클라이언트가 원하는 데이터만 요청할 수 있다.',null,1,'GraphQL은 클라이언트가 필요한 데이터만 선택적으로 요청할 수 있습니다.'],
+['api',1,'fill','API에서 특정 리소스에 접근하기 위한 URL 경로를 ___라 한다.','엔드포인트',0,'엔드포인트(Endpoint)는 특정 리소스에 접근하는 API의 URL 경로입니다.'],
+// API L2
+['api',2,'mc','데이터를 생성할 때 사용하는 HTTP 메서드는?',['GET','POST','DELETE','PUT'],1,'POST는 새로운 데이터를 생성할 때 사용합니다.'],
+['api',2,'ox','HTTP 상태 코드 404는 서버 내부 오류를 의미한다.',null,0,'404는 리소스를 찾을 수 없음이며, 서버 내부 오류는 500입니다.'],
+['api',2,'fill','서버가 요청 처리 결과를 알려주는 3자리 숫자를 ___ 코드라 한다.','상태',0,'상태 코드(Status Code)는 HTTP 응답의 처리 결과를 나타내는 숫자입니다.'],
+// API L3
+['api',3,'mc','제3자 앱에 안전하게 접근 권한을 부여하는 인증 프로토콜은?',['JWT','API Key','OAuth','CORS'],2,'OAuth는 제3자 앱에 안전하게 접근 권한을 부여하는 프로토콜입니다.'],
+['api',3,'ox','CORS는 같은 도메인의 리소스만 접근을 허용하는 메커니즘이다.',null,0,'CORS는 다른 도메인(교차 출처)의 리소스 접근을 허용하는 메커니즘입니다.'],
+['api',3,'fill','JSON 형식의 토큰으로 사용자 인증 정보를 전달하는 표준을 ___라 한다.','JWT',0,'JWT(JSON Web Token)는 토큰 기반 인증 표준입니다.'],
+// DB L1
+['db',1,'mc','관계형 데이터베이스에서 데이터를 다루는 표준 언어는?',['JavaScript','Python','SQL','HTML'],2,'SQL(Structured Query Language)은 관계형 DB의 표준 질의 언어입니다.'],
+['db',1,'ox','Redis는 관계형 데이터베이스이다.',null,0,'Redis는 키-값(Key-Value) 기반 NoSQL 데이터베이스입니다.'],
+['db',1,'fill','데이터의 기본 4가지 연산인 생성, 읽기, 수정, 삭제를 ___라 한다.','CRUD',0,'CRUD는 Create, Read, Update, Delete의 약자입니다.'],
+// DB L2
+['db',2,'mc','ACID 속성과 관련 없는 것은?',['원자성','일관성','확장성','지속성'],2,'ACID는 원자성, 일관성, 고립성, 지속성이며 확장성은 포함되지 않습니다.'],
+['db',2,'ox','NoSQL은 유연한 스키마를 특징으로 한다.',null,1,'NoSQL은 고정 스키마 없이 유연한 데이터 구조를 지원합니다.'],
+['db',2,'fill','데이터베이스의 구조와 제약 조건을 정의한 설계도를 ___라 한다.','스키마',0,'스키마(Schema)는 DB의 구조와 제약 조건을 정의합니다.'],
+// DB L3
+['db',3,'mc','부서와 직원의 관계는 어떤 유형인가?',['1:1','1:N','M:N','계층'],1,'한 부서에 여러 직원이 속하므로 1:N 관계입니다.'],
+['db',3,'ox','외래키는 다른 테이블의 기본키를 참조하여 관계를 형성한다.',null,1,'외래키(Foreign Key)는 다른 테이블의 기본키를 참조합니다.'],
+['db',3,'fill','테이블에서 각 행을 고유하게 식별하는 컬럼을 ___ 키라 한다.','기본',0,'기본키(Primary Key)는 각 행을 고유하게 식별합니다.'],
+// GIT L1
+['git',1,'mc','Git에서 변경사항을 저장소에 기록하는 명령어는?',['git add','git commit','git push','git save'],1,'git commit은 변경사항을 저장소에 기록하는 명령어입니다.'],
+['git',1,'ox','git init은 원격 저장소를 복제하는 명령어이다.',null,0,'git init은 새 저장소를 초기화하는 명령어이며, 복제는 git clone입니다.'],
+['git',1,'fill','커밋할 변경 사항을 준비하는 중간 영역을 ___ 영역이라 한다.','스테이징',0,'스테이징 영역은 커밋할 변경 사항을 준비하는 중간 단계입니다.'],
+// GIT L2
+['git',2,'mc','같은 파일의 같은 부분을 다르게 수정했을 때 발생하는 것은?',['브랜치','리베이스','머지 충돌','스태시'],2,'머지 충돌(Conflict)은 같은 부분이 다르게 수정되었을 때 발생합니다.'],
+['git',2,'ox','브랜치를 사용하면 메인 코드에 영향 없이 새 기능을 개발할 수 있다.',null,1,'브랜치는 독립적인 작업 공간을 제공하여 메인 코드에 영향을 주지 않습니다.'],
+['git',2,'fill','분리된 브랜치의 변경 사항을 하나로 합치는 작업을 ___라 한다.','머지',0,'머지(Merge)는 브랜치를 합치는 작업입니다.'],
+// GIT L3
+['git',3,'mc','코드 리뷰를 위해 변경사항의 병합을 요청하는 기능은?',['Push','Fork','Pull Request','Issue'],2,'Pull Request는 코드 리뷰를 위한 병합 요청 기능입니다.'],
+['git',3,'ox','git push는 원격 변경을 로컬에 다운로드하는 명령어이다.',null,0,'git push는 로컬을 원격에 업로드하며, 다운로드는 git pull입니다.'],
+['git',3,'fill','원격 저장소의 전체 내용을 로컬에 복제하는 작업을 ___이라 한다.','클론',0,'클론(Clone)은 원격 저장소를 로컬에 복제하는 작업입니다.'],
+// TEST L1
+['test',1,'mc','테스트 피라미드에서 가장 많이 작성해야 하는 테스트는?',['E2E 테스트','통합 테스트','단위 테스트','수동 테스트'],2,'테스트 피라미드에서 단위 테스트를 가장 많이 작성합니다.'],
+['test',1,'ox','E2E 테스트는 개별 함수를 독립적으로 테스트하는 것이다.',null,0,'E2E는 전체 흐름 테스트이며, 개별 함수 테스트는 단위 테스트입니다.'],
+['test',1,'fill','여러 모듈이 함께 올바르게 작동하는지 검증하는 테스트를 ___ 테스트라 한다.','통합',0,'통합 테스트(Integration Test)는 모듈 간 상호작용을 검증합니다.'],
+// TEST L2
+['test',2,'mc','테스트에서 실제 의존성을 대신하는 가짜 객체를 무엇이라 하는가?',['Stub','Mock','Spy','Faker'],1,'Mock은 테스트에서 실제 의존성을 대체하는 가짜 객체입니다.'],
+['test',2,'ox','하나의 단위 테스트는 하나의 동작만 검증해야 한다.',null,1,'단위 테스트는 하나의 테스트에서 하나만 검증하는 것이 원칙입니다.'],
+['test',2,'fill','테스트가 코드의 어느 정도를 실행하는지 나타내는 비율을 테스트 ___라 한다.','커버리지',0,'테스트 커버리지는 테스트가 코드를 실행하는 비율입니다.'],
+// TEST L3
+['test',3,'mc','모던 E2E 테스트 프레임워크가 아닌 것은?',['Cypress','Playwright','Selenium','jQuery'],3,'jQuery는 DOM 조작 라이브러리이며 테스트 프레임워크가 아닙니다.'],
+['test',3,'ox','회귀 테스트는 코드 변경 후 기존 기능이 깨지지 않았는지 확인한다.',null,1,'회귀 테스트는 변경 후 기존 기능의 정상 작동을 확인합니다.'],
+['test',3,'fill','코드 변경이 자동으로 빌드/테스트되는 프로세스를 지속적 ___이라 한다.','통합',0,'지속적 통합(CI)은 코드 변경을 자동으로 빌드/테스트하는 프로세스입니다.'],
+// CICD L1
+['cicd',1,'mc','실제 사용자가 접근하는 배포 환경은?',['Development','Staging','Production','Testing'],2,'Production은 실제 사용자가 접근하는 운영 환경입니다.'],
+['cicd',1,'ox','롤백은 배포 후 문제 발생 시 이전 버전으로 되돌리는 작업이다.',null,1,'롤백(Rollback)은 문제 발생 시 이전 안정 버전으로 되돌리는 작업입니다.'],
+['cicd',1,'fill','코드를 서버에 설치하고 사용자가 접근할 수 있게 하는 과정을 ___라 한다.','배포',0,'배포(Deployment)는 코드를 서버에 설치하여 서비스하는 과정입니다.'],
+// CICD L2
+['cicd',2,'mc','GitHub에 내장된 CI/CD 도구는?',['Jenkins','CircleCI','GitHub Actions','Travis CI'],2,'GitHub Actions는 GitHub에 내장된 CI/CD 자동화 도구입니다.'],
+['cicd',2,'ox','Continuous Deployment는 테스트 통과 후 수동으로 배포한다.',null,0,'Continuous Deployment는 자동 배포이며, 수동 배포는 Continuous Delivery입니다.'],
+['cicd',2,'fill','코드가 빌드/테스트/배포되는 자동화된 일련의 단계를 ___이라 한다.','파이프라인',0,'파이프라인(Pipeline)은 자동화된 빌드/테스트/배포 프로세스입니다.'],
+// CICD L3
+['cicd',3,'mc','앱과 실행 환경을 하나로 패키징하는 기술은?',['가상머신','컨테이너','서버리스','마이크로서비스'],1,'컨테이너는 앱과 실행 환경을 하나로 패키징하는 기술입니다.'],
+['cicd',3,'ox','Docker에서 Image는 Container의 실행 인스턴스이다.',null,0,'Image는 템플릿이며, Container가 Image의 실행 인스턴스입니다.'],
+['cicd',3,'fill','컨테이너를 빌드, 배포, 실행하는 가장 대중적인 플랫폼을 ___라 한다.','Docker',0,'Docker는 가장 대중적인 컨테이너 플랫폼입니다.'],
+// PERF L1
+['perf',1,'mc','Core Web Vitals에 포함되지 않는 지표는?',['LCP','FID','CLS','TTL'],3,'Core Web Vitals는 LCP, FID(INP), CLS 3가지입니다.'],
+['perf',1,'ox','페이지 로딩이 3초 이상이면 53%의 모바일 사용자가 이탈한다.',null,1,'Google 연구에 따르면 3초 이상 로딩 시 53% 이상이 이탈합니다.'],
+['perf',1,'fill','페이지에서 가장 큰 콘텐츠 요소가 로드되는 시간을 ___(Largest Contentful Paint)라 한다.','LCP',0,'LCP는 최대 콘텐츠 요소의 로딩 시간을 측정합니다.'],
+// PERF L2
+['perf',2,'mc','화면에 보이는 시점에 리소스를 로드하는 기법은?',['Preloading','Lazy Loading','Prefetching','Caching'],1,'Lazy Loading은 화면에 보이는 시점에 리소스를 로드합니다.'],
+['perf',2,'ox','CSS는 body 태그 끝에 배치하는 것이 성능에 좋다.',null,0,'CSS는 head에, JS를 body 끝에 배치하는 것이 좋습니다.'],
+['perf',2,'fill','사용하지 않는 코드를 빌드 결과에서 제거하는 기법을 트리 ___이라 한다.','쉐이킹',0,'트리 쉐이킹(Tree Shaking)은 미사용 코드를 제거하는 최적화 기법입니다.'],
+// PERF L3
+['perf',3,'mc','전 세계 서버에 콘텐츠를 캐싱하여 빠르게 전달하는 시스템은?',['DNS','CDN','VPN','SSL'],1,'CDN(Content Delivery Network)은 전 세계 서버에 콘텐츠를 캐싱합니다.'],
+['perf',3,'ox','Service Worker는 오프라인 캐싱을 지원할 수 있다.',null,1,'Service Worker는 브라우저 백그라운드에서 캐싱과 오프라인 지원을 제공합니다.'],
+['perf',3,'fill','자주 사용되는 데이터를 임시 저장하여 빠르게 접근하는 기법을 ___이라 한다.','캐싱',0,'캐싱(Caching)은 자주 사용하는 데이터를 임시 저장하는 기법입니다.']
+];
+
+/* ===== FLASHCARDS DATA (114 cards: 2 per lesson) ===== */
+// [trackId, lessonNum, frontKo, frontEn, backKo, backEn]
+const FLASHCARDS=[
+['seo',1,'크롤링','Crawling','검색엔진 봇이 웹페이지를 방문하여 콘텐츠를 수집하는 과정','The process of search engine bots visiting web pages to collect content'],
+['seo',1,'SERP','Search Engine Results Page','검색 결과가 표시되는 페이지','The page displaying search results'],
+['seo',2,'타이틀 태그','Title Tag','검색결과에 표시되는 페이지 제목 (60자 이내 권장)','Page title shown in search results (under 60 chars recommended)'],
+['seo',2,'메타 설명','Meta Description','검색결과에서 제목 아래 표시되는 요약 (155자 이내)','Summary shown below title in search results (under 155 chars)'],
+['seo',3,'롱테일 키워드','Long-tail Keyword','3단어 이상의 구체적인 검색어, 전환율이 높음','Specific search phrases of 3+ words with higher conversion rates'],
+['seo',3,'검색량','Search Volume','특정 키워드가 일정 기간 동안 검색된 횟수','Number of searches for a keyword over a specific period'],
+['sem',1,'PPC','Pay-Per-Click','광고가 클릭될 때마다 비용을 지불하는 모델','Ad model where you pay each time an ad is clicked'],
+['sem',1,'CTR','Click-Through Rate','광고 노출수 대비 클릭수의 비율','Ratio of clicks to impressions'],
+['sem',2,'광고그룹','Ad Group','관련 키워드와 광고를 묶어 관리하는 단위','Unit grouping related keywords and ads together'],
+['sem',2,'매치 타입','Match Type','키워드와 검색어의 일치 범위를 결정하는 설정','Setting that determines how closely keywords match search queries'],
+['sem',3,'품질점수','Quality Score','Google이 광고 품질을 1-10으로 평가한 점수','Google rating of ad quality on a 1-10 scale'],
+['sem',3,'Ad Rank','Ad Rank','입찰가 × 품질점수로 결정되는 광고 순위','Ad position determined by bid × quality score'],
+['sns',1,'참여율','Engagement Rate','좋아요, 댓글, 공유 등 상호작용 비율','Rate of interactions like likes, comments, shares'],
+['sns',1,'오가닉 도달','Organic Reach','광고 없이 자연적으로 도달하는 사용자 수','Number of users reached without paid promotion'],
+['sns',2,'콘텐츠 캘린더','Content Calendar','게시물의 주제, 일정, 채널을 계획하는 일정표','Schedule planning post topics, timing, and channels'],
+['sns',2,'UGC','User-Generated Content','고객이 직접 만든 브랜드 관련 콘텐츠','Brand-related content created by customers'],
+['sns',3,'리타겟팅','Retargeting','웹사이트 방문자에게 다시 광고를 노출하는 기법','Showing ads again to previous website visitors'],
+['sns',3,'유사 타겟','Lookalike Audience','기존 고객과 유사한 특성의 잠재 고객 그룹','Potential customers with similar characteristics to existing ones'],
+['cm',1,'인바운드 마케팅','Inbound Marketing','고객이 자발적으로 찾아오게 만드는 마케팅','Marketing that attracts customers to come to you'],
+['cm',1,'리드 마그넷','Lead Magnet','구독자 확보를 위해 무료 제공하는 콘텐츠','Free valuable content offered to gain subscribers'],
+['cm',2,'인포그래픽','Infographic','데이터를 시각적으로 표현한 이미지 콘텐츠','Visual representation of data or information'],
+['cm',2,'케이스 스터디','Case Study','실제 고객 성공 사례를 상세히 기술한 콘텐츠','Detailed documentation of actual customer success stories'],
+['cm',3,'브랜드 보이스','Brand Voice','브랜드의 일관된 커뮤니케이션 어조와 스타일','Consistent tone and style of brand communication'],
+['cm',3,'스토리텔링','Storytelling','이야기 형식으로 감정적 연결을 만드는 기법','Creating emotional connections through narrative'],
+['em',1,'오픈율','Open Rate','발송 이메일 중 열어본 비율 (평균 ~20%)','Percentage of emails opened (avg ~20%)'],
+['em',1,'클릭률','Click Rate','이메일 내 링크 클릭 비율 (평균 ~2.5%)','Percentage of email link clicks (avg ~2.5%)'],
+['em',2,'CTA','Call to Action','사용자에게 행동을 유도하는 문구/버튼','Text or button prompting user action'],
+['em',2,'프리헤더','Preheader','이메일 목록에서 제목 다음에 보이는 미리보기 텍스트','Preview text visible after subject line in email list'],
+['em',3,'옵트인','Opt-in','사용자의 자발적 이메일 수신 동의','Voluntary consent to receive emails'],
+['em',3,'세그멘테이션','Segmentation','구독자를 특성별로 그룹화하는 기법','Grouping subscribers by characteristics'],
+['ana',1,'세션','Session','사용자가 사이트를 방문하여 활동하는 기간','Period of user activity on a website'],
+['ana',1,'이탈률','Bounce Rate','한 페이지만 보고 떠나는 비율','Percentage of visitors who leave after one page'],
+['ana',2,'KPI','Key Performance Indicator','비즈니스 목표 달성도를 측정하는 핵심 지표','Key metrics measuring business goal achievement'],
+['ana',2,'CPA','Cost Per Acquisition','전환 하나를 얻는 데 드는 비용','Cost to acquire one conversion'],
+['ana',3,'대시보드','Dashboard','핵심 지표를 한눈에 볼 수 있는 시각적 보고 화면','Visual reporting screen showing key metrics at a glance'],
+['ana',3,'어트리뷰션','Attribution','전환에 기여한 채널/터치포인트를 파악하는 분석','Analysis identifying which channels contributed to conversions'],
+['cro',1,'전환율','Conversion Rate','방문자 중 목표 행동을 완료한 비율','Percentage of visitors completing desired action'],
+['cro',1,'CRO','Conversion Rate Optimization','웹사이트 전환율을 체계적으로 높이는 프로세스','Systematic process of increasing website conversion rates'],
+['cro',2,'랜딩 페이지','Landing Page','광고 클릭 후 도착하는 특정 목적의 웹페이지','Specific-purpose page visitors arrive at after clicking an ad'],
+['cro',2,'소셜 프루프','Social Proof','다른 사람들의 선택/후기로 신뢰를 주는 기법','Using others choices/reviews to build trust'],
+['cro',3,'A/B 테스트','A/B Test','두 버전을 비교하여 효과를 검증하는 실험','Experiment comparing two versions to verify effectiveness'],
+['cro',3,'대조군','Control Group','A/B 테스트에서 변경하지 않은 기존 버전','Original unchanged version in A/B test'],
+['ma',1,'마케팅 자동화','Marketing Automation','반복적 마케팅 작업을 소프트웨어로 자동화','Automating repetitive marketing tasks with software'],
+['ma',1,'트리거','Trigger','자동화 워크플로를 시작시키는 조건/이벤트','Condition or event that initiates an automation workflow'],
+['ma',2,'드립 캠페인','Drip Campaign','시간 간격을 두고 순차 발송하는 이메일 시리즈','Email series sent sequentially at timed intervals'],
+['ma',2,'너처링','Nurturing','잠재 고객과의 관계를 점진적으로 발전시키는 과정','Gradually developing relationships with potential customers'],
+['ma',3,'리드 스코어링','Lead Scoring','잠재 고객 행동에 점수를 부여하여 구매 가능성 판단','Assigning scores to leads to assess purchase readiness'],
+['ma',3,'MQL','Marketing Qualified Lead','마케팅 활동으로 확보한 유망 잠재 고객','Promising lead acquired through marketing activities'],
+['brand',1,'포지셔닝','Positioning','타겟 시장에서 브랜드의 고유한 위치','Unique position of a brand in the target market'],
+['brand',1,'USP','Unique Selling Proposition','경쟁자와 차별화되는 고유한 가치 제안','Unique value proposition differentiating from competitors'],
+['brand',2,'페르소나','Persona','타겟 고객을 대표하는 가상의 인물 프로필','Fictional profile representing the target customer'],
+['brand',2,'페인 포인트','Pain Point','타겟 고객이 겪는 문제점이나 불편함','Problems or frustrations experienced by target customers'],
+['brand',3,'마케팅 퍼널','Marketing Funnel','인지→관심→고려→전환→충성의 단계적 모델','Staged model: awareness→interest→consideration→conversion→loyalty'],
+['brand',3,'터치포인트','Touchpoint','고객이 브랜드와 접촉하는 모든 지점','Every point where customers interact with the brand'],
+['arch',1,'아키텍처','Architecture','소프트웨어의 구조와 구성요소 관계를 정의하는 설계','Design defining software structure and component relationships'],
+['arch',1,'관심사 분리','Separation of Concerns','각 모듈이 하나의 명확한 책임만 가지도록 분리','Separating modules so each has one clear responsibility'],
+['arch',2,'MVC','Model-View-Controller','데이터(M), 화면(V), 입력처리(C)로 분리하는 패턴','Pattern separating data(M), display(V), and input(C)'],
+['arch',2,'컨트롤러','Controller','사용자 입력을 처리하고 M과 V를 연결하는 구성요소','Component handling user input and connecting M and V'],
+['arch',3,'데이터 바인딩','Data Binding','UI와 데이터를 연결하여 자동 동기화하는 기술','Technology connecting UI and data for auto-synchronization'],
+['arch',3,'뷰모델','ViewModel','View를 위한 데이터와 비즈니스 로직을 제공하는 계층','Layer providing data and logic for the View'],
+['fe',1,'시맨틱 HTML','Semantic HTML','의미 있는 태그로 콘텐츠 구조를 명확히 표현','Using meaningful tags to clearly express content structure'],
+['fe',1,'DOM','Document Object Model','HTML 문서를 트리 구조로 표현한 프로그래밍 인터페이스','Programming interface representing HTML as a tree structure'],
+['fe',2,'박스 모델','Box Model','content→padding→border→margin으로 구성된 요소 모델','Element model: content→padding→border→margin'],
+['fe',2,'Flexbox','Flexbox','유연한 1차원 레이아웃을 구성하는 CSS 모듈','CSS module for flexible one-dimensional layouts'],
+['fe',3,'이벤트 리스너','Event Listener','이벤트 발생 시 실행될 함수를 등록하는 메커니즘','Mechanism registering functions to execute on events'],
+['fe',3,'async/await','async/await','Promise 기반 비동기 처리를 간결하게 작성하는 문법','Syntax for writing concise Promise-based async code'],
+['mobile',1,'네이티브 앱','Native App','특정 플랫폼의 기본 SDK로 개발된 앱','App built with platform-specific SDK'],
+['mobile',1,'PWA','Progressive Web App','웹 기술로 네이티브 앱 경험을 제공하는 웹 앱','Web app providing native-like experience using web technologies'],
+['mobile',2,'Flutter','Flutter','Dart 기반 Google의 크로스플랫폼 UI 프레임워크','Google cross-platform UI framework based on Dart'],
+['mobile',2,'React Native','React Native','JavaScript 기반 Meta의 모바일 앱 프레임워크','Meta mobile framework based on JavaScript'],
+['mobile',3,'모바일 우선','Mobile First','모바일부터 디자인하고 큰 화면으로 확장하는 접근법','Designing for mobile first then expanding to larger screens'],
+['mobile',3,'브레이크포인트','Breakpoint','레이아웃이 변경되는 화면 너비 기준점','Screen width threshold where layout changes'],
+['uiux',1,'UX','User Experience','제품 사용 전반에 걸친 사용자의 인식과 감정','User perceptions and emotions throughout product use'],
+['uiux',1,'디자인 사고','Design Thinking','사용자 중심 문제 해결 5단계 방법론','5-step user-centered problem-solving methodology'],
+['uiux',2,'사용성','Usability','사용자가 제품을 쉽고 효율적으로 사용할 수 있는 정도','Degree to which a product is easy and efficient to use'],
+['uiux',2,'어포던스','Affordance','사용 방법을 직관적으로 알려주는 디자인 특성','Design quality suggesting how something should be used'],
+['uiux',3,'와이어프레임','Wireframe','화면 구조를 단순화하여 표현한 설계도','Simplified blueprint of screen layout and structure'],
+['uiux',3,'프로토타입','Prototype','실제처럼 동작하는 시뮬레이션 모델','Working simulation model of the product'],
+['api',1,'API','Application Programming Interface','소프트웨어 간 데이터를 주고받는 인터페이스','Interface for exchanging data between software'],
+['api',1,'엔드포인트','Endpoint','API에서 리소스에 접근하는 URL 경로','URL path to access a resource in an API'],
+['api',2,'REST','Representational State Transfer','웹의 장점을 활용하는 API 아키텍처 스타일','API architecture style leveraging web strengths'],
+['api',2,'상태 코드','Status Code','서버 응답 결과를 알려주는 3자리 숫자 (200, 404 등)','3-digit number indicating server response (200, 404, etc.)'],
+['api',3,'JWT','JSON Web Token','토큰 기반 사용자 인증 표준','Token-based user authentication standard'],
+['api',3,'OAuth','OAuth 2.0','제3자 앱에 접근 권한을 부여하는 인증 프로토콜','Authentication protocol granting third-party access'],
+['db',1,'SQL','Structured Query Language','관계형 DB에서 데이터를 다루는 표준 언어','Standard language for managing relational database data'],
+['db',1,'CRUD','Create Read Update Delete','데이터의 기본 4가지 연산','Four basic data operations'],
+['db',2,'스키마','Schema','DB의 구조와 제약 조건을 정의한 설계도','Blueprint defining database structure and constraints'],
+['db',2,'ACID','Atomicity Consistency Isolation Durability','트랜잭션의 안전성을 보장하는 4가지 속성','Four properties ensuring transaction safety'],
+['db',3,'기본키','Primary Key','테이블에서 각 행을 고유하게 식별하는 컬럼','Column uniquely identifying each row in a table'],
+['db',3,'외래키','Foreign Key','다른 테이블의 기본키를 참조하여 관계를 형성하는 컬럼','Column referencing another table primary key to form relationships'],
+['git',1,'커밋','Commit','파일 변경 사항을 저장소에 기록하는 행위','Recording file changes to the repository'],
+['git',1,'스테이징 영역','Staging Area','커밋할 변경 사항을 준비하는 중간 영역','Intermediate area for preparing changes to commit'],
+['git',2,'브랜치','Branch','독립적인 개발 라인을 만드는 Git 핵심 기능','Git feature creating independent development lines'],
+['git',2,'머지','Merge','분리된 브랜치를 하나로 합치는 작업','Combining separated branches into one'],
+['git',3,'Pull Request','Pull Request','코드 리뷰를 위한 병합 요청 프로세스','Process requesting merge with code review'],
+['git',3,'클론','Clone','원격 저장소를 로컬에 복제하는 작업','Copying a remote repository to local machine'],
+['test',1,'단위 테스트','Unit Test','개별 함수/메서드를 독립적으로 검증하는 테스트','Test verifying individual functions/methods independently'],
+['test',1,'E2E 테스트','End-to-End Test','사용자 관점에서 전체 시스템을 테스트','Testing entire system from user perspective'],
+['test',2,'Mock','Mock Object','테스트에서 실제 의존성을 대신하는 가짜 객체','Fake object replacing real dependencies in tests'],
+['test',2,'테스트 커버리지','Test Coverage','테스트가 코드를 실행하는 비율','Percentage of code executed by tests'],
+['test',3,'회귀 테스트','Regression Test','코드 변경 후 기존 기능 정상 작동 확인','Verifying existing features work after code changes'],
+['test',3,'CI','Continuous Integration','코드 변경을 자동 빌드/테스트하는 프로세스','Process of auto-building/testing code changes'],
+['cicd',1,'배포','Deployment','코드를 서버에 설치하여 서비스하는 과정','Process of installing code on servers for service'],
+['cicd',1,'롤백','Rollback','문제 발생 시 이전 버전으로 되돌리는 작업','Reverting to a previous version when issues occur'],
+['cicd',2,'파이프라인','Pipeline','자동화된 빌드/테스트/배포 프로세스','Automated build/test/deploy process'],
+['cicd',2,'GitHub Actions','GitHub Actions','GitHub 내장 CI/CD 자동화 도구','Built-in CI/CD automation tool in GitHub'],
+['cicd',3,'컨테이너','Container','앱과 실행 환경을 패키징하는 격리 단위','Isolated unit packaging app and runtime environment'],
+['cicd',3,'Docker','Docker','컨테이너 빌드/배포/실행 플랫폼','Platform for building, deploying, and running containers'],
+['perf',1,'LCP','Largest Contentful Paint','최대 콘텐츠 요소의 로딩 시간 (2.5초 이내 권장)','Loading time of largest content element (under 2.5s recommended)'],
+['perf',1,'CLS','Cumulative Layout Shift','예기치 않은 레이아웃 변경 정도 (0.1 이하 권장)','Measure of unexpected layout shifts (under 0.1 recommended)'],
+['perf',2,'Lazy Loading','Lazy Loading','화면에 보이는 시점에 리소스를 로드하는 기법','Loading resources only when they become visible'],
+['perf',2,'트리 쉐이킹','Tree Shaking','미사용 코드를 빌드에서 제거하는 최적화','Removing unused code from build output'],
+['perf',3,'CDN','Content Delivery Network','전 세계 서버에 콘텐츠를 캐싱하여 빠른 전달','Caching content on global servers for fast delivery'],
+['perf',3,'캐싱','Caching','자주 사용하는 데이터를 임시 저장하는 기법','Temporarily storing frequently used data for fast access']
+];
+
+/* ===== GAMIFICATION ===== */
+const TREES=['🌰','🌱','🌿','🪴','🌳','🌲','🎄','🏆'];
+const BADGE_DEFS=[
+{id:'first_lesson',name:'첫 발걸음',icon:'👣',desc:'첫 레슨 완료',check:s=>s.completedLessons>=1},
+{id:'lessons_10',name:'학습왕',icon:'📚',desc:'10개 레슨 완료',check:s=>s.completedLessons>=10},
+{id:'lessons_30',name:'지식탐험가',icon:'🗺️',desc:'30개 레슨 완료',check:s=>s.completedLessons>=30},
+{id:'quiz_first',name:'퀴즈 도전',icon:'🎯',desc:'첫 퀴즈 완료',check:s=>s.quizCount>=1},
+{id:'quiz_perfect',name:'만점왕',icon:'💯',desc:'퀴즈 만점 달성',check:s=>s.perfectQuiz>=1},
+{id:'quiz_10',name:'퀴즈마스터',icon:'🏅',desc:'10회 퀴즈 완료',check:s=>s.quizCount>=10},
+{id:'card_50',name:'카드 수집가',icon:'🃏',desc:'50장 플래시카드 복습',check:s=>s.cardReviews>=50},
+{id:'streak_3',name:'3일 연속',icon:'🔥',desc:'3일 연속 출석',check:s=>s.streak>=3},
+{id:'streak_7',name:'일주일 완주',icon:'⭐',desc:'7일 연속 출석',check:s=>s.streak>=7},
+{id:'streak_30',name:'한 달 마스터',icon:'👑',desc:'30일 연속 출석',check:s=>s.streak>=30},
+{id:'level_5',name:'Lv.5 달성',icon:'🎖️',desc:'레벨 5 달성',check:s=>s.level>=5},
+{id:'level_10',name:'Lv.10 달성',icon:'🏆',desc:'레벨 10 달성',check:s=>s.level>=10},
+{id:'mkt_track',name:'마케터',icon:'📊',desc:'마케팅 트랙 3개 시작',check:s=>s.mktTracks>=3},
+{id:'dev_track',name:'개발자',icon:'💻',desc:'앱개발 트랙 3개 시작',check:s=>s.devTracks>=3},
+{id:'bookmarks_5',name:'북마크 수집',icon:'🔖',desc:'5개 북마크 저장',check:s=>s.bookmarks>=5},
+{id:'all_beginner',name:'입문 완료',icon:'🎓',desc:'모든 초급 레슨 완료',check:s=>s.completedLessons>=57},
+{id:'speed_50',name:'스피드스터',icon:'⚡',desc:'스피드퀴즈 50점+',check:s=>s.speedBest>=50},
+{id:'survival_10',name:'생존왕',icon:'🛡️',desc:'서바이벌 10연속',check:s=>s.survivalBest>=10},
+{id:'match_clear',name:'매칭 달인',icon:'🧩',desc:'매칭게임 클리어',check:s=>s.matchClears>=1}
+];
+
+function getXP(){return LS.get('xp',0)}
+function setXP(v){LS.set('xp',v)}
+function addXP(amount){
+  const old=getXP();const nv=old+amount;setXP(nv);
+  const oldLv=Math.floor(Math.sqrt(old/100));const newLv=Math.floor(Math.sqrt(nv/100));
+  if(newLv>oldLv)showLevelUp(newLv);
+  updateGamiBar();toast(`+${amount} XP`,'success');
+}
+function showLevelUp(lv){
+  const el=document.createElement('div');el.className='levelup-toast';
+  el.innerHTML=`⬆️ Level ${lv}!<br>${TREES[Math.min(lv,TREES.length-1)]}`;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2500);
+}
+function updateGamiBar(){
+  const xp=getXP();const lv=Math.floor(Math.sqrt(xp/100));
+  const lvXP=lv*lv*100;const nextXP=(lv+1)*(lv+1)*100;
+  const pct=Math.min(100,((xp-lvXP)/(nextXP-lvXP))*100);
+  $('gami-level').textContent=`Lv.${lv}`;
+  $('gami-xp-fill').style.width=pct+'%';
+  $('gami-xp-text').textContent=`${xp-lvXP}/${nextXP-lvXP} XP`;
+  $('gami-tree').textContent=TREES[Math.min(lv,TREES.length-1)];
+  const att=LS.get('attendance',{});const streak=calcStreak(att);
+  $('gami-streak').textContent='🔥'+streak;
+}
+function calcStreak(att){
+  let s=0;const d=new Date();
+  for(let i=0;i<365;i++){
+    const ds=new Date(d);ds.setDate(ds.getDate()-i);
+    const k=ds.toISOString().slice(0,10);
+    if(att[k])s++;else break;
+  }
+  return s;
+}
+function checkAttendance(){
+  const att=LS.get('attendance',{});const t=today();
+  if(!att[t]){att[t]=true;LS.set('attendance',att);addXP(15);}
+  updateGamiBar();
+}
+function getStats(){
+  const prog=LS.get('progress',{});
+  const completedLessons=Object.values(prog).filter(v=>v===true).length;
+  const qh=LS.get('quizHistory',[]);
+  const quizCount=qh.length;
+  const perfectQuiz=qh.filter(q=>q.score===q.total).length;
+  const cardReviews=LS.get('cardReviews',0);
+  const att=LS.get('attendance',{});
+  const streak=calcStreak(att);
+  const xp=getXP();const level=Math.floor(Math.sqrt(xp/100));
+  const bookmarks=LS.get('bookmarks',[]).length;
+  const mktTracks=new Set(Object.keys(prog).filter(k=>{const t=TRACKS.find(tr=>k.startsWith(tr[0]+'_'));return t&&t[1]==='mkt'})).size;
+  const devTracks=new Set(Object.keys(prog).filter(k=>{const t=TRACKS.find(tr=>k.startsWith(tr[0]+'_'));return t&&t[1]==='dev'})).size;
+  const speedBest=LS.get('speedBest',0);
+  const survivalBest=LS.get('survivalBest',0);
+  const matchClears=LS.get('matchClears',0);
+  return{completedLessons,quizCount,perfectQuiz,cardReviews,streak,level,bookmarks,mktTracks:Math.min(mktTracks,9),devTracks:Math.min(devTracks,10),speedBest,survivalBest,matchClears};
+}
+function checkBadges(){
+  const stats=getStats();const earned=LS.get('badges',[]);let newB=false;
+  BADGE_DEFS.forEach(b=>{
+    if(!earned.includes(b.id)&&b.check(stats)){earned.push(b.id);newB=true;toast(`🏅 뱃지 획득: ${b.name}`,'success');}
+  });
+  if(newB)LS.set('badges',earned);
+}
+
+/* ===== HELPERS ===== */
+function shuffleArray(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+function getFilteredQuiz(){return QUIZ_POOL.filter(q=>{const t=TRACKS.find(tr=>tr[0]===q[0]);return t&&(subjectFilter==='all'||t[1]===subjectFilter)})}
+function getFilteredCards(){return FLASHCARDS.filter(c=>{const t=TRACKS.find(tr=>tr[0]===c[0]);return t&&(subjectFilter==='all'||t[1]===subjectFilter)})}
+function getAllTerms(){
+  const terms=[];
+  LESSONS.forEach(l=>{if(l[6])l[6].forEach(t=>terms.push({en:t[0],ko:t[1],def:t[2],track:l[0],lesson:l[1]}))});
+  return terms.filter(t=>{const tr=TRACKS.find(x=>x[0]===t.track);return tr&&(subjectFilter==='all'||tr[1]===subjectFilter)});
+}
+// Leitner SRS
+const SRS_INTERVALS=[0,1,3,6,13];
+function getCardProgress(){return LS.get('flashProgress',{})}
+function setCardProgress(p){LS.set('flashProgress',p)}
+
+/* ===== VOCAB TAB (단어장) ===== */
+let vocabSearch='';
+function renderVocabTab(){
+  const terms=getAllTerms();
+  const prog=getCardProgress();
+  // stats
+  const total=terms.length;
+  const mastered=terms.filter(t=>{const p=prog[t.track+'_'+t.lesson+'_'+t.ko];return p&&p.box>=3}).length;
+
+  let html=`<div class="search-bar"><input type="text" id="vocab-search" placeholder="용어 검색..." value="${vocabSearch}" oninput="vocabSearch=this.value;renderVocabTab()"></div>`;
+  html+=`<div class="card" style="padding:12px;display:flex;justify-content:space-between;align-items:center">
+    <div><span style="font-size:14px;font-weight:700">📝 전체 ${total}개 용어</span></div>
+    <div style="font-size:13px"><span style="color:var(--accent);font-weight:700">${mastered}</span> 마스터</div>
+  </div>`;
+
+  const filtered=vocabSearch?terms.filter(t=>t.en.toLowerCase().includes(vocabSearch.toLowerCase())||t.ko.includes(vocabSearch)||t.def.includes(vocabSearch)):terms;
+
+  // group by track
+  const grouped={};
+  filtered.forEach(t=>{if(!grouped[t.track])grouped[t.track]=[];grouped[t.track].push(t)});
+
+  Object.entries(grouped).forEach(([tid,tms])=>{
+    const track=TRACKS.find(t=>t[0]===tid);
+    if(!track)return;
+    html+=`<div style="font-size:13px;font-weight:700;margin:14px 0 6px;color:var(--text-secondary)">${track[2]} ${track[3]}</div>`;
+    html+='<div class="card" style="padding:0;overflow:hidden">';
+    tms.forEach(t=>{
+      const key=t.track+'_'+t.lesson+'_'+t.ko;
+      const p=prog[key]||{box:0};
+      const boxCls=p.box>=3?'mastered':'';
+      const bm=LS.get('bookmarks',[]);
+      const bmKey='term_'+key;
+      const isB=bm.includes(bmKey);
+      html+=`<div class="vocab-item" onclick="openLesson('${t.track}',${t.lesson})">
+        <div class="vocab-term">
+          <div class="vocab-en">${t.en} <span class="vocab-ko">${t.ko}</span></div>
+          <div class="vocab-def">${t.def}</div>
+        </div>
+        <span class="vocab-box ${boxCls}">Box ${p.box}</span>
+        <button class="bookmark-btn" onclick="event.stopPropagation();toggleBookmark('${bmKey}',this)">${isB?'🔖':'🏷️'}</button>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  if(!filtered.length)html+='<div class="empty-state"><span class="emoji">🔍</span><p>검색 결과가 없습니다</p></div>';
+  $('vocab-content').innerHTML=html;
+}
+
+/* ===== LEARNING TAB ===== */
+function getTrackLessons(trackId){return LESSONS.filter(l=>l[0]===trackId).sort((a,b)=>a[1]-b[1])}
+function isLessonCompleted(trackId,num){return LS.get('progress',{})[trackId+'_'+num]===true}
+function isLessonUnlocked(trackId,num){return num===1||isLessonCompleted(trackId,num-1)}
+function completeLesson(trackId,num){
+  const prog=LS.get('progress',{});if(prog[trackId+'_'+num])return;
+  prog[trackId+'_'+num]=true;LS.set('progress',prog);
+  addXP(20);checkBadges();
+  LS.set('lastLesson',{track:trackId,lesson:num,date:today()});
+}
+
+// Practical tips per track
+const TIPS={
+seo:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>Google Search Console 반드시 설치 - 무료이며 핵심 SEO 도구</li><li>콘텐츠 작성 시 "사람을 위해 쓰고, 검색엔진을 위해 최적화"</li><li>경쟁사 상위 랭킹 페이지 분석이 최고의 학습법</li></ul><div class="tool-chips"><span class="tool-chip">Google Search Console</span><span class="tool-chip">Ahrefs</span><span class="tool-chip">Screaming Frog</span></div></div>',
+sem:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>일예산 소규모로 시작 → 데이터 수집 → 최적화 반복</li><li>네거티브 키워드 관리가 비용 절감의 핵심</li><li>랜딩페이지와 광고 카피의 메시지 일치가 중요</li></ul><div class="tool-chips"><span class="tool-chip">Google Ads</span><span class="tool-chip">네이버 검색광고</span><span class="tool-chip">SpyFu</span></div></div>',
+sns:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>모든 플랫폼에 다 하려 하지 말고 1~2개에 집중</li><li>릴스/숏폼 영상이 현재 오가닉 도달이 가장 높음</li><li>댓글 관리와 DM 응대가 진짜 팬을 만든다</li></ul><div class="tool-chips"><span class="tool-chip">Buffer</span><span class="tool-chip">Canva</span><span class="tool-chip">CapCut</span></div></div>',
+cm:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>양보다 질 - 월 2개 고품질 글 > 매일 저품질 글</li><li>하나의 콘텐츠를 블로그→SNS→뉴스레터→영상으로 리퍼포징</li><li>독자의 "다음 액션"을 항상 제시하라</li></ul><div class="tool-chips"><span class="tool-chip">Notion</span><span class="tool-chip">WordPress</span><span class="tool-chip">ChatGPT</span></div></div>',
+em:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>주 1회 뉴스레터부터 시작 - 꾸준함이 핵심</li><li>A/B 테스트는 제목줄부터 - 오픈율 영향 80%</li><li>모바일 미리보기 반드시 확인 후 발송</li></ul><div class="tool-chips"><span class="tool-chip">Mailchimp</span><span class="tool-chip">스티비</span><span class="tool-chip">ConvertKit</span></div></div>',
+ana:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>GA4 설치 후 전환 이벤트 설정이 가장 먼저</li><li>UTM 파라미터로 모든 캠페인 트래킹 습관화</li><li>주간 리포트 작성 루틴을 만들어라</li></ul><div class="tool-chips"><span class="tool-chip">GA4</span><span class="tool-chip">Looker Studio</span><span class="tool-chip">Hotjar</span></div></div>',
+cro:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>데이터 없이 "느낌"으로 바꾸지 마라 - 항상 테스트</li><li>CTA 버튼 하나 바꾸는 것부터 시작</li><li>히트맵/세션리코딩으로 사용자 행동을 직접 관찰</li></ul><div class="tool-chips"><span class="tool-chip">Optimizely</span><span class="tool-chip">Hotjar</span><span class="tool-chip">Google Optimize</span></div></div>',
+ma:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>웰컴 이메일 시리즈(3통)부터 자동화 시작</li><li>자동화 설정 후 반드시 직접 테스트 메일 발송</li><li>과도한 자동화보다 적절한 개인 터치가 중요</li></ul><div class="tool-chips"><span class="tool-chip">HubSpot</span><span class="tool-chip">ActiveCampaign</span><span class="tool-chip">Zapier</span></div></div>',
+brand:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>브랜드 가이드라인 문서 1페이지라도 만들어라</li><li>경쟁사 분석 시 "안 하는 것"도 파악하라</li><li>고객 인터뷰 3명만 해도 인사이트가 달라진다</li></ul><div class="tool-chips"><span class="tool-chip">Figma</span><span class="tool-chip">Brandwatch</span><span class="tool-chip">SurveyMonkey</span></div></div>',
+arch:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>처음엔 간단한 MVC로 시작, 복잡해지면 리팩토링</li><li>Clean Architecture는 대규모 프로젝트에서 진가 발휘</li><li>아키텍처 결정은 팀과 함께, 문서화 필수</li></ul><div class="tool-chips"><span class="tool-chip">Draw.io</span><span class="tool-chip">Mermaid</span><span class="tool-chip">PlantUML</span></div></div>',
+fe:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>MDN Web Docs가 최고의 레퍼런스 - 북마크 필수</li><li>개발자 도구(F12) 사용법을 먼저 익혀라</li><li>코드펜(CodePen)에서 직접 실험해보기</li></ul><div class="tool-chips"><span class="tool-chip">VS Code</span><span class="tool-chip">CodePen</span><span class="tool-chip">MDN Docs</span></div></div>',
+mobile:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>MVP는 PWA나 React Native로 빠르게 검증</li><li>실 디바이스 테스트가 에뮬레이터보다 중요</li><li>앱스토어 가이드라인을 개발 전에 먼저 읽어라</li></ul><div class="tool-chips"><span class="tool-chip">Flutter</span><span class="tool-chip">React Native</span><span class="tool-chip">Expo</span></div></div>',
+uiux:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>디자인 전에 5명만 사용자 인터뷰하면 80% 문제 발견</li><li>Apple/Google HIG(Human Interface Guidelines) 필독</li><li>좋은 디자인 많이 보기 - Dribbble, Mobbin 활용</li></ul><div class="tool-chips"><span class="tool-chip">Figma</span><span class="tool-chip">Mobbin</span><span class="tool-chip">Dribbble</span></div></div>',
+api:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>Postman으로 API 테스트하는 습관 기르기</li><li>API 문서화는 코드 작성만큼 중요</li><li>에러 응답도 일관된 형식으로 설계하라</li></ul><div class="tool-chips"><span class="tool-chip">Postman</span><span class="tool-chip">Swagger</span><span class="tool-chip">Insomnia</span></div></div>',
+db:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>정규화 3NF까지는 꼭 이해하고 시작</li><li>인덱스 설계가 성능의 80%를 결정</li><li>백업 자동화를 프로덕션 전에 반드시 설정</li></ul><div class="tool-chips"><span class="tool-chip">DBeaver</span><span class="tool-chip">TablePlus</span><span class="tool-chip">Supabase</span></div></div>',
+git:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>커밋 메시지를 잘 쓰면 미래의 나에게 큰 도움</li><li>feature 브랜치 → PR → 코드리뷰 워크플로 익히기</li><li>.gitignore 설정을 프로젝트 시작 시 반드시</li></ul><div class="tool-chips"><span class="tool-chip">GitHub</span><span class="tool-chip">GitKraken</span><span class="tool-chip">Conventional Commits</span></div></div>',
+test:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>100% 커버리지보다 핵심 비즈니스 로직 테스트 우선</li><li>테스트 작성이 어려우면 코드 설계가 잘못된 신호</li><li>CI에서 테스트 자동 실행 설정하기</li></ul><div class="tool-chips"><span class="tool-chip">Jest</span><span class="tool-chip">Cypress</span><span class="tool-chip">Playwright</span></div></div>',
+cicd:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>GitHub Actions로 CI/CD 시작 - 무료 티어 충분</li><li>Dockerfile 작성법을 꼭 익혀라</li><li>롤백 절차를 미리 정의하고 연습하라</li></ul><div class="tool-chips"><span class="tool-chip">GitHub Actions</span><span class="tool-chip">Docker</span><span class="tool-chip">Vercel</span></div></div>',
+perf:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>Lighthouse 점수 90+ 목표로 시작</li><li>이미지 최적화만으로도 체감 속도 크게 향상</li><li>CDN(CloudFlare 무료) 적용이 가성비 최고</li></ul><div class="tool-chips"><span class="tool-chip">Lighthouse</span><span class="tool-chip">WebPageTest</span><span class="tool-chip">Cloudflare</span></div></div>'
+};
+
+function renderLearnTab(){
+  const tracks=TRACKS.filter(t=>subjectFilter==='all'||t[1]===subjectFilter);
+  const prog=LS.get('progress',{});
+  let html='';
+  tracks.forEach(t=>{
+    const lessons=getTrackLessons(t[0]);
+    const done=lessons.filter(l=>prog[t[0]+'_'+l[1]]).length;
+    const total=lessons.length;const pct=total?Math.round(done/total*100):0;
+    const tagClass=t[1]==='mkt'?'tag-mkt':'tag-dev';
+    html+=`<div class="card track-card" onclick="showTrackLessons('${t[0]}')">
+      <div class="track-icon" style="background:${t[1]==='mkt'?'#ede9fe':'#cffafe'}">${t[2]}</div>
+      <div class="track-info">
+        <div class="track-name">${t[3]} <span class="tag ${tagClass}">${t[1]==='mkt'?'마케팅':'앱개발'}</span></div>
+        <div class="track-sub">${t[4]}</div>
+        <div class="track-progress" style="margin-top:6px">
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${done}/${total} 완료 (${pct}%)</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  $('learn-content').innerHTML=html;
+}
+
+let currentTrack=null;
+function showTrackLessons(trackId){
+  currentTrack=trackId;
+  const track=TRACKS.find(t=>t[0]===trackId);
+  const lessons=getTrackLessons(trackId);
+  let html=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <button class="btn btn-sm btn-outline" onclick="renderLearnTab()">← 뒤로</button>
+    <div><div style="font-size:16px;font-weight:700">${track[2]} ${track[3]}</div>
+    <div style="font-size:12px;color:var(--text-secondary)">${track[4]}</div></div>
+  </div>`;
+  // practical tips
+  if(TIPS[trackId])html+=TIPS[trackId];
+  html+='<div class="card" style="padding:0;overflow:hidden;margin-top:12px">';
+  lessons.forEach(l=>{
+    const completed=isLessonCompleted(trackId,l[1]);
+    const unlocked=isLessonUnlocked(trackId,l[1]);
+    const cls=completed?'completed':(!unlocked?'locked':'');
+    const icon=completed?'✅':(!unlocked?'🔒':'▶️');
+    html+=`<div class="lesson-item ${cls}" onclick="${unlocked?`openLesson('${trackId}',${l[1]})`:''}">
+      <div class="lesson-num">${l[1]}</div>
+      <div class="lesson-info"><div class="lesson-title">${l[3]}</div><div class="lesson-title-en">${l[4]}</div></div>
+      <div class="lesson-status">${icon}</div>
+    </div>`;
+  });
+  html+='</div>';
+  $('learn-content').innerHTML=html;
+}
+
+function openLesson(trackId,num){
+  const lesson=LESSONS.find(l=>l[0]===trackId&&l[1]===num);if(!lesson)return;
+  const track=TRACKS.find(t=>t[0]===trackId);
+  const bm=LS.get('bookmarks',[]);const bmKey=trackId+'_'+num;const isBookmarked=bm.includes(bmKey);
+  let html=`<div class="lesson-viewer">
+    <div class="lv-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div><div style="font-size:12px;color:var(--text-secondary)">${track[2]} ${track[3]} · 레슨 ${num}</div>
+        <div class="lv-title">${lesson[3]}</div><div class="lv-subtitle">${lesson[4]}</div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="bookmark-btn" onclick="toggleBookmark('${bmKey}',this)">${isBookmarked?'🔖':'🏷️'}</button>
+        <button class="modal-close" onclick="closeModal('lesson-modal')">✕</button>
+      </div>
+    </div>
+    <div class="lv-body">${lesson[5]}</div>`;
+  if(lesson[6]&&lesson[6].length){
+    html+='<div style="padding:0 16px 16px"><div style="font-size:15px;font-weight:700;margin-bottom:8px">📝 핵심 용어</div>';
+    lesson[6].forEach(t=>{html+=`<div class="term-card"><div class="term-en">${t[0]} <span class="term-ko">${t[1]}</span></div><div class="term-def">${t[2]}</div></div>`;});
+    html+='</div>';
+  }
+  if(TIPS[trackId])html+='<div style="padding:0 16px 16px">'+TIPS[trackId]+'</div>';
+  const completed=isLessonCompleted(trackId,num);
+  html+=`<div style="padding:16px"><button class="btn btn-primary btn-full" ${completed?'disabled':''} onclick="completeLessonAndClose('${trackId}',${num})">${completed?'✅ 학습 완료':'학습 완료하기 (+20 XP)'}</button></div></div>`;
+  $('lesson-viewer-content').innerHTML=html;openModal('lesson-modal');
+}
+function completeLessonAndClose(trackId,num){completeLesson(trackId,num);closeModal('lesson-modal');if(currentTrack===trackId)showTrackLessons(trackId);else renderLearnTab()}
+function toggleBookmark(key,el){
+  const bm=LS.get('bookmarks',[]);const idx=bm.indexOf(key);
+  if(idx>=0){bm.splice(idx,1);if(el)el.textContent='🏷️';toast('북마크 제거','info');}
+  else{bm.push(key);if(el)el.textContent='🔖';toast('북마크 추가','success');}
+  LS.set('bookmarks',bm);checkBadges();
+}
+
+/* ===== GAME TAB ===== */
+let quizState=null,speedTimer=null,fcState=null;
+
+function renderGameTab(){
+  const wrong=LS.get('wrongAnswers',[]);
+  const dq=LS.get('dailyQuiz',{});const dailyDone=dq.date===today();
+  const speedBest=LS.get('speedBest',0);
+  const survivalBest=LS.get('survivalBest',0);
+  const due=getDueCards().length;
+
+  let html=`<div class="game-grid">
+    <div class="card game-card gc-daily" onclick="${dailyDone?'':'startDailyQuiz()'}">
+      ${dailyDone?'<div class="game-badge" style="background:var(--accent);color:#fff">완료!</div>':''}
+      <span class="game-icon">${dailyDone?'✅':'📋'}</span>
+      <div class="game-title">일일 퀴즈</div>
+      <div class="game-desc">${dailyDone?`${dq.score}/${dq.total}점`:'10문제, 오늘의 도전!'}</div>
+    </div>
+    <div class="card game-card gc-speed" onclick="startSpeedQuiz()">
+      ${speedBest?`<div class="game-badge" style="background:var(--danger);color:#fff">🏆${speedBest}</div>`:''}
+      <span class="game-icon">⚡</span>
+      <div class="game-title">스피드 퀴즈</div>
+      <div class="game-desc">60초 안에 최대한!</div>
+    </div>
+    <div class="card game-card gc-match" onclick="startMatchGame()">
+      <span class="game-icon">🧩</span>
+      <div class="game-title">용어 매칭</div>
+      <div class="game-desc">한↔영 짝 맞추기</div>
+    </div>
+    <div class="card game-card gc-survival" onclick="startSurvival()">
+      ${survivalBest?`<div class="game-badge" style="background:var(--secondary);color:#fff">🏆${survivalBest}</div>`:''}
+      <span class="game-icon">🛡️</span>
+      <div class="game-title">서바이벌</div>
+      <div class="game-desc">3목숨, 몇 연속?</div>
+    </div>
+    <div class="card game-card gc-flip" onclick="startFlashcardGame()">
+      ${due?`<div class="game-badge" style="background:var(--primary);color:#fff">${due}장</div>`:''}
+      <span class="game-icon">🃏</span>
+      <div class="game-title">플래시카드</div>
+      <div class="game-desc">${due?due+'장 복습 대기':'오늘 복습 완료!'}</div>
+    </div>
+    <div class="card game-card gc-wrong" onclick="startWrongQuiz()" ${wrong.length===0?'style="opacity:.4;pointer-events:none"':''}>
+      <span class="game-icon">🔄</span>
+      <div class="game-title">오답 노트</div>
+      <div class="game-desc">${wrong.length}문제</div>
+    </div>
+  </div>`;
+  // recent history
+  const qh=LS.get('quizHistory',[]).slice(-5).reverse();
+  if(qh.length){
+    html+='<div style="font-size:14px;font-weight:700;margin:16px 0 8px">📊 최근 기록</div>';
+    qh.forEach(q=>{
+      const pct=q.total?Math.round(q.score/q.total*100):0;
+      html+=`<div class="card" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+        <div><span style="font-weight:600">${q.mode}</span> <span style="font-size:12px;color:var(--text-secondary)">${q.date}</span></div>
+        <div style="font-weight:700;color:${pct>=80?'var(--accent)':pct>=50?'var(--secondary)':'var(--danger)'}">${q.score}${q.total?'/'+q.total:''}</div>
+      </div>`;
+    });
+  }
+  $('game-content').innerHTML=html;
+}
+
+// ---- Standard Quiz ----
+function startDailyQuiz(){startQuizMode(shuffleArray(getFilteredQuiz()).slice(0,10),'일일 퀴즈')}
+function startWrongQuiz(){startQuizMode(shuffleArray(LS.get('wrongAnswers',[])).slice(0,10),'오답 노트')}
+function startQuizMode(pool,mode){
+  if(!pool.length){toast('문제가 없습니다','error');return}
+  quizState={questions:pool,current:0,score:0,answers:[],mode};renderQuizQ();
+}
+function renderQuizQ(){
+  const q=quizState.questions[quizState.current];const t=quizState.questions.length;const i=quizState.current;
+  let dots='<div class="quiz-progress-bar">';
+  for(let x=0;x<t;x++){const c=x<i?(quizState.answers[x]?'done':'wrong-dot'):(x===i?'current':'');dots+=`<div class="qp-dot ${c}"></div>`}
+  dots+='</div>';
+  let h=dots+`<div style="text-align:center;font-size:13px;color:var(--text-secondary);margin-bottom:12px">${i+1}/${t}</div>`;
+  h+=`<div class="card" style="text-align:center;padding:20px"><div style="font-size:16px;font-weight:600;margin-bottom:16px;line-height:1.5">${q[3]}</div>`;
+  if(q[2]==='mc'){h+='<div>';q[4].forEach((o,j)=>h+=`<button class="quiz-option" data-i="${j}" onclick="qAnswer('mc',${j},${q[5]})">${o}</button>`);h+='</div>';}
+  else if(q[2]==='ox'){h+=`<div class="ox-options"><button class="ox-btn" onclick="qAnswer('ox',1,${q[5]})">⭕<div style="font-size:14px;margin-top:4px">참</div></button><button class="ox-btn" onclick="qAnswer('ox',0,${q[5]})">❌<div style="font-size:14px;margin-top:4px">거짓</div></button></div>`;}
+  else{h+=`<input class="fill-input" id="fill-answer" placeholder="답을 입력하세요" onkeydown="if(event.key==='Enter')qAnswerFill()"><button class="btn btn-primary btn-full" style="margin-top:12px" onclick="qAnswerFill()">확인</button>`;}
+  h+='</div><button class="btn btn-outline btn-full" style="margin-top:8px" onclick="renderGameTab()">← 그만하기</button>';
+  $('game-content').innerHTML=h;
+}
+function qAnswer(type,sel,cor){
+  let correct;
+  if(type==='mc'){
+    correct=sel===cor;
+    document.querySelectorAll('.quiz-option').forEach(b=>{b.classList.add('disabled');const j=+b.dataset.i;if(j===cor)b.classList.add('correct');if(j===sel&&!correct)b.classList.add('wrong')});
+  }else{
+    correct=sel===cor;
+    document.querySelectorAll('.ox-btn').forEach((b,i)=>{const v=i===0?1:0;if(v===cor)b.classList.add('correct');if(v===sel&&!correct)b.classList.add('wrong')});
+  }
+  processQuizAnswer(correct);
+}
+function qAnswerFill(){
+  const inp=$('fill-answer');if(!inp)return;
+  const q=quizState.questions[quizState.current];const correct=inp.value.trim()===q[4];
+  inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
+  if(!correct){const h=document.createElement('div');h.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';h.textContent='정답: '+q[4];inp.parentNode.appendChild(h)}
+  document.querySelector('.btn-primary').style.display='none';
+  processQuizAnswer(correct);
+}
+function processQuizAnswer(correct){
+  const q=quizState.questions[quizState.current];quizState.answers.push(correct);if(correct)quizState.score++;
+  if(!correct){const w=LS.get('wrongAnswers',[]);if(!w.find(x=>x[3]===q[3])){w.push(q);LS.set('wrongAnswers',w)}}
+  else{const w=LS.get('wrongAnswers',[]);const i=w.findIndex(x=>x[3]===q[3]);if(i>=0){w.splice(i,1);LS.set('wrongAnswers',w)}}
+  const expl=q[q.length-1];
+  if(expl){const e=document.createElement('div');e.className='quiz-explain';e.innerHTML=`${correct?'✅ 정답!':'❌ 오답!'} ${expl}`;$('game-content').querySelector('.card').appendChild(e)}
+  const nb=document.createElement('button');nb.className='btn btn-primary btn-full';nb.style.marginTop='12px';
+  nb.textContent=quizState.current<quizState.questions.length-1?'다음 →':'결과 보기';
+  nb.onclick=()=>{quizState.current++;quizState.current>=quizState.questions.length?showQuizResult():renderQuizQ()};
+  $('game-content').appendChild(nb);
+}
+function showQuizResult(){
+  const s=quizState.score,t=quizState.questions.length,pct=Math.round(s/t*100);
+  let xp=s*10;if(s===t)xp+=50;addXP(xp);
+  const qh=LS.get('quizHistory',[]);qh.push({mode:quizState.mode,score:s,total:t,date:today()});LS.set('quizHistory',qh);
+  if(quizState.mode==='일일 퀴즈')LS.set('dailyQuiz',{date:today(),score:s,total:t});
+  checkBadges();
+  const emoji=pct>=90?'🎉':pct>=70?'👏':pct>=50?'💪':'📖';
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">${emoji}</div>
+    <div style="font-size:28px;font-weight:800;color:var(--primary)">${s}/${t}</div>
+    <div style="font-size:16px;color:var(--text-secondary);margin-bottom:16px">${pct}% 정답</div>
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${xp} XP${s===t?' (만점 보너스!)':''}</div>
+    <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
+}
+
+// ---- Speed Quiz (60s) ----
+function startSpeedQuiz(){
+  const pool=shuffleArray(getFilteredQuiz());
+  if(!pool.length){toast('문제가 없습니다','error');return}
+  quizState={questions:pool,current:0,score:0,combo:0,maxCombo:0,mode:'스피드 퀴즈',timeLeft:60};
+  renderSpeedQ();
+  speedTimer=setInterval(()=>{
+    quizState.timeLeft--;
+    const te=$('speed-time');if(te){te.textContent=quizState.timeLeft;if(quizState.timeLeft<=10)te.className='speed-timer urgent'}
+    if(quizState.timeLeft<=0){clearInterval(speedTimer);speedTimer=null;endSpeedQuiz()}
+  },1000);
+}
+function renderSpeedQ(){
+  if(quizState.current>=quizState.questions.length){quizState.questions=shuffleArray(getFilteredQuiz());quizState.current=0}
+  const q=quizState.questions[quizState.current];
+  const comboText=quizState.combo>=3?`<div class="combo-display hot">🔥 ${quizState.combo} COMBO!</div>`:(quizState.combo>=2?`<div class="combo-display">⚡ ${quizState.combo} combo</div>`:'');
+  let h=`<div style="text-align:center"><div class="speed-timer" id="speed-time">${quizState.timeLeft}</div>
+    <div style="font-size:24px;font-weight:800;color:var(--primary);margin-bottom:4px">⚡ ${quizState.score}점</div>
+    ${comboText}</div>`;
+  h+=`<div class="card" style="text-align:center;padding:16px"><div style="font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.4">${q[3]}</div>`;
+  if(q[2]==='mc'){q[4].forEach((o,j)=>h+=`<button class="quiz-option" data-i="${j}" onclick="speedAnswer('mc',${j},${q[5]})">${o}</button>`);}
+  else if(q[2]==='ox'){h+=`<div class="ox-options"><button class="ox-btn" onclick="speedAnswer('ox',1,${q[5]})">⭕</button><button class="ox-btn" onclick="speedAnswer('ox',0,${q[5]})">❌</button></div>`;}
+  else{h+=`<input class="fill-input" id="fill-answer" placeholder="답 입력" onkeydown="if(event.key==='Enter')speedFill()"><button class="btn btn-primary btn-full" style="margin-top:8px" onclick="speedFill()">확인</button>`;}
+  h+='</div><button class="btn btn-outline btn-full" style="margin-top:8px" onclick="clearInterval(speedTimer);speedTimer=null;renderGameTab()">← 포기</button>';
+  $('game-content').innerHTML=h;
+}
+function speedAnswer(type,sel,cor){
+  let correct=sel===cor;
+  if(correct){quizState.score+=10+(quizState.combo>=3?5:0);quizState.combo++;quizState.maxCombo=Math.max(quizState.maxCombo,quizState.combo)}
+  else{quizState.combo=0}
+  if(type==='mc'){document.querySelectorAll('.quiz-option').forEach(b=>{b.classList.add('disabled');const j=+b.dataset.i;if(j===cor)b.classList.add('correct');if(j===sel&&!correct)b.classList.add('wrong')})}
+  else{document.querySelectorAll('.ox-btn').forEach((b,i)=>{const v=i===0?1:0;if(v===cor)b.classList.add('correct');if(v===sel&&!correct)b.classList.add('wrong')})}
+  setTimeout(()=>{quizState.current++;renderSpeedQ()},correct?400:800);
+}
+function speedFill(){
+  const inp=$('fill-answer');if(!inp)return;
+  const q=quizState.questions[quizState.current];const correct=inp.value.trim()===q[4];
+  if(correct){quizState.score+=10+(quizState.combo>=3?5:0);quizState.combo++;quizState.maxCombo=Math.max(quizState.maxCombo,quizState.combo)}else{quizState.combo=0}
+  inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
+  if(!correct){const h=document.createElement('span');h.style.cssText='margin-left:8px;color:var(--accent);font-weight:700';h.textContent='→ '+q[4];inp.parentNode.appendChild(h)}
+  setTimeout(()=>{quizState.current++;renderSpeedQ()},correct?400:800);
+}
+function endSpeedQuiz(){
+  const s=quizState.score;const best=LS.get('speedBest',0);
+  if(s>best)LS.set('speedBest',s);
+  addXP(Math.floor(s/2));
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'⚡스피드',score:s,total:0,date:today()});LS.set('quizHistory',qh);checkBadges();
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">⚡</div>
+    <div style="font-size:32px;font-weight:800;color:var(--primary)">${s}점</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최대 콤보: ${quizState.maxCombo} · 최고기록: ${Math.max(s,best)}</div>
+    ${s>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s/2)} XP</div>
+    <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
+}
+
+// ---- Survival Mode ----
+function startSurvival(){
+  const pool=shuffleArray(getFilteredQuiz());
+  if(!pool.length){toast('문제가 없습니다','error');return}
+  quizState={questions:pool,current:0,score:0,lives:3,mode:'서바이벌'};renderSurvivalQ();
+}
+function renderSurvivalQ(){
+  if(quizState.current>=quizState.questions.length){quizState.questions=shuffleArray(getFilteredQuiz());quizState.current=0}
+  const q=quizState.questions[quizState.current];
+  let h=`<div class="lives">${'❤️'.repeat(quizState.lives)}${'🖤'.repeat(3-quizState.lives)}</div>
+    <div style="text-align:center;font-size:24px;font-weight:800;color:var(--primary);margin-bottom:12px">🛡️ ${quizState.score}연속</div>`;
+  h+=`<div class="card" style="text-align:center;padding:16px"><div style="font-size:15px;font-weight:600;margin-bottom:14px;line-height:1.4">${q[3]}</div>`;
+  if(q[2]==='mc'){q[4].forEach((o,j)=>h+=`<button class="quiz-option" data-i="${j}" onclick="survivalAns('mc',${j},${q[5]})">${o}</button>`);}
+  else if(q[2]==='ox'){h+=`<div class="ox-options"><button class="ox-btn" onclick="survivalAns('ox',1,${q[5]})">⭕</button><button class="ox-btn" onclick="survivalAns('ox',0,${q[5]})">❌</button></div>`;}
+  else{h+=`<input class="fill-input" id="fill-answer" placeholder="답 입력" onkeydown="if(event.key==='Enter')survivalFill()"><button class="btn btn-primary btn-full" style="margin-top:8px" onclick="survivalFill()">확인</button>`;}
+  h+='</div><button class="btn btn-outline btn-full" style="margin-top:8px" onclick="renderGameTab()">← 포기</button>';
+  $('game-content').innerHTML=h;
+}
+function survivalAns(type,sel,cor){
+  const correct=sel===cor;
+  if(type==='mc'){document.querySelectorAll('.quiz-option').forEach(b=>{b.classList.add('disabled');const j=+b.dataset.i;if(j===cor)b.classList.add('correct');if(j===sel&&!correct)b.classList.add('wrong')})}
+  else{document.querySelectorAll('.ox-btn').forEach((b,i)=>{const v=i===0?1:0;if(v===cor)b.classList.add('correct');if(v===sel&&!correct)b.classList.add('wrong')})}
+  if(correct)quizState.score++;else quizState.lives--;
+  setTimeout(()=>{if(quizState.lives<=0)endSurvival();else{quizState.current++;renderSurvivalQ()}},correct?500:1000);
+}
+function survivalFill(){
+  const inp=$('fill-answer');if(!inp)return;const q=quizState.questions[quizState.current];
+  const correct=inp.value.trim()===q[4];inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
+  if(!correct){const h=document.createElement('span');h.style.cssText='margin-left:8px;color:var(--accent);font-weight:700';h.textContent='→ '+q[4];inp.parentNode.appendChild(h)}
+  if(correct)quizState.score++;else quizState.lives--;
+  setTimeout(()=>{if(quizState.lives<=0)endSurvival();else{quizState.current++;renderSurvivalQ()}},correct?500:1000);
+}
+function endSurvival(){
+  const s=quizState.score;const best=LS.get('survivalBest',0);if(s>best)LS.set('survivalBest',s);
+  addXP(s*5);const qh=LS.get('quizHistory',[]);qh.push({mode:'🛡️서바이벌',score:s,total:0,date:today()});LS.set('quizHistory',qh);checkBadges();
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">🛡️</div>
+    <div style="font-size:32px;font-weight:800;color:var(--primary)">${s}연속 정답</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최고기록: ${Math.max(s,best)}</div>
+    ${s>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${s*5} XP</div>
+    <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
+}
+
+// ---- Memory Match Game ----
+let matchState=null;
+function startMatchGame(){
+  const cards=shuffleArray(getFilteredCards()).slice(0,6);
+  if(cards.length<4){toast('카드가 부족합니다','error');return}
+  const pairs=[];cards.forEach(c=>{pairs.push({id:c[2],text:c[2],pair:c[2]});pairs.push({id:c[2],text:c[3],pair:c[2]})});
+  matchState={cells:shuffleArray(pairs),revealed:[],matched:[],moves:0,startTime:Date.now()};
+  renderMatchGame();
+}
+function renderMatchGame(){
+  const m=matchState;const allDone=m.matched.length===m.cells.length;
+  let h=`<div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:18px;font-weight:700">🧩 용어 매칭</div>
+    <div style="font-size:13px;color:var(--text-secondary)">한국어↔영어 짝을 맞추세요 · ${m.moves}회</div>
+  </div><div class="memory-grid">`;
+  m.cells.forEach((c,i)=>{
+    const isRevealed=m.revealed.includes(i);const isMatched=m.matched.includes(i);
+    if(isMatched)h+=`<div class="memory-cell matched">${c.text}</div>`;
+    else if(isRevealed)h+=`<div class="memory-cell revealed">${c.text}</div>`;
+    else h+=`<div class="memory-cell" onclick="matchTap(${i})">?</div>`;
+  });
+  h+='</div>';
+  if(allDone){
+    const sec=Math.round((Date.now()-m.startTime)/1000);
+    const mc=LS.get('matchClears',0);LS.set('matchClears',mc+1);
+    addXP(30);checkBadges();
+    const qh=LS.get('quizHistory',[]);qh.push({mode:'🧩매칭',score:m.moves,total:0,date:today()});LS.set('quizHistory',qh);
+    h+=`<div style="text-align:center;padding:16px"><div style="font-size:40px">🎉</div>
+      <div style="font-size:16px;font-weight:700;margin:8px 0">${m.moves}회 만에 클리어! (${sec}초)</div>
+      <div style="font-size:14px;color:var(--secondary);font-weight:700">+30 XP</div></div>`;
+  }
+  h+=`<button class="btn btn-outline btn-full" style="margin-top:12px" onclick="renderGameTab()">← 뒤로</button>`;
+  $('game-content').innerHTML=h;
+}
+function matchTap(i){
+  const m=matchState;if(!m||m.revealed.includes(i)||m.matched.includes(i))return;
+  if(m.revealed.length>=2)return;
+  m.revealed.push(i);renderMatchGame();
+  if(m.revealed.length===2){
+    m.moves++;
+    const[a,b]=m.revealed;
+    if(m.cells[a].pair===m.cells[b].pair&&a!==b){
+      setTimeout(()=>{m.matched.push(a,b);m.revealed=[];renderMatchGame()},500);
+    }else{
+      setTimeout(()=>{m.revealed=[];renderMatchGame()},800);
+    }
+  }
+}
+
+// ---- Flashcard Game (Leitner SRS) ----
+function getDueCards(){
+  const cards=getFilteredCards();const prog=getCardProgress();const now=new Date();
+  return cards.filter(c=>{
+    const key=c[0]+'_'+c[1]+'_'+c[2];const p=prog[key]||{box:0,lastReview:null};
+    if(!p.lastReview)return true;
+    const diff=Math.floor((now-new Date(p.lastReview))/(86400000));
+    return diff>=(SRS_INTERVALS[p.box]||0);
+  }).sort((a,b)=>{const pa=(getCardProgress()[a[0]+'_'+a[1]+'_'+a[2]]||{box:0}).box;const pb=(getCardProgress()[b[0]+'_'+b[1]+'_'+b[2]]||{box:0}).box;return pa-pb});
+}
+function startFlashcardGame(){
+  const due=getDueCards();
+  if(!due.length){const all=shuffleArray(getFilteredCards());if(!all.length){toast('카드가 없습니다','error');return}fcState={cards:all,current:0,flipped:false}}
+  else fcState={cards:due,current:0,flipped:false};
+  renderFC();
+}
+function renderFC(){
+  if(!fcState||fcState.current>=fcState.cards.length){toast('카드 복습 완료! 🎉','success');renderGameTab();return}
+  const c=fcState.cards[fcState.current];const key=c[0]+'_'+c[1]+'_'+c[2];
+  const prog=getCardProgress();const p=prog[key]||{box:0};const track=TRACKS.find(t=>t[0]===c[0]);
+  const rem=fcState.cards.length-fcState.current;
+  let h=`<div style="text-align:center;font-size:13px;color:var(--text-secondary);margin-bottom:8px">${track?track[2]+' ':''} ${fcState.current+1}/${fcState.cards.length} · 남은 ${rem}장</div>
+  <div class="fc-box-indicator">${[0,1,2,3,4].map(i=>`<div class="fc-box-dot ${i<=p.box?'active':''}"></div>`).join('')}</div>
+  <div class="fc-container" onclick="fcFlip()">
+    <div class="fc-card ${fcState.flipped?'flipped':''}">
+      <div class="fc-face fc-front"><div class="fc-main">${c[2]}</div><div class="fc-sub">${c[3]}</div><div class="fc-hint">탭하여 뒤집기</div></div>
+      <div class="fc-face fc-back"><div class="fc-main">${c[4]}</div><div class="fc-sub">${c[5]}</div></div>
+    </div>
+  </div>`;
+  if(fcState.flipped){h+=`<div class="fc-actions"><button class="fc-action-btn fc-dunno" onclick="fcAns(false)">😕 몰라요</button><button class="fc-action-btn fc-know" onclick="fcAns(true)">😊 알아요</button></div>`}
+  else{h+='<div style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:12px">카드를 탭하여 뒤집으세요</div>'}
+  h+=`<button class="btn btn-outline btn-full" style="margin-top:16px" onclick="fcState=null;renderGameTab()">← 그만하기</button>`;
+  $('game-content').innerHTML=h;
+}
+function fcFlip(){if(fcState){fcState.flipped=!fcState.flipped;renderFC()}}
+function fcAns(know){
+  const c=fcState.cards[fcState.current];const key=c[0]+'_'+c[1]+'_'+c[2];
+  const prog=getCardProgress();const p=prog[key]||{box:0};
+  p.box=know?Math.min(4,p.box+1):Math.max(0,p.box-1);p.lastReview=today();prog[key]=p;setCardProgress(prog);
+  const cr=LS.get('cardReviews',0);LS.set('cardReviews',cr+1);
+  fcState.current++;fcState.flipped=false;renderFC();checkBadges();
+}
+
+/* ===== HOME TAB ===== */
+function renderHomeTab(){
+  const xp=getXP();const lv=Math.floor(Math.sqrt(xp/100));
+  const att=LS.get('attendance',{});const streak=calcStreak(att);
+  const prog=LS.get('progress',{});
+  const completedCount=Object.values(prog).filter(v=>v===true).length;
+  const lastLesson=LS.get('lastLesson',null);
+  const allTerms=[];
+  LESSONS.forEach(l=>{if(l[6])l[6].forEach(t=>allTerms.push({term:t,track:l[0],lesson:l[1]}))});
+  const dayIdx=Math.floor(Date.now()/86400000)%allTerms.length;
+  const todayTerm=allTerms[dayIdx];
+  const dailyQuiz=LS.get('dailyQuiz',{});const dailyDone=dailyQuiz.date===today();
+  const due=getDueCards().length;
+
+  let html=`<div class="home-section"><div class="card" style="text-align:center;padding:20px">
+    <div style="font-size:40px;margin-bottom:8px">${TREES[Math.min(lv,TREES.length-1)]}</div>
+    <div style="font-size:20px;font-weight:800">Lv.${lv}</div>
+    <div style="font-size:13px;color:var(--text-secondary)">${xp} XP · 🔥 ${streak}일 연속</div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${completedCount}/57 레슨 완료</div>
+  </div></div>`;
+  if(todayTerm){
+    html+=`<div class="home-section"><div class="home-section-title">💡 오늘의 용어</div>
+    <div class="today-term-card"><div style="font-size:20px;font-weight:700;margin-bottom:4px">${todayTerm.term[0]}</div>
+    <div style="font-size:16px;opacity:.9;margin-bottom:8px">${todayTerm.term[1]}</div>
+    <div style="font-size:13px;opacity:.8;line-height:1.5">${todayTerm.term[2]}</div></div></div>`;
+  }
+  if(lastLesson){
+    const track=TRACKS.find(t=>t[0]===lastLesson.track);
+    const nn=lastLesson.lesson+1;const nl=LESSONS.find(l=>l[0]===lastLesson.track&&l[1]===nn);
+    if(track&&nl){
+      html+=`<div class="home-section"><div class="home-section-title">▶️ 이어서 학습</div>
+      <div class="card" style="cursor:pointer" onclick="switchTab('learn');showTrackLessons('${lastLesson.track}')">
+        <div style="font-size:14px;font-weight:700">${track[2]} ${track[3]}</div>
+        <div style="font-size:13px;color:var(--text-secondary)">레슨 ${nn}: ${nl[3]}</div></div></div>`;
+    }
+  }
+  html+=`<div class="home-section"><div class="home-section-title">🎯 오늘의 목표</div>
+  <div class="card" style="padding:12px 16px">
+    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>📖 레슨 완료</span><span>${completedCount>0?'✅':'⬜'}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>🎮 일일 퀴즈</span><span>${dailyDone?'✅':'⬜'}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:6px 0"><span>🃏 플래시카드</span><span>${due===0?'✅':'⬜ '+due+'장'}</span></div>
+  </div></div>`;
+  html+=`<div class="home-section"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+    <button class="btn btn-primary btn-full" onclick="switchTab('learn')">📖 학습</button>
+    <button class="btn btn-accent btn-full" onclick="switchTab('game')">🎮 게임</button>
+    <button class="btn btn-full" style="background:var(--secondary);color:#fff" onclick="switchTab('vocab')">📝 단어장</button>
+  </div></div>`;
+  $('home-content').innerHTML=html;
+}
+
+/* ===== MY TAB ===== */
+function renderMyTab(){
+  const xp=getXP();const lv=Math.floor(Math.sqrt(xp/100));
+  const att=LS.get('attendance',{});const streak=calcStreak(att);
+  const prog=LS.get('progress',{});const completedCount=Object.values(prog).filter(v=>v===true).length;
+  const qh=LS.get('quizHistory',[]);const earned=LS.get('badges',[]);const bm=LS.get('bookmarks',[]);
+
+  let html=`<div class="sub-tabs">
+    <button class="sub-tab active" onclick="showMySub(this,'my-dash')">📊 대시보드</button>
+    <button class="sub-tab" onclick="showMySub(this,'my-badges')">🏅 뱃지</button>
+    <button class="sub-tab" onclick="showMySub(this,'my-bookmarks')">🔖 북마크</button>
+    <button class="sub-tab" onclick="showMySub(this,'my-settings')">⚙️ 설정</button>
+  </div>`;
+  html+=`<div id="my-dash" class="sub-content active">
+    <div class="card" style="text-align:center;padding:20px"><div style="font-size:48px">${TREES[Math.min(lv,TREES.length-1)]}</div>
+    <div style="font-size:24px;font-weight:800;margin-top:4px">Lv.${lv}</div><div style="font-size:14px;color:var(--text-secondary)">${xp} XP</div></div>
+    <div class="stat-row"><span class="stat-label">🔥 연속 출석</span><span class="stat-value">${streak}일</span></div>
+    <div class="stat-row"><span class="stat-label">📖 완료 레슨</span><span class="stat-value">${completedCount}/57</span></div>
+    <div class="stat-row"><span class="stat-label">🎮 게임 횟수</span><span class="stat-value">${qh.length}회</span></div>
+    <div class="stat-row"><span class="stat-label">⚡ 스피드 최고</span><span class="stat-value">${LS.get('speedBest',0)}점</span></div>
+    <div class="stat-row"><span class="stat-label">🛡️ 서바이벌 최고</span><span class="stat-value">${LS.get('survivalBest',0)}연속</span></div>
+    <div class="stat-row"><span class="stat-label">🃏 카드 복습</span><span class="stat-value">${LS.get('cardReviews',0)}장</span></div>
+    <div class="stat-row"><span class="stat-label">🏅 뱃지</span><span class="stat-value">${earned.length}/${BADGE_DEFS.length}</span></div>
+    <div style="font-size:14px;font-weight:700;margin:16px 0 8px">📅 출석 캘린더</div>`;
+  html+=renderCalendar(att)+'</div>';
+  html+='<div id="my-badges" class="sub-content"><div class="badge-grid">';
+  BADGE_DEFS.forEach(b=>{const e=earned.includes(b.id);html+=`<div class="badge-item ${e?'earned':''}"><span class="badge-icon">${e?b.icon:'🔒'}</span><span class="badge-name">${b.name}</span></div>`});
+  html+='</div></div>';
+  html+='<div id="my-bookmarks" class="sub-content">';
+  if(!bm.length)html+='<div class="empty-state"><span class="emoji">🔖</span><p>북마크가 없습니다</p></div>';
+  else bm.forEach(key=>{
+    if(key.startsWith('term_')){
+      const parts=key.replace('term_','').split('_');const tid=parts[0];
+      html+=`<div class="card" style="padding:12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px;font-weight:600">${parts.slice(2).join('_')}</div>
+        <button class="bookmark-btn" onclick="toggleBookmark('${key}');renderMyTab()">🔖</button></div>`;
+    } else {
+      const[tid,num]=key.split('_');const lesson=LESSONS.find(l=>l[0]===tid&&l[1]===+num);const track=TRACKS.find(t=>t[0]===tid);
+      if(lesson&&track)html+=`<div class="card" style="padding:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="switchTab('learn');openLesson('${tid}',${num})">
+        <div><div style="font-size:13px;font-weight:600">${track[2]} ${lesson[3]}</div><div style="font-size:11px;color:var(--text-secondary)">${lesson[4]}</div></div>
+        <button class="bookmark-btn" onclick="event.stopPropagation();toggleBookmark('${key}');renderMyTab()">🔖</button></div>`;
+    }
+  });
+  html+='</div>';
+  html+=`<div id="my-settings" class="sub-content"><div class="card">
+    <div class="setting-item"><div><div class="setting-label">🌙 다크모드</div><div class="setting-desc">어두운 테마</div></div>
+      <button class="toggle-switch ${document.documentElement.getAttribute('data-theme')==='dark'?'on':''}" onclick="toggleTheme();this.classList.toggle('on')"></button></div>
+    <div class="setting-item"><div><div class="setting-label">💾 백업</div><div class="setting-desc">JSON 내보내기</div></div>
+      <button class="btn btn-sm btn-outline" onclick="exportData()">내보내기</button></div>
+    <div class="setting-item"><div><div class="setting-label">📥 복원</div><div class="setting-desc">백업에서 복원</div></div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('import-file').click()">가져오기</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"></div>
+    <div class="setting-item"><div><div class="setting-label">🗑️ 초기화</div><div class="setting-desc">모든 데이터 삭제</div></div>
+      <button class="btn btn-sm" style="background:var(--danger-light);color:var(--danger)" onclick="resetData()">초기화</button></div>
+  </div><div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-top:20px">학습 노트 LearnNote v1.0<br>디지털 마케팅 & 앱개발 학습 PWA</div></div>`;
+  $('my-content').innerHTML=html;
+}
+function showMySub(btn,id){
+  btn.parentElement.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('#tab-my .sub-content').forEach(c=>c.classList.remove('active'));$(id).classList.add('active');
+}
+function renderCalendar(att){
+  const now=new Date();const y=now.getFullYear();const m=now.getMonth();
+  const fd=new Date(y,m,1).getDay();const dim=new Date(y,m+1,0).getDate();
+  const mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  let h=`<div style="text-align:center;font-size:14px;font-weight:700;margin-bottom:8px">${y}년 ${mn[m]}</div><div class="calendar-grid">`;
+  ['일','월','화','수','목','금','토'].forEach(d=>h+=`<div class="cal-header">${d}</div>`);
+  for(let i=0;i<fd;i++)h+='<div class="cal-day other-month"></div>';
+  for(let d=1;d<=dim;d++){const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="cal-day ${ds===today()?'today':''} ${att[ds]?'attended':''}">${d}</div>`}
+  h+='</div>';return h;
+}
+
+/* ===== SEARCH ===== */
+function doSearch(query){
+  if(!query||query.length<2){$('search-results').innerHTML='';return}
+  const q=query.toLowerCase();let results=[];
+  LESSONS.forEach(l=>{
+    if(l[3].toLowerCase().includes(q)||l[4].toLowerCase().includes(q)){results.push({icon:'📖',title:l[3],sub:l[4],action:`closeModal('search-modal');switchTab('learn');openLesson('${l[0]}',${l[1]})`})}
+    if(l[6])l[6].forEach(t=>{if(t[0].toLowerCase().includes(q)||t[1].includes(q)){results.push({icon:'📝',title:`${t[0]} (${t[1]})`,sub:t[2],action:`closeModal('search-modal');switchTab('learn');openLesson('${l[0]}',${l[1]})`})}});
+  });
+  let h='';if(!results.length)h='<div class="empty-state"><p>검색 결과가 없습니다</p></div>';
+  else results.slice(0,20).forEach(r=>{h+=`<div class="card" style="padding:10px 14px;cursor:pointer" ${r.action?`onclick="${r.action}"`:''}>
+    <div style="display:flex;align-items:center;gap:8px"><span>${r.icon}</span><div><div style="font-size:13px;font-weight:600">${r.title}</div><div style="font-size:11px;color:var(--text-secondary)">${r.sub}</div></div></div></div>`});
+  $('search-results').innerHTML=h;
+}
+
+/* ===== BACKUP / RESTORE ===== */
+function exportData(){
+  const data={};['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','theme','speedBest','survivalBest','matchClears'].forEach(k=>{const v=LS.get(k);if(v!==null)data[k]=v});
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`learnnote-backup-${today()}.json`;a.click();toast('백업 완료','success');
+}
+function importData(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);Object.entries(data).forEach(([k,v])=>LS.set(k,v));toast('복원 완료!','success');setTimeout(()=>location.reload(),1000)}catch{toast('잘못된 파일','error')}};
+  reader.readAsText(file);event.target.value='';
+}
+function resetData(){
+  if(!confirm('모든 학습 데이터가 삭제됩니다. 계속?'))return;
+  ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','matchClears'].forEach(k=>localStorage.removeItem('ln_'+k));
+  toast('초기화 완료','success');setTimeout(()=>location.reload(),800);
+}
+
+/* ===== RENDER DISPATCHER ===== */
+function renderTab(tab){
+  switch(tab){
+    case 'home':renderHomeTab();break;
+    case 'vocab':renderVocabTab();break;
+    case 'learn':renderLearnTab();break;
+    case 'game':renderGameTab();break;
+    case 'my':renderMyTab();break;
+  }
+}
+
+/* ===== INIT ===== */
+(function init(){
+  const theme=LS.get('theme','');
+  if(theme==='dark'){document.documentElement.setAttribute('data-theme','dark');document.querySelector('.header-btn:nth-child(2)').textContent='☀️'}
+  checkAttendance();renderTab('home');
+  window.addEventListener('online',()=>$('offline-banner').classList.remove('show'));
+  window.addEventListener('offline',()=>$('offline-banner').classList.add('show'));
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+  document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')})});
+})();
+</script>
+</body>
+</html>

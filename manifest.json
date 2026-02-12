@@ -1,0 +1,39 @@
+{
+  "name": "학습 노트 / LearnNote",
+  "short_name": "LearnNote",
+  "description": "디지털 마케팅 & 앱개발 학습 PWA / Digital Marketing & App Dev Learning",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "categories": ["education"],
+  "lang": "ko",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%236366f1' width='512' height='512' rx='100'/><text x='256' y='200' text-anchor='middle' font-size='120' fill='white' font-family='Arial' font-weight='bold'>Learn</text><text x='256' y='320' text-anchor='middle' font-size='80' fill='%23f59e0b' font-family='Arial'>Note</text><text x='256' y='430' text-anchor='middle' font-size='80'>📖🎯</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%236366f1' width='512' height='512' rx='100'/><text x='256' y='200' text-anchor='middle' font-size='120' fill='white' font-family='Arial' font-weight='bold'>Learn</text><text x='256' y='320' text-anchor='middle' font-size='80' fill='%23f59e0b' font-family='Arial'>Note</text><text x='256' y='430' text-anchor='middle' font-size='80'>📖🎯</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%236366f1' width='512' height='512' rx='0'/><text x='256' y='300' text-anchor='middle' font-size='200' fill='white' font-family='Arial' font-weight='bold'>📖</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%236366f1' width='512' height='512' rx='0'/><text x='256' y='300' text-anchor='middle' font-size='200' fill='white' font-family='Arial' font-weight='bold'>📖</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
