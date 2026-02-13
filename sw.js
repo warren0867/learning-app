@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learnnote-v2';
+const CACHE_NAME = 'learnnote-v3';
 const STATIC_ASSETS = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', event => {
