@@ -222,6 +222,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tip-box ul{padding-left:16px;font-size:12px;line-height:1.6}
 .tool-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tool-chip{padding:4px 10px;border-radius:16px;background:var(--card);border:1px solid var(--border);font-size:11px;font-weight:600}
+/* Weakness analysis & Smart review */
+.weakness-card{padding:14px;border-left:4px solid var(--danger);margin-bottom:8px}
+.weakness-bar{height:6px;border-radius:3px;background:var(--border);margin-top:6px;overflow:hidden}
+.weakness-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.smart-review-btn{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;padding:14px;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;width:100%;text-align:center;transition:transform .2s;margin-bottom:10px}
+.smart-review-btn:active{transform:scale(.97)}
+.review-streak{display:flex;gap:4px;align-items:center;justify-content:center;margin:8px 0}
+.review-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.review-dot.done{background:var(--accent);color:#fff}
+.review-dot.current{background:var(--primary);color:#fff;animation:pulse .8s infinite}
+.review-dot.pending{background:var(--border);color:var(--text-secondary)}
+.daily-mission{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);margin-bottom:8px;transition:all .2s}
+.daily-mission.complete{border-color:var(--accent);background:var(--accent-light)}
+.daily-mission .mission-icon{font-size:20px}
+.daily-mission .mission-text{flex:1;font-size:13px;font-weight:600}
+.daily-mission .mission-check{font-size:18px}
+.speed-review-card{text-align:center;padding:30px 20px;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+.speed-review-term{font-size:24px;font-weight:800;color:var(--primary);margin-bottom:8px}
+.speed-review-sub{font-size:16px;color:var(--text-secondary);margin-bottom:16px}
+.speed-review-def{font-size:15px;line-height:1.6;color:var(--text)}
+.progress-ring{position:relative;width:64px;height:64px;margin:0 auto 8px}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring circle{fill:none;stroke-width:5}
+.progress-ring .ring-bg{stroke:var(--border)}
+.progress-ring .ring-fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .6s}
+.progress-ring .ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
 @media(min-width:480px){#app-content{max-width:480px;margin-left:auto;margin-right:auto}#bottom-nav{max-width:480px;left:50%;transform:translateX(-50%)}#app-header{max-width:480px;left:50%;transform:translateX(-50%)}#gami-bar{max-width:480px;left:50%;transform:translateX(-50%)}.modal-content{max-width:480px}}
 </style>
 </head>
@@ -663,7 +689,216 @@ const QUIZ_POOL=[
 // PERF L3
 ['perf',3,'mc','전 세계 서버에 콘텐츠를 캐싱하여 빠르게 전달하는 시스템은?',['DNS','CDN','VPN','SSL'],1,'CDN(Content Delivery Network)은 전 세계 서버에 콘텐츠를 캐싱합니다.'],
 ['perf',3,'ox','Service Worker는 오프라인 캐싱을 지원할 수 있다.',null,1,'Service Worker는 브라우저 백그라운드에서 캐싱과 오프라인 지원을 제공합니다.'],
-['perf',3,'fill','자주 사용되는 데이터를 임시 저장하여 빠르게 접근하는 기법을 ___이라 한다.','캐싱',0,'캐싱(Caching)은 자주 사용하는 데이터를 임시 저장하는 기법입니다.']
+['perf',3,'fill','자주 사용되는 데이터를 임시 저장하여 빠르게 접근하는 기법을 ___이라 한다.','캐싱',0,'캐싱(Caching)은 자주 사용하는 데이터를 임시 저장하는 기법입니다.'],
+// SEO 추가
+['seo',1,'mc','구글 검색결과에서 Featured Snippet을 얻기 위한 효과적인 방법은?',['긴 키워드 사용','질문 형식 제목과 명확한 답변 제공','이미지 많이 삽입','외부 링크 제거'],1,'Featured Snippet은 사용자 질문에 직접 답하는 구조화된 콘텐츠를 선호합니다.'],
+['seo',1,'ox','로컬SEO에서 Google My Business 프로필은 필수가 아니다.',null,0,'Google My Business는 로컬SEO의 핵심이며 지역 검색 결과에 필수적입니다.'],
+['seo',2,'mc','백링크의 품질을 평가할 때 가장 중요한 지표는?',['링크 개수','도메인 권위도(Domain Authority)','링크 텍스트 길이','링크 색상'],1,'도메인 권위도가 높은 사이트의 백링크가 SEO에 훨씬 더 효과적입니다.'],
+['seo',2,'fill','웹사이트의 크롤링 효율을 높이기 위해 사용하는 XML 파일은 _____입니다.','sitemap',0,'XML Sitemap은 검색엔진이 사이트를 효율적으로 크롤링하도록 돕습니다.'],
+['seo',2,'ox','301 리다이렉트는 페이지의 SEO 가치를 대부분 전달한다.',null,1,'301 영구 리다이렉트는 원본 페이지의 SEO 권위를 새 페이지로 약 90-99% 전달합니다.'],
+['seo',3,'mc','E-E-A-T에서 첫 번째 E가 의미하는 것은?',['Efficiency','Experience','Excellence','Evaluation'],1,'E-E-A-T는 Experience, Expertise, Authoritativeness, Trustworthiness를 의미합니다.'],
+['seo',3,'fill','페이지 로딩 속도가 SEO에 미치는 영향을 측정하는 구글 지표는 Core Web _____입니다.','Vitals',0,'Core Web Vitals는 LCP, FID, CLS 등 사용자 경험을 측정하는 핵심 지표입니다.'],
+['seo',3,'mc','키워드 카니발라이제이션 문제를 해결하는 방법은?',['키워드 더 추가','유사 페이지 통합 또는 차별화','모든 페이지 삭제','메타태그 제거'],1,'같은 키워드로 경쟁하는 페이지들을 통합하거나 명확히 차별화해야 합니다.'],
+['seo',1,'ox','Schema Markup은 검색엔진이 콘텐츠를 이해하는데 도움을 준다.',null,1,'Schema Markup(구조화 데이터)은 검색엔진에게 콘텐츠의 의미를 명확히 전달합니다.'],
+['seo',3,'mc','음성 검색 최적화를 위한 가장 중요한 전략은?',['단어 수 최소화','자연스러운 대화형 키워드 사용','이미지 최적화','동영상 삽입'],1,'음성 검색은 자연스러운 질문 형태로 이루어집니다.'],
+// SEM 추가
+['sem',1,'mc','Google Ads에서 품질평가점수에 영향을 주는 요소가 아닌 것은?',['광고 연관성','예상 클릭률','광고 예산','랜딩페이지 경험'],2,'품질평가점수는 광고 연관성, 예상 CTR, 랜딩페이지 경험으로 결정되며 예산은 무관합니다.'],
+['sem',1,'ox','CPC가 낮을수록 항상 좋은 광고 캠페인이다.',null,0,'CPC가 낮아도 전환율이 낮으면 ROI가 나쁠 수 있습니다.'],
+['sem',2,'fill','광고가 클릭될 때마다 과금되는 방식은 _____입니다.','CPC',0,'CPC(Cost Per Click)는 클릭당 비용을 지불하는 가장 일반적인 광고 과금 방식입니다.'],
+['sem',2,'mc','리마케팅 캠페인의 주요 목적은?',['신규 고객 확보','웹사이트 방문자 재타겟팅','브랜드 인지도 향상','경쟁사 고객 유치'],1,'리마케팅은 이미 사이트를 방문한 사용자에게 다시 광고를 노출하여 전환을 유도합니다.'],
+['sem',2,'ox','Google Ads에서 광고 순위는 입찰가만으로 결정된다.',null,0,'광고 순위는 입찰가 × 품질평가점수로 결정됩니다.'],
+['sem',3,'mc','ROAS(Return on Ad Spend)가 300%라는 의미는?',['광고비의 3배 손실','광고비 1원당 3원의 매출','클릭률 300%','전환율 300%'],1,'ROAS 300%는 광고비 대비 매출이 3배라는 의미입니다.'],
+['sem',3,'fill','여러 광고 변형을 동시에 테스트하여 최적의 광고를 찾는 방법을 _____테스트라고 합니다.','A/B',0,'A/B 테스트는 두 개 이상의 광고 버전을 비교하여 성과 좋은 것을 선택합니다.'],
+['sem',1,'mc','부정 키워드(Negative Keywords)의 역할은?',['광고 노출 증가','관련 없는 검색어 제외','품질점수 향상','입찰가 인상'],1,'부정 키워드는 관련 없는 검색어에 광고 노출을 방지하여 예산 낭비를 줄입니다.'],
+['sem',3,'ox','자동 입찰 전략은 수동 입찰보다 항상 우수한 성과를 낸다.',null,0,'자동 입찰은 데이터가 충분할 때 효과적이지만 특수 상황에서는 수동이 나을 수 있습니다.'],
+['sem',2,'mc','광고 확장(Ad Extensions) 사용의 주요 이점은?',['광고비 절감','광고 공간 확대 및 CTR 향상','품질점수 자동 상승','경쟁사 차단'],1,'사이트링크, 전화번호 등 광고 확장은 광고 크기를 키우고 클릭률을 높입니다.'],
+// SNS 추가
+['sns',1,'mc','인스타그램 알고리즘에서 가장 중요하게 평가하는 지표는?',['팔로워 수','참여율(Engagement Rate)','게시물 개수','해시태그 개수'],1,'좋아요, 댓글, 저장, 공유 등 참여율이 높을수록 도달률이 증가합니다.'],
+['sns',1,'ox','인스타그램에서 해시태그는 최대 30개까지 사용할 수 있다.',null,1,'인스타그램은 게시물당 최대 30개의 해시태그를 허용합니다.'],
+['sns',2,'fill','유튜브에서 시청자가 동영상을 얼마나 오래 시청하는지를 나타내는 지표는 시청 _____입니다.','지속시간',0,'시청 지속시간(Watch Time)은 유튜브 알고리즘의 가장 중요한 순위 결정 요소입니다.'],
+['sns',2,'mc','틱톡 FYP에 노출되기 위한 핵심 전략은?',['긴 동영상 제작','초반 3초 안에 주목 끌기','팔로워 많이 확보','광고 집행'],1,'틱톡은 처음 3초가 매우 중요합니다.'],
+['sns',2,'ox','마이크로 인플루언서가 메가 인플루언서보다 참여율이 높은 경향이 있다.',null,1,'마이크로 인플루언서는 타겟이 명확하고 커뮤니티가 긴밀하여 참여율이 높습니다.'],
+['sns',3,'mc','인플루언서 마케팅 ROI를 측정할 때 가장 중요한 지표는?',['팔로워 증가','참여율 및 전환율','게시물 개수','좋아요 수'],1,'최종 목표는 전환이므로 참여율과 실제 전환율을 함께 측정해야 합니다.'],
+['sns',3,'fill','인스타그램에서 팔로워와 실시간으로 소통할 수 있는 기능은 _____입니다.','라이브',0,'인스타그램 라이브는 실시간 방송으로 즉각적인 소통이 가능합니다.'],
+['sns',1,'mc','페이스북 광고에서 Lookalike Audience의 목적은?',['기존 고객 재타겟팅','기존 고객과 유사한 신규 고객 발견','경쟁사 타겟팅','무작위 노출'],1,'Lookalike Audience는 기존 고객 데이터를 기반으로 유사 특성의 신규 고객을 찾습니다.'],
+['sns',3,'ox','LinkedIn은 B2B 마케팅에 가장 효과적인 SNS 플랫폼이다.',null,1,'LinkedIn은 전문가 네트워크로 B2B 마케팅에 최적화되어 있습니다.'],
+['sns',2,'mc','인스타그램 Reels의 최적 길이는?',['5초 이하','7-15초','30초 이상','1분 이상'],1,'7-15초 Reels가 완시청률이 높아 알고리즘에 유리합니다.'],
+// CM 추가
+['cm',1,'mc','콘텐츠 마케팅에서 TOFU는 어느 단계인가?',['인지도 단계','고려 단계','구매 단계','충성도 단계'],0,'TOFU(Top of Funnel)는 인지도 단계로 교육적 콘텐츠를 제공합니다.'],
+['cm',1,'ox','에버그린 콘텐츠는 시간이 지나도 가치가 유지되는 콘텐츠다.',null,1,'에버그린 콘텐츠는 시간에 구애받지 않는 지속적 가치가 있습니다.'],
+['cm',2,'fill','블로그 글의 가독성을 높이기 위해 사용하는 H1, H2, H3를 _____태그라고 합니다.','헤딩',0,'헤딩 태그는 구조화된 콘텐츠를 만들어 SEO와 가독성을 높입니다.'],
+['cm',2,'mc','스토리텔링 마케팅에서 가장 중요한 요소는?',['제품 기능 나열','공감과 감정적 연결','가격 강조','경쟁사 비교'],1,'스토리텔링은 고객의 감정을 움직이고 브랜드와 연결시키는 것이 핵심입니다.'],
+['cm',2,'ox','동영상 콘텐츠는 텍스트보다 평균적으로 높은 참여율을 보인다.',null,1,'동영상은 시각과 청각을 동시에 자극하여 참여율과 기억률이 높습니다.'],
+['cm',3,'mc','팟캐스트 마케팅의 주요 장점은?',['제작비 저렴','이동 중 청취 가능 및 높은 몰입도','빠른 제작','모든 연령층 도달'],1,'팟캐스트는 출퇴근, 운동 시 청취하며 긴 시간 몰입도 높게 소비됩니다.'],
+['cm',3,'fill','사용자가 직접 만든 콘텐츠를 활용하는 마케팅 기법을 _____라고 합니다.','UGC',0,'UGC(User Generated Content)는 신뢰도가 높고 제작비가 절감됩니다.'],
+['cm',1,'mc','콘텐츠 캘린더의 주요 목적은?',['콘텐츠 삭제 계획','일관된 게시 일정 관리','광고비 계산','경쟁사 모니터링'],1,'콘텐츠 캘린더는 정기적이고 계획적인 콘텐츠 발행을 가능하게 합니다.'],
+['cm',3,'ox','인포그래픽은 복잡한 데이터를 시각적으로 전달하는데 효과적이다.',null,1,'인포그래픽은 통계, 프로세스 등을 한눈에 이해하기 쉽게 시각화합니다.'],
+['cm',2,'mc','Bounce Rate가 높다는 의미는?',['콘텐츠가 우수함','방문자가 한 페이지만 보고 떠남','전환율이 높음','SEO 순위가 높음'],1,'이탈률이 높으면 방문자가 콘텐츠에 만족하지 못하고 빠르게 떠난다는 의미입니다.'],
+// EM 추가
+['em',1,'mc','이메일 마케팅에서 좋은 오픈율(Open Rate)은?',['5-10%','15-25%','50-60%','80% 이상'],1,'업종에 따라 다르지만 일반적으로 15-25%의 오픈율이 평균적입니다.'],
+['em',1,'ox','이메일 제목에 이모지를 사용하면 오픈율이 증가할 수 있다.',null,1,'이모지는 받은편지함에서 눈에 띄어 오픈율을 높일 수 있습니다.'],
+['em',2,'fill','클릭률을 의미하는 CTR은 Click-Through _____의 약자입니다.','Rate',0,'CTR은 이메일을 열어본 사람 중 링크를 클릭한 비율입니다.'],
+['em',2,'mc','이메일 세그먼테이션의 주요 이점은?',['이메일 개수 증가','맞춤형 메시지로 전환율 향상','발송 비용 절감','스팸 필터 회피'],1,'세그먼테이션은 고객을 그룹화하여 관련성 높은 맞춤 메시지를 보낼 수 있습니다.'],
+['em',2,'ox','이메일 A/B 테스트는 제목만 테스트할 수 있다.',null,0,'제목 외에도 발신자명, CTA 버튼, 이미지, 발송 시간 등 다양한 요소를 테스트할 수 있습니다.'],
+['em',3,'mc','드립 캠페인(Drip Campaign)이란?',['일회성 대량 발송','사전 정의된 일정에 따른 자동 이메일 시리즈','스팸 메일','뉴스레터만 발송'],1,'드립 캠페인은 트리거 이벤트 후 자동으로 순차적 이메일을 발송합니다.'],
+['em',3,'fill','이메일 발신자 인증을 위한 기술 중 하나는 _____입니다.','SPF',0,'SPF, DKIM, DMARC는 이메일 발신자 인증을 위한 주요 기술입니다.'],
+['em',1,'mc','이메일 CTA의 위치는?',['이메일 맨 아래만','눈에 잘 띄는 상단과 하단','제목에만','이미지 안에만'],1,'CTA는 여러 위치에 배치하여 스크롤 위치와 관계없이 클릭 기회를 높입니다.'],
+['em',3,'ox','구독 취소 링크를 숨기면 구독자를 유지할 수 있다.',null,0,'구독 취소 링크는 법적 필수사항이며 숨기면 스팸 신고율이 높아집니다.'],
+['em',2,'mc','이메일 자동화 플랫폼이 아닌 것은?',['Mailchimp','HubSpot','Klaviyo','Photoshop'],3,'Photoshop은 이미지 편집 도구입니다.'],
+// ANA 추가
+['ana',1,'mc','GA4에서 기본 측정 단위는?',['페이지뷰','세션','이벤트','클릭'],2,'GA4는 모든 상호작용을 이벤트 기반으로 추적합니다.'],
+['ana',1,'ox','UTM 파라미터는 광고 캠페인의 트래픽 소스를 추적하는데 사용된다.',null,1,'UTM 파라미터는 트래픽 출처를 정확히 파악합니다.'],
+['ana',2,'fill','GA4에서 사용자가 원하는 행동을 완료한 것을 _____이라고 합니다.','전환',0,'전환(Conversion)은 비즈니스 목표 달성을 의미합니다.'],
+['ana',2,'mc','코호트 분석의 주요 목적은?',['실시간 트래픽 확인','동일 기간 가입 사용자 그룹의 행동 패턴 분석','광고비 계산','SEO 순위 확인'],1,'코호트 분석은 같은 시기에 가입한 사용자 그룹의 리텐션을 비교합니다.'],
+['ana',2,'ox','Bounce Rate가 100%면 모든 방문자가 한 페이지만 보고 떠났다는 의미다.',null,1,'이탈률 100%는 단일 페이지 세션만 발생했음을 의미합니다.'],
+['ana',3,'mc','Looker Studio의 주요 기능은?',['웹사이트 제작','데이터 시각화 대시보드 제작','이메일 발송','소셜미디어 관리'],1,'Looker Studio는 다양한 데이터를 시각화한 커스텀 대시보드를 만듭니다.'],
+['ana',3,'fill','서비스를 계속 사용하는 사용자 비율을 리텐션 또는 _____이라고 합니다.','유지율',0,'리텐션은 사용자가 서비스로 돌아오는 비율입니다.'],
+['ana',1,'mc','GA4 사용자 획득 보고서가 보여주는 정보는?',['재방문 사용자','신규 사용자의 첫 방문 채널','페이지 로딩 속도','이메일 오픈율'],1,'사용자 획득 보고서는 신규 사용자가 어떤 채널을 통해 처음 방문했는지 보여줍니다.'],
+['ana',3,'ox','전환율은 방문자 대비 전환 수를 백분율로 나타낸 것이다.',null,1,'전환율 = (전환 수 / 방문자 수) × 100입니다.'],
+['ana',2,'mc','히트맵 도구로 분석할 수 있는 것은?',['서버 성능','사용자 클릭 및 스크롤 패턴','이메일 오픈율','광고 노출수'],1,'히트맵은 사용자가 어디를 클릭하고 스크롤하는지 시각화합니다.'],
+// CRO 추가
+['cro',1,'mc','A/B 테스트에서 통계적 유의성의 일반적 기준은?',['50% 신뢰도','75% 신뢰도','95% 신뢰도','99.9% 신뢰도'],2,'일반적으로 95% 신뢰도를 통계적 유의성의 기준으로 사용합니다.'],
+['cro',1,'ox','랜딩페이지에서 선택지가 많을수록 전환율이 높아진다.',null,0,'선택 과부하로 인해 선택지가 많으면 오히려 전환율이 낮아집니다.'],
+['cro',2,'fill','사용자가 전환까지 거치는 단계를 전환 _____이라고 합니다.','퍼널',0,'전환 퍼널은 방문 → 관심 → 고려 → 구매 등의 단계를 의미합니다.'],
+['cro',2,'mc','CTA 버튼의 전환율을 높이는 방법은?',['작고 눈에 안 띄게','대조되는 색상과 명확한 행동 동사 사용','페이지 맨 아래만 배치','텍스트만 사용'],1,'명확한 행동 유도와 눈에 띄는 디자인이 중요합니다.'],
+['cro',2,'ox','Exit Intent 팝업은 사용자가 페이지를 떠나려 할 때 표시된다.',null,1,'Exit Intent 기술은 마우스 움직임을 감지해 이탈 직전 팝업을 띄웁니다.'],
+['cro',3,'mc','폼 최적화에서 전환율을 높이는 방법은?',['필드 개수 최대화','필수 입력 필드 최소화','라벨 제거','긴 설명 추가'],1,'입력 필드가 적을수록 폼 완료율이 높아집니다.'],
+['cro',3,'fill','웹사이트의 첫 화면에서 스크롤 없이 보이는 영역을 Above the _____라고 합니다.','Fold',0,'Above the Fold는 가장 중요한 메시지와 CTA를 배치해야 하는 곳입니다.'],
+['cro',1,'mc','신뢰 신호(Trust Signals)로 적절하지 않은 것은?',['고객 후기','보안 인증 마크','무료 배송','복잡한 전문 용어'],3,'신뢰 신호는 후기, 인증, 보증 등이며 복잡한 용어는 오히려 신뢰를 낮춥니다.'],
+['cro',3,'ox','MVT는 여러 요소를 동시에 테스트할 수 있다.',null,1,'MVT는 헤드라인, 이미지, CTA 등 여러 요소의 조합을 동시에 테스트합니다.'],
+['cro',2,'mc','카트 포기율을 줄이는 방법은?',['결제 과정 복잡화','예상치 못한 배송비 추가','간편한 게스트 결제 옵션 제공','느린 페이지 로딩'],2,'게스트 결제, 투명한 가격, 빠른 로딩이 카트 포기를 줄입니다.'],
+// MA 추가
+['ma',1,'mc','마케팅 자동화의 주요 이점은?',['인력 증가','반복 작업 자동화 및 개인화','비용 증가','수동 제어만 가능'],1,'마케팅 자동화는 이메일, 리드 육성 등을 자동화하여 효율성을 높입니다.'],
+['ma',1,'ox','워크플로우는 트리거 이벤트에 따라 자동으로 실행되는 일련의 작업이다.',null,1,'워크플로우는 if-then 조건 기반 자동화입니다.'],
+['ma',2,'fill','잠재고객의 구매 가능성을 점수화하는 기법을 리드 _____라고 합니다.','스코어링',0,'리드 스코어링은 행동, 인구통계 등을 기반으로 리드에 점수를 부여합니다.'],
+['ma',2,'mc','드립 캠페인에서 "드립"의 의미는?',['빠른 발송','점진적으로 천천히 발송','무작위 발송','일회성 발송'],1,'드립 캠페인은 시간차를 두고 이메일을 순차적으로 발송합니다.'],
+['ma',2,'ox','CRM과 마케팅 자동화 도구를 연동하면 더 효과적이다.',null,1,'CRM 연동으로 리드 정보를 실시간 공유하여 전환율이 향상됩니다.'],
+['ma',3,'mc','마케팅 자동화 플랫폼이 아닌 것은?',['HubSpot','Marketo','ActiveCampaign','Excel'],3,'Excel은 스프레드시트이며 나머지는 MA 플랫폼입니다.'],
+['ma',3,'fill','고객 생애 가치를 의미하는 약어는 _____입니다.','LTV',0,'LTV(Lifetime Value)는 고객이 평생 동안 가져다줄 총 수익을 의미합니다.'],
+['ma',1,'mc','리드 너처링의 목적은?',['즉시 판매','잠재고객을 점진적으로 육성하여 구매 준비 상태로 만들기','리드 삭제','광고비 증가'],1,'리드 너처링은 교육 콘텐츠, 이메일 시리즈로 신뢰를 쌓습니다.'],
+['ma',3,'ox','행동 기반 트리거는 사용자 행동에 따라 자동으로 메시지를 발송한다.',null,1,'장바구니 포기, 페이지 방문 등 행동을 감지해 자동 메시지를 발송합니다.'],
+['ma',2,'mc','MQL과 SQL의 차이는?',['MQL은 영업팀, SQL은 마케팅팀','MQL은 마케팅에서 육성, SQL은 영업 준비된 리드','차이 없음','MQL이 더 높은 단계'],1,'MQL은 관심을 보인 리드, SQL은 구매 준비가 된 영업 단계 리드입니다.'],
+// BRAND 추가
+['brand',1,'mc','브랜드 포지셔닝의 핵심은?',['가격 인하','경쟁사 대비 차별화된 위치 확보','제품 개수 증가','광고비 증가'],1,'포지셔닝은 고객 마음속에 브랜드를 독특한 위치에 자리잡게 하는 것입니다.'],
+['brand',1,'ox','브랜드 아이덴티티는 로고와 색상만을 의미한다.',null,0,'브랜드 아이덴티티는 로고, 색상, 타이포그래피, 톤앤매너, 가치 등 전체적인 브랜드 표현입니다.'],
+['brand',2,'fill','타겟 고객의 대표적 특성을 가상 인물로 구체화한 것을 바이어 _____라고 합니다.','페르소나',0,'바이어 페르소나는 인구통계, 목표, 행동 패턴 등을 담은 가상의 이상적 고객입니다.'],
+['brand',2,'mc','SWOT의 T는 무엇을 의미하는가?',['Target','Threat','Trust','Trend'],1,'SWOT는 Strength, Weakness, Opportunity, Threat입니다.'],
+['brand',2,'ox','브랜드 가이드라인은 일관된 브랜드 경험을 위해 디자인 규칙을 정의한다.',null,1,'브랜드 가이드라인은 로고, 색상, 폰트, 톤 등 일관성을 유지하는 규칙입니다.'],
+['brand',3,'mc','브랜드 충성도를 높이는 방법이 아닌 것은?',['일관된 품질 제공','고객 경험 개선','자주 브랜드 변경','보상 프로그램'],2,'브랜드를 자주 변경하면 인지도와 신뢰가 떨어집니다.'],
+['brand',3,'fill','브랜드가 소비자에게 인지되는 정도를 브랜드 _____라고 합니다.','인지도',0,'브랜드 인지도는 소비자가 브랜드를 얼마나 알고 있는지 측정합니다.'],
+['brand',1,'mc','USP(Unique Selling Proposition)란?',['최저가 전략','경쟁사와 차별화되는 고유한 판매 제안','대량 생산','무료 배송'],1,'USP는 고객이 선택하는 이유를 명확히 합니다.'],
+['brand',3,'ox','브랜드 스토리는 감정적 연결을 만들어 고객 충성도를 높일 수 있다.',null,1,'진정성 있는 브랜드 스토리는 강력한 브랜드를 만듭니다.'],
+['brand',2,'mc','리브랜딩을 고려해야 하는 상황은?',['브랜드가 완벽할 때','시장 포지션이 구식이 되었을 때','제품이 잘 팔릴 때','직원이 증가할 때'],1,'리브랜딩은 시장 변화, 부정적 이미지 쇄신 등이 필요할 때 진행합니다.'],
+// ARCH 추가
+['arch',1,'mc','MVC에서 사용자 인터페이스를 담당하는 컴포넌트는?',['Model','View','Controller','Router'],1,'View는 UI를 담당하고 Model은 데이터, Controller는 로직을 처리합니다.'],
+['arch',1,'ox','MVVM의 ViewModel은 View와 Model 사이의 중재자 역할을 한다.',null,1,'ViewModel은 데이터 바인딩을 통해 View와 Model을 연결합니다.'],
+['arch',2,'fill','코드의 의존성을 외부에서 주입하는 패턴을 의존성 _____라고 합니다.','주입',0,'의존성 주입은 객체가 필요한 의존성을 외부에서 받아 결합도를 낮춥니다.'],
+['arch',2,'mc','SOLID 원칙 중 S가 의미하는 것은?',['Security','Single Responsibility','Speed','Scalability'],1,'단일 책임 원칙은 클래스가 하나의 책임만 가져야 한다는 원칙입니다.'],
+['arch',2,'ox','Clean Architecture는 비즈니스 로직을 프레임워크와 분리한다.',null,1,'Clean Architecture는 도메인 중심 설계로 비즈니스 로직이 프레임워크에 의존하지 않습니다.'],
+['arch',3,'mc','마이크로서비스 아키텍처의 주요 장점은?',['단일 배포','서비스별 독립적 개발 및 배포','모놀리식 구조','코드 중복 필수'],1,'마이크로서비스는 각 서비스가 독립적으로 개발, 배포, 확장 가능합니다.'],
+['arch',3,'fill','객체 생성 로직을 캡슐화하는 패턴을 _____ 패턴이라고 합니다.','팩토리',0,'팩토리 패턴은 객체 생성 로직을 별도 클래스로 분리합니다.'],
+['arch',1,'mc','레이어드 아키텍처에서 일반적으로 최상위 레이어는?',['Database Layer','Presentation Layer','Business Logic Layer','Data Access Layer'],1,'일반적으로 Presentation(UI) → Business Logic → Data Access → Database 순서입니다.'],
+['arch',3,'ox','싱글톤 패턴은 클래스의 인스턴스가 오직 하나만 존재하도록 보장한다.',null,1,'싱글톤은 전역적으로 단 하나의 인스턴스만 생성합니다.'],
+['arch',2,'mc','옵저버 패턴의 주요 사용 사례는?',['데이터베이스 연결','이벤트 기반 시스템에서 상태 변화 감지','파일 암호화','서버 배포'],1,'옵저버 패턴은 상태 변화를 자동으로 알리며 이벤트 시스템에 많이 사용됩니다.'],
+// FE 추가
+['fe',1,'mc','시맨틱 HTML에서 주요 콘텐츠 영역을 나타내는 태그는?',['<div>','<main>','<section>','<span>'],1,'<main>은 문서의 주요 콘텐츠를 나타내는 시맨틱 태그입니다.'],
+['fe',1,'ox','CSS Flexbox는 1차원, Grid는 2차원 레이아웃을 다룬다.',null,1,'Flexbox는 행 또는 열 한 방향, Grid는 행과 열 동시에 제어합니다.'],
+['fe',2,'fill','JavaScript에서 비동기 처리를 위한 키워드는 async와 _____입니다.','await',0,'async/await는 Promise를 더 읽기 쉽게 만들어줍니다.'],
+['fe',2,'mc','DOM 조작을 최소화해야 하는 이유는?',['코드가 짧아짐','성능 향상(리플로우/리페인트 감소)','보안 강화','디버깅 편의'],1,'DOM 조작은 리플로우와 리페인트를 발생시켜 성능 저하를 일으킵니다.'],
+['fe',2,'ox','이벤트 버블링은 이벤트가 자식에서 부모로 전파되는 것이다.',null,1,'버블링은 자식 요소에서 발생한 이벤트가 부모 요소로 전파됩니다.'],
+['fe',3,'mc','반응형 웹디자인의 모바일 우선 접근법은?',['max-width 사용','min-width 사용','height만 사용','미디어 쿼리 미사용'],1,'모바일 우선은 기본을 모바일로 하고 min-width로 큰 화면을 추가 스타일링합니다.'],
+['fe',3,'fill','브라우저가 JS 비동기 작업을 처리하는 메커니즘을 이벤트 _____라고 합니다.','루프',0,'이벤트 루프는 콜스택, 태스크 큐 등을 관리하여 비동기를 처리합니다.'],
+['fe',1,'mc','CSS에서 요소를 숨기되 공간은 유지하는 속성은?',['display: none','visibility: hidden','opacity: 0','z-index: -1'],1,'visibility: hidden은 요소를 안 보이게 하지만 공간은 차지합니다.'],
+['fe',3,'ox','LocalStorage는 브라우저를 닫아도 데이터가 유지된다.',null,1,'LocalStorage는 영구적, SessionStorage는 탭 닫으면 삭제됩니다.'],
+['fe',2,'mc','CORS 에러를 해결하는 방법은?',['클라이언트에서만 해결','서버에서 Access-Control-Allow-Origin 헤더 설정','브라우저 재시작','JS 비활성화'],1,'CORS는 서버에서 허용할 Origin을 명시하여 해결합니다.'],
+// MOBILE 추가
+['mobile',1,'mc','React Native의 주요 장점은?',['네이티브만 가능','JavaScript로 iOS/Android 동시 개발','웹 전용','속도가 느림'],1,'React Native는 하나의 코드베이스로 iOS와 Android 앱을 개발할 수 있습니다.'],
+['mobile',1,'ox','Flutter는 Google이 개발한 크로스플랫폼 프레임워크로 Dart를 사용한다.',null,1,'Flutter는 Dart 언어로 작성하며 자체 렌더링 엔진으로 높은 성능을 제공합니다.'],
+['mobile',2,'fill','iOS 네이티브 앱 개발에 주로 사용되는 Apple의 언어는 _____입니다.','Swift',0,'Swift는 Apple의 현대적인 언어로 Objective-C를 대체하고 있습니다.'],
+['mobile',2,'mc','Android 네이티브 앱 개발의 공식 언어는?',['Java만','Kotlin과 Java','Swift','JavaScript'],1,'Google은 Kotlin을 공식 언어로 권장하지만 Java도 여전히 사용됩니다.'],
+['mobile',2,'ox','PWA는 웹 기술로 만들어진 앱처럼 동작하는 웹사이트다.',null,1,'PWA는 Service Worker로 오프라인 작동, 푸시 알림 등 네이티브 기능을 제공합니다.'],
+['mobile',3,'mc','모바일 앱에서 사용자 위치를 추적하려면 어떤 권한이 필요한가?',['카메라 권한','위치 권한','저장소 권한','연락처 권한'],1,'iOS와 Android 모두 위치 정보 접근 시 명시적 권한을 요청해야 합니다.'],
+['mobile',3,'fill','모바일 앱 상태 관리에서 React에서 많이 사용되는 것은 Redux와 _____입니다.','MobX',0,'Redux, MobX, Context API 등이 전역 상태를 관리합니다.'],
+['mobile',1,'mc','디바이스 픽셀과 논리적 픽셀의 비율을 나타내는 용어는?',['PPI','DPI','Device Pixel Ratio','Resolution'],2,'Device Pixel Ratio는 고해상도 화면을 지원합니다.'],
+['mobile',3,'ox','React Native에서 네이티브 모듈을 작성하여 플랫폼 고유 기능을 사용할 수 있다.',null,1,'Swift/Kotlin으로 네이티브 모듈을 작성하여 연동 가능합니다.'],
+['mobile',2,'mc','ASO에서 가장 중요한 요소는?',['앱 크기','앱 제목, 키워드, 스크린샷','개발자 이름','업데이트 빈도'],1,'ASO는 앱 제목, 키워드, 아이콘, 스크린샷 등을 최적화합니다.'],
+// UIUX 추가
+['uiux',1,'mc','사용성 테스트의 주요 목적은?',['디자인 미학 평가','실제 사용자가 겪는 문제 발견','개발 속도 향상','비용 절감'],1,'사용성 테스트는 실사용자 관찰로 인터페이스 문제점을 발견합니다.'],
+['uiux',1,'ox','와이어프레임은 고해상도의 시각적 디자인을 포함한다.',null,0,'와이어프레임은 저해상도 스케치로 레이아웃과 구조를 나타냅니다.'],
+['uiux',2,'fill','인터랙티브 모형을 _____라고 합니다.','프로토타입',0,'프로토타입은 클릭 가능한 모형으로 사용자 테스트에 사용됩니다.'],
+['uiux',2,'mc','웹 접근성 가이드라인 표준은?',['SEO','WCAG','HTTP','API'],1,'WCAG는 장애인이 웹을 사용할 수 있도록 하는 국제 표준입니다.'],
+['uiux',2,'ox','디자인 시스템은 일관된 UI 컴포넌트와 디자인 원칙을 문서화한 것이다.',null,1,'디자인 시스템은 재사용 가능한 컴포넌트 라이브러리입니다.'],
+['uiux',3,'mc','Figma의 주요 장점은?',['오프라인 전용','실시간 협업 가능한 클라우드 기반 디자인 도구','코드 편집기','데이터베이스 관리'],1,'Figma는 브라우저 기반으로 실시간 협업이 가능합니다.'],
+['uiux',3,'fill','사용자 여정을 시각화한 지도를 고객 여정 _____라고 합니다.','맵',0,'고객 여정 맵은 터치포인트, 감정, 페인포인트를 시각화합니다.'],
+['uiux',1,'mc','색상 대비를 확인하여 접근성을 개선해야 하는 이유는?',['디자인 미화','시각 장애인이 콘텐츠를 읽을 수 있도록','파일 크기 감소','로딩 속도 향상'],1,'WCAG는 최소 대비율 4.5:1을 권장합니다.'],
+['uiux',3,'ox','Atomic Design은 원자→분자→유기체 등으로 인터페이스를 구조화한다.',null,1,'Atomic Design은 버튼(원자) → 검색창(분자) → 헤더(유기체) 순으로 구성합니다.'],
+['uiux',2,'mc','모바일에서 엄지손가락이 쉽게 닿는 영역은?',['Hot Zone','Thumb Zone','Safe Area','Touch Zone'],1,'Thumb Zone은 한 손 사용 시 중요한 버튼을 배치해야 하는 영역입니다.'],
+// API 추가
+['api',1,'mc','REST API에서 리소스 생성에 사용되는 HTTP 메서드는?',['GET','POST','PUT','DELETE'],1,'POST는 새로운 리소스 생성에 사용됩니다.'],
+['api',1,'ox','RESTful API는 상태를 유지하지 않는(Stateless) 특징이 있다.',null,1,'REST는 각 요청이 독립적이며 서버는 클라이언트 상태를 저장하지 않습니다.'],
+['api',2,'fill','GraphQL에서 데이터를 조회하는 작업을 _____라고 합니다.','Query',0,'GraphQL은 Query(조회), Mutation(변경), Subscription(구독)을 제공합니다.'],
+['api',2,'mc','JWT의 주요 용도는?',['데이터 암호화','사용자 인증 및 정보 전달','파일 압축','이미지 처리'],1,'JWT는 헤더, 페이로드, 서명으로 구성되어 안전하게 인증 정보를 전달합니다.'],
+['api',2,'ox','API Rate Limiting은 과도한 요청을 방지하여 서버를 보호한다.',null,1,'Rate Limiting은 시간당 요청 수를 제한하여 남용을 방지합니다.'],
+['api',3,'mc','WebSocket의 주요 특징은?',['단방향 통신','실시간 양방향 통신','파일 저장','이미지 압축'],1,'WebSocket은 지속적 연결로 실시간 채팅 등 양방향 통신에 사용됩니다.'],
+['api',3,'fill','API 문서 자동 생성에 OpenAPI 명세를 사용하는 대표적 도구는 _____입니다.','Swagger',0,'Swagger는 API 문서를 자동 생성하고 테스트할 수 있는 도구입니다.'],
+['api',1,'mc','HTTP 상태 코드 404가 의미하는 것은?',['성공','리소스를 찾을 수 없음','서버 오류','권한 없음'],1,'404 Not Found는 요청한 리소스가 존재하지 않음을 의미합니다.'],
+['api',3,'ox','CORS 정책은 서버가 아닌 브라우저에서 강제한다.',null,1,'CORS는 브라우저의 보안 정책이며 서버는 허용 헤더를 설정합니다.'],
+['api',2,'mc','API 버전 관리에서 URL에 버전을 명시하는 예시는?',['api.example.com','api.example.com/v1/users','users?version=1','모두 동일'],1,'URL 버전 관리는 /v1/, /v2/ 같이 명시적이며 가장 일반적입니다.'],
+// DB 추가
+['db',1,'mc','관계형 데이터베이스가 아닌 것은?',['MySQL','PostgreSQL','MongoDB','Oracle'],2,'MongoDB는 NoSQL 문서 데이터베이스입니다.'],
+['db',1,'ox','SQL의 SELECT 문은 데이터를 조회하는데 사용된다.',null,1,'SELECT는 데이터를 조회하는 가장 기본적인 SQL 명령입니다.'],
+['db',2,'fill','데이터베이스 인덱스는 검색 _____를 향상시킨다.','속도',0,'인덱스는 검색 속도를 크게 향상시키지만 쓰기 성능은 저하될 수 있습니다.'],
+['db',2,'mc','정규화의 주요 목적은?',['데이터 중복 최소화','쿼리 속도 향상','저장 공간 증가','인덱스 생성'],0,'정규화는 데이터 중복을 제거하고 무결성을 유지합니다.'],
+['db',2,'ox','NoSQL은 고정된 스키마 없이 유연한 데이터 구조를 가질 수 있다.',null,1,'NoSQL은 스키마가 유연하여 비정형 데이터를 저장하기 좋습니다.'],
+['db',3,'mc','ACID 속성에서 A가 의미하는 것은?',['Availability','Atomicity','Accuracy','Authentication'],1,'ACID는 Atomicity, Consistency, Isolation, Durability입니다.'],
+['db',3,'fill','데이터베이스와 앱 사이에서 객체와 테이블을 매핑하는 기술을 _____라고 합니다.','ORM',0,'ORM은 SQL 없이 객체로 데이터베이스를 다룰 수 있게 합니다.'],
+['db',1,'mc','Primary Key의 특징은?',['중복 가능','NULL 허용','각 레코드를 고유하게 식별','외래키와 동일'],2,'Primary Key는 각 행을 고유하게 식별하며 중복과 NULL을 허용하지 않습니다.'],
+['db',3,'ox','샤딩은 데이터를 여러 서버에 분산 저장하여 확장성을 높인다.',null,1,'샤딩은 수평적 파티셔닝으로 대량 데이터를 분산하여 처리합니다.'],
+['db',2,'mc','INNER JOIN은 무엇을 반환하는가?',['모든 행','두 테이블의 공통 값만','왼쪽 테이블만','오른쪽 테이블만'],1,'INNER JOIN은 양쪽 테이블에 모두 존재하는 매칭되는 행만 반환합니다.'],
+// GIT 추가
+['git',1,'mc','변경사항을 로컬 저장소에 저장하는 명령어는?',['git push','git commit','git pull','git clone'],1,'git commit은 스테이징된 변경사항을 로컬에 저장합니다.'],
+['git',1,'ox','git pull은 원격 저장소의 변경사항을 로컬로 가져와 병합한다.',null,1,'git pull은 fetch + merge를 수행합니다.'],
+['git',2,'fill','독립적인 작업 공간을 만드는 Git 기능을 _____라고 합니다.','브랜치',0,'브랜치는 메인 코드에 영향 없이 독립적으로 작업할 수 있는 분기입니다.'],
+['git',2,'mc','Git Flow에서 배포 준비를 위한 브랜치는?',['feature','develop','release','hotfix'],2,'Git Flow는 main, develop, feature, release, hotfix 브랜치로 구성됩니다.'],
+['git',2,'ox','git merge는 브랜치를 합치고, git rebase는 커밋 히스토리를 재작성한다.',null,1,'merge는 병합 커밋을 생성하고 rebase는 선형 히스토리를 만듭니다.'],
+['git',3,'mc','Pull Request의 주요 목적은?',['코드 삭제','코드 리뷰 및 병합 요청','브랜치 생성','커밋 취소'],1,'PR은 변경사항을 리뷰받고 메인 브랜치에 병합하는 협업 과정입니다.'],
+['git',3,'fill','실수로 커밋한 내용을 되돌리는 명령어는 git _____입니다.','revert',0,'git revert는 새로운 커밋으로 이전 커밋을 되돌립니다.'],
+['git',1,'mc','git status의 역할은?',['커밋 생성','현재 작업 디렉토리의 상태 확인','브랜치 삭제','원격 푸시'],1,'git status는 수정된 파일, 스테이징 상태 등을 보여줍니다.'],
+['git',3,'ox','git stash는 변경사항을 임시 저장하여 나중에 복원할 수 있다.',null,1,'git stash는 커밋하지 않은 변경사항을 임시 저장합니다.'],
+['git',2,'mc','두 브랜치의 차이를 비교하는 명령어는?',['git status','git log','git diff','git show'],2,'git diff는 파일 변경사항과 브랜치 간 차이를 비교합니다.'],
+// TEST 추가
+['test',1,'mc','단위 테스트의 주요 대상은?',['전체 시스템','개별 함수나 메서드','사용자 인터페이스','데이터베이스'],1,'단위 테스트는 가장 작은 코드 단위를 독립적으로 테스트합니다.'],
+['test',1,'ox','통합 테스트는 여러 모듈이 함께 작동하는지 확인한다.',null,1,'통합 테스트는 모듈 간 상호작용과 인터페이스를 검증합니다.'],
+['test',2,'fill','전체 시스템을 테스트하는 방법을 E2E 또는 _____테스트라고 합니다.','엔드투엔드',0,'E2E 테스트는 실제 사용자 시나리오를 시뮬레이션합니다.'],
+['test',2,'mc','TDD의 순서는?',['코드→테스트→리팩토링','테스트→코드→리팩토링','리팩토링→테스트→코드','테스트만'],1,'TDD는 Red→Green→Refactor 순서입니다.'],
+['test',2,'ox','코드 커버리지 100%면 버그가 없다는 것을 보장한다.',null,0,'커버리지 100%는 모든 코드가 실행되었다는 의미일 뿐 모든 시나리오를 테스트한 것은 아닙니다.'],
+['test',3,'mc','JavaScript 테스팅 프레임워크가 아닌 것은?',['Jest','Mocha','Cypress','Docker'],3,'Jest, Mocha, Cypress는 테스팅 도구이고 Docker는 컨테이너 플랫폼입니다.'],
+['test',3,'fill','외부 의존성을 가짜 객체로 대체하는 기법을 _____이라고 합니다.','모킹',0,'모킹은 API, DB 등을 가짜로 대체하여 격리된 테스트를 가능하게 합니다.'],
+['test',1,'mc','테스트 자동화의 주요 이점은?',['수동보다 느림','회귀 버그를 빠르게 발견','개발 속도 저하','코드 복잡도 증가'],1,'자동화 테스트는 기존 기능이 깨지지 않았는지 빠르게 확인합니다.'],
+['test',3,'ox','스냅샷 테스트는 UI 컴포넌트의 렌더링 결과를 저장하고 비교한다.',null,1,'스냅샷 테스트는 컴포넌트 출력을 저장하고 변경을 감지합니다.'],
+['test',2,'mc','성능 테스트의 목적은?',['기능 검증','시스템 속도 및 부하 처리 능력 측정','보안 검증','UI 디자인 평가'],1,'성능 테스트는 응답 시간, 처리량 등을 측정하여 병목을 찾습니다.'],
+// CICD 추가
+['cicd',1,'mc','CI의 주요 목적은?',['배포 자동화','코드 변경사항을 자주 통합하고 자동 테스트','서버 모니터링','DB 백업'],1,'CI는 코드를 자주 통합하고 자동 빌드/테스트로 문제를 조기 발견합니다.'],
+['cicd',1,'ox','GitHub Actions는 CI/CD 워크플로우를 자동화할 수 있다.',null,1,'GitHub Actions는 이벤트에 반응하여 빌드, 테스트, 배포를 자동화합니다.'],
+['cicd',2,'fill','애플리케이션을 격리된 환경에서 실행하는 컨테이너 플랫폼은 _____입니다.','Docker',0,'Docker는 애플리케이션과 의존성을 컨테이너로 패키징합니다.'],
+['cicd',2,'mc','Blue-Green 배포 전략의 특징은?',['점진적 배포','두 환경을 유지하며 즉시 전환','카나리 배포','롤링 업데이트'],1,'Blue-Green은 기존과 새 버전 환경을 동시에 유지하고 트래픽을 전환합니다.'],
+['cicd',2,'ox','카나리 배포는 일부 사용자에게만 먼저 배포하여 문제를 조기 발견한다.',null,1,'카나리 배포는 소수 사용자에게 먼저 배포하고 점진적으로 확대합니다.'],
+['cicd',3,'mc','Kubernetes의 주요 역할은?',['코드 편집','컨테이너 오케스트레이션 및 관리','DB 쿼리','이미지 편집'],1,'Kubernetes는 컨테이너를 자동으로 배포, 확장, 관리합니다.'],
+['cicd',3,'fill','배포 후 문제 발생 시 이전 버전으로 되돌리는 것을 _____이라고 합니다.','롤백',0,'롤백은 배포 실패 시 신속하게 안정적인 이전 버전으로 복구합니다.'],
+['cicd',1,'mc','CI/CD 파이프라인의 일반적인 순서는?',['배포→빌드→테스트','빌드→테스트→배포','테스트→배포→빌드','배포만'],1,'일반적으로 빌드→테스트→배포 순서로 자동화됩니다.'],
+['cicd',3,'ox','IaC는 인프라를 코드로 정의하고 버전 관리할 수 있다.',null,1,'IaC는 Terraform 등으로 인프라를 코드로 관리합니다.'],
+['cicd',2,'mc','모니터링 도구가 아닌 것은?',['Datadog','New Relic','Sentry','Figma'],3,'Datadog, New Relic, Sentry는 모니터링 도구이고 Figma는 디자인 도구입니다.'],
+// PERF 추가
+['perf',1,'mc','Core Web Vitals에 포함되지 않는 지표는?',['LCP','FID','CLS','SEO'],3,'Core Web Vitals는 LCP, FID, CLS 세 가지입니다.'],
+['perf',1,'ox','LCP는 메인 콘텐츠가 로드되는 속도를 측정한다.',null,1,'LCP는 가장 큰 콘텐츠 요소가 렌더링되는 시간으로 2.5초 이하가 좋습니다.'],
+['perf',2,'fill','JS 번들 크기를 줄이기 위한 프로세스를 _____이라고 합니다.','트리쉐이킹',0,'트리쉐이킹은 미사용 코드를 제거하여 번들 크기를 최소화합니다.'],
+['perf',2,'mc','이미지 최적화 방법이 아닌 것은?',['WebP 사용','Lazy Loading','이미지 크기 증가','압축'],2,'WebP, Lazy Loading, 압축이 이미지 최적화 방법입니다.'],
+['perf',2,'ox','CDN은 전 세계에 분산된 서버로 콘텐츠를 빠르게 전달한다.',null,1,'CDN은 사용자와 가까운 서버에서 정적 자산을 제공합니다.'],
+['perf',3,'mc','메모리 누수를 방지하는 방법은?',['전역 변수 무한 증가','이벤트 리스너 제거 및 참조 해제','메모리 무시','큰 객체 계속 생성'],1,'사용 후 이벤트 리스너 제거, 타이머 정리로 메모리 누수를 방지합니다.'],
+['perf',3,'fill','JS를 비동기로 로드하는 속성은 async와 _____입니다.','defer',0,'async는 다운로드 후 즉시 실행, defer는 HTML 파싱 후 순서대로 실행합니다.'],
+['perf',1,'mc','CLS를 개선하는 방법은?',['레이아웃 자주 변경','이미지와 광고에 명시적 크기 지정','동적 콘텐츠 많이 추가','애니메이션 증가'],1,'이미지, 광고에 크기를 지정하여 레이아웃 변경을 방지합니다.'],
+['perf',3,'ox','Code Splitting은 필요한 코드만 로드하여 초기 로딩 시간을 단축한다.',null,1,'Code Splitting은 번들을 작은 청크로 분할하는 최적화 기법입니다.'],
+['perf',2,'mc','브라우저 캐싱을 활용하는 HTTP 헤더는?',['Content-Type','Cache-Control','Authorization','Accept-Language'],1,'Cache-Control 헤더로 캐싱 시간을 설정하여 로딩 속도를 높입니다.']
 ];
 
 /* ===== FLASHCARDS DATA (114 cards: 2 per lesson) ===== */
@@ -782,7 +1017,140 @@ const FLASHCARDS=[
 ['perf',2,'Lazy Loading','Lazy Loading','화면에 보이는 시점에 리소스를 로드하는 기법','Loading resources only when they become visible'],
 ['perf',2,'트리 쉐이킹','Tree Shaking','미사용 코드를 빌드에서 제거하는 최적화','Removing unused code from build output'],
 ['perf',3,'CDN','Content Delivery Network','전 세계 서버에 콘텐츠를 캐싱하여 빠른 전달','Caching content on global servers for fast delivery'],
-['perf',3,'캐싱','Caching','자주 사용하는 데이터를 임시 저장하는 기법','Temporarily storing frequently used data for fast access']
+['perf',3,'캐싱','Caching','자주 사용하는 데이터를 임시 저장하는 기법','Temporarily storing frequently used data for fast access'],
+// SEO (추가)
+['seo',1,'백링크','Backlink','다른 웹사이트에서 내 사이트로 연결되는 링크로, SEO 순위를 높이는 중요한 요소','A link from another website to your site, a crucial factor in improving SEO rankings'],
+['seo',1,'도메인 권위','Domain Authority','웹사이트의 검색엔진 신뢰도를 나타내는 점수로, 백링크 품질과 양에 따라 결정','A score representing a website\'s search engine credibility, determined by backlink quality and quantity'],
+['seo',2,'롱테일 키워드','Long-tail Keyword','3개 이상의 단어로 구성된 구체적인 검색어로, 경쟁이 낮고 전환율이 높음','Specific search phrases with 3+ words that have lower competition and higher conversion rates'],
+['seo',2,'캐노니컬 태그','Canonical Tag','중복 콘텐츠 문제를 해결하기 위해 선호하는 URL 버전을 지정하는 HTML 태그','An HTML tag that specifies the preferred URL version to solve duplicate content issues'],
+['seo',3,'E-E-A-T','E-E-A-T','경험, 전문성, 권위성, 신뢰성을 뜻하며, 구글이 콘텐츠 품질을 평가하는 기준','Experience, Expertise, Authoritativeness, Trustworthiness - Google\'s criteria for evaluating content quality'],
+['seo',3,'스키마 마크업','Schema Markup','검색엔진이 콘텐츠를 더 잘 이해하도록 구조화된 데이터를 제공하는 코드','Code that provides structured data to help search engines better understand content'],
+// SEM (추가)
+['sem',1,'품질점수','Quality Score','광고의 관련성, 랜딩페이지 품질, 예상 CTR을 종합한 구글 광고 평가 지표','Google Ads metric combining ad relevance, landing page quality, and expected CTR'],
+['sem',1,'CPC','Cost Per Click','광고 클릭 한 번당 지불하는 비용으로, 입찰가와 품질점수에 따라 결정','The cost paid per ad click, determined by bid amount and quality score'],
+['sem',2,'광고 확장','Ad Extension','광고에 추가 정보(전화번호, 위치 등)를 표시하여 클릭률을 높이는 기능','Feature that displays additional information in ads to increase CTR'],
+['sem',2,'리마케팅','Remarketing','사이트를 방문했던 사용자에게 다시 광고를 노출하여 전환율을 높이는 전략','Strategy that shows ads again to users who previously visited your site'],
+['sem',3,'네거티브 키워드','Negative Keyword','광고가 노출되지 않기를 원하는 검색어를 지정하여 예산 낭비를 방지','Keywords you specify to prevent ad display, avoiding wasted ad spend'],
+['sem',3,'광고 순위','Ad Rank','입찰가와 품질점수를 곱한 값으로, 광고의 게재 위치를 결정','The value of bid multiplied by quality score that determines ad position'],
+// SNS (추가)
+['sns',1,'도달률','Reach','게시물을 본 고유 사용자 수의 비율로, 콘텐츠의 확산 정도를 측정','The percentage of unique users who saw a post, measuring content distribution'],
+['sns',1,'참여율','Engagement Rate','좋아요, 댓글, 공유 등 사용자 반응의 비율로, 콘텐츠 효과를 평가','The rate of user interactions measuring content effectiveness'],
+['sns',2,'인플루언서 마케팅','Influencer Marketing','영향력 있는 SNS 사용자와 협업하여 제품이나 서비스를 홍보하는 방식','Collaborating with influential social media users to promote products'],
+['sns',2,'UGC','User Generated Content','사용자가 직접 만든 콘텐츠로, 브랜드 신뢰도와 참여도를 높임','Content created by users that increases brand trust and engagement'],
+['sns',3,'릴스','Reels','인스타그램과 페이스북의 짧은 세로형 동영상 콘텐츠 형식','Short-form vertical video content format on Instagram and Facebook'],
+['sns',3,'소셜 리스닝','Social Listening','SNS에서 브랜드 언급과 대화를 모니터링하여 인사이트를 얻는 활동','Monitoring brand mentions and conversations on social media to gain insights'],
+// CM (추가)
+['cm',1,'에버그린 콘텐츠','Evergreen Content','시간이 지나도 계속 가치 있고 검색되는 콘텐츠로, 장기 트래픽 유도','Content that remains valuable and searchable over time, driving long-term traffic'],
+['cm',1,'콘텐츠 캘린더','Content Calendar','콘텐츠 제작 및 발행 일정을 체계적으로 관리하는 계획표','A schedule that systematically manages content creation and publishing'],
+['cm',2,'CMS','Content Management System','웹사이트 콘텐츠를 쉽게 생성, 편집, 관리할 수 있는 소프트웨어 플랫폼','A software platform for easily creating, editing, and managing website content'],
+['cm',2,'리퍼포징','Repurposing','기존 콘텐츠를 다른 형식이나 채널에 맞게 재활용하여 효율성을 높임','Reusing existing content in different formats to increase efficiency'],
+['cm',3,'네이티브 광고','Native Advertising','플랫폼의 일반 콘텐츠처럼 보이도록 자연스럽게 통합된 광고 형식','Ad format that blends naturally with platform content'],
+['cm',3,'바이럴 콘텐츠','Viral Content','빠르게 확산되어 많은 사람들에게 공유되는 인기 콘텐츠','Popular content that spreads rapidly and is shared by many people'],
+// EM (추가)
+['em',1,'오픈율','Open Rate','전송된 이메일 중 실제로 열어본 비율로, 제목의 효과를 측정','The percentage of sent emails opened, measuring subject line effectiveness'],
+['em',1,'CTR','Click-Through Rate','이메일 내 링크를 클릭한 수신자의 비율로, 콘텐츠 관련성을 나타냄','The percentage of recipients who clicked links, indicating content relevance'],
+['em',2,'바운스율','Bounce Rate','전송 실패한 이메일의 비율로, 이메일 리스트 품질을 평가','The percentage of emails that failed to deliver, evaluating list quality'],
+['em',2,'세그먼테이션','Segmentation','수신자를 특성별로 그룹화하여 맞춤형 메시지를 보내는 전략','Strategy of grouping recipients by characteristics to send personalized messages'],
+['em',3,'옵트인','Opt-in','사용자가 이메일 수신에 명시적으로 동의하는 허락 기반 마케팅 방식','Permission-based marketing where users explicitly consent to receive emails'],
+['em',3,'드립 캠페인','Drip Campaign','미리 정해진 일정에 따라 자동으로 발송되는 일련의 이메일 시리즈','A series of automated emails sent on a predetermined schedule'],
+// ANA (추가)
+['ana',1,'GA4','Google Analytics 4','이벤트 기반 추적과 AI 인사이트를 제공하는 구글의 최신 분석 플랫폼','Google\'s latest analytics platform offering event-based tracking and AI insights'],
+['ana',1,'코호트 분석','Cohort Analysis','유사한 특성을 가진 사용자 그룹의 행동을 시간에 따라 분석하는 방법','Method of analyzing behavior of user groups with similar characteristics over time'],
+['ana',2,'어트리뷰션','Attribution','전환에 기여한 각 마케팅 채널의 영향력을 측정하고 평가하는 과정','Process of measuring each marketing channel\'s contribution to conversions'],
+['ana',2,'DAU','Daily Active Users','하루 동안 서비스를 이용한 고유 사용자 수로, 서비스 활성도를 측정','Number of unique users who used the service in a day'],
+['ana',3,'이탈률','Bounce Rate','단일 페이지만 보고 떠난 방문자의 비율로, 콘텐츠 관련성을 평가','Percentage of visitors who left after viewing only one page'],
+['ana',3,'퍼널 분석','Funnel Analysis','사용자가 전환까지 거치는 단계별 이탈률을 분석하여 개선점을 찾음','Analyzing drop-off rates at each step to conversion'],
+// CRO (추가)
+['cro',1,'히트맵','Heatmap','사용자의 클릭, 스크롤, 마우스 움직임을 시각화하여 행동 패턴을 분석','Visualizes user clicks, scrolls, and mouse movements to analyze behavior'],
+['cro',1,'멀티배리에이트 테스트','Multivariate Test','여러 요소를 동시에 조합하여 테스트해 최적의 조합을 찾는 방법','Testing multiple element combinations simultaneously to find the optimal mix'],
+['cro',2,'마이크로 전환','Micro Conversion','최종 전환 전에 일어나는 작은 목표 달성(클릭, 가입 등)','Small goal achievements that occur before final conversion'],
+['cro',2,'사회적 증거','Social Proof','리뷰, 평점, 사용자 수 등을 보여줘 신뢰를 높이고 전환을 유도','Displaying reviews, ratings, user counts to build trust and drive conversions'],
+['cro',3,'긴급성','Urgency','제한된 시간이나 수량을 강조하여 즉각적인 행동을 유도하는 심리 기법','Emphasizing limited time or quantity to drive immediate action'],
+['cro',3,'프릭션','Friction','사용자가 전환 과정에서 겪는 불편함이나 장애물로, 제거해야 할 요소','Obstacles users face in the conversion process that should be removed'],
+// MA (추가)
+['ma',1,'리드 스코어링','Lead Scoring','잠재고객의 행동과 특성에 점수를 부여하여 우선순위를 매기는 시스템','System that assigns scores to leads based on behavior to prioritize them'],
+['ma',1,'워크플로우','Workflow','특정 조건에 따라 자동으로 실행되는 마케팅 작업의 흐름','Flow of marketing tasks that execute automatically based on conditions'],
+['ma',2,'CRM','Customer Relationship Management','고객 정보와 상호작용을 관리하여 관계를 개선하는 시스템','System that manages customer information and interactions'],
+['ma',2,'리드 너처링','Lead Nurturing','잠재고객에게 지속적으로 가치 있는 정보를 제공하여 관계를 발전','Continuously providing valuable information to develop lead relationships'],
+['ma',3,'트리거','Trigger','자동화된 마케팅 액션을 시작하게 하는 특정 사용자 행동이나 이벤트','Specific user action or event that initiates automated marketing actions'],
+['ma',3,'세일즈 퍼널','Sales Funnel','잠재고객이 최종 구매까지 거치는 단계별 여정을 나타내는 모델','Model representing the journey from prospect to final purchase'],
+// BRAND (추가)
+['brand',1,'USP','Unique Selling Proposition','경쟁사와 차별화되는 독특한 가치 제안으로, 브랜드의 핵심 강점','Unique value proposition differentiating from competitors'],
+['brand',1,'브랜드 에퀴티','Brand Equity','브랜드 이름이 제품에 부여하는 가치로, 소비자 인식과 충성도를 나타냄','Value that a brand name adds to a product'],
+['brand',2,'톤 앤 매너','Tone & Manner','브랜드가 커뮤니케이션할 때 사용하는 일관된 말투와 태도','Consistent speaking style and attitude a brand uses in communications'],
+['brand',2,'페르소나','Persona','타겟 고객을 대표하는 가상의 인물로, 마케팅 전략 수립에 활용','Fictional character representing target customers for marketing strategy'],
+['brand',3,'SWOT 분석','SWOT Analysis','강점, 약점, 기회, 위협을 분석하여 전략적 방향을 수립하는 도구','Tool analyzing Strengths, Weaknesses, Opportunities, Threats'],
+['brand',3,'브랜드 아키텍처','Brand Architecture','여러 브랜드와 제품을 조직화하고 관계를 정의하는 구조 체계','Structure system organizing multiple brands and defining their relationships'],
+// ARCH (추가)
+['arch',1,'SOLID 원칙','SOLID Principles','객체지향 설계의 5가지 기본 원칙으로, 유지보수 가능한 코드를 작성하게 함','Five fundamental principles of OOP for writing maintainable code'],
+['arch',1,'의존성 주입','Dependency Injection','객체 간 의존성을 외부에서 주입하여 결합도를 낮추는 디자인 패턴','Design pattern that injects dependencies from outside to reduce coupling'],
+['arch',2,'싱글톤','Singleton','클래스의 인스턴스를 하나만 생성하고 전역적으로 접근 가능하게 하는 패턴','Pattern that creates only one instance of a class globally'],
+['arch',2,'옵저버 패턴','Observer Pattern','객체의 상태 변화를 관찰하다가 변경 시 자동으로 알림을 받는 패턴','Pattern where observers get notified when an object\'s state changes'],
+['arch',3,'마이크로서비스','Microservices','독립적으로 배포 가능한 작은 서비스들로 애플리케이션을 구성하는 아키텍처','Architecture structuring apps as independently deployable small services'],
+['arch',3,'모놀리식','Monolithic','모든 기능이 하나로 통합된 단일 애플리케이션 구조','Single unified application structure with all functions integrated'],
+// FE (추가)
+['fe',1,'시맨틱 HTML','Semantic HTML','의미가 명확한 태그를 사용하여 문서 구조를 표현하는 HTML 작성 방식','HTML approach using meaningful tags to express document structure'],
+['fe',1,'플렉스박스','Flexbox','1차원 레이아웃을 쉽게 구성할 수 있는 CSS 레이아웃 모듈','CSS layout module for easily creating one-dimensional layouts'],
+['fe',2,'CSS 그리드','CSS Grid','2차원 그리드 기반 레이아웃을 구현하는 강력한 CSS 시스템','Powerful CSS system for two-dimensional grid-based layouts'],
+['fe',2,'이벤트 버블링','Event Bubbling','하위 요소에서 발생한 이벤트가 상위 요소로 전파되는 현상','Events triggered on child elements propagate up to parent elements'],
+['fe',3,'클로저','Closure','함수가 선언될 때의 스코프를 기억하여 외부 변수에 접근할 수 있는 기능','Function\'s ability to remember and access variables from its declaration scope'],
+['fe',3,'프로미스','Promise','비동기 작업의 완료나 실패를 나타내는 객체로, 콜백 지옥을 해결','Object representing async operation completion, solving callback hell'],
+// MOBILE (추가)
+['mobile',1,'네이티브 앱','Native App','특정 플랫폼을 위해 해당 언어로 개발된 앱 (Swift, Kotlin)','App developed in platform-specific languages (Swift, Kotlin)'],
+['mobile',1,'하이브리드 앱','Hybrid App','웹 기술로 개발하고 네이티브 컨테이너로 감싼 크로스 플랫폼 앱','App developed with web technologies wrapped in native container'],
+['mobile',2,'딥링크','Deep Link','앱의 특정 화면으로 직접 이동할 수 있게 하는 링크','Link that navigates directly to a specific screen within an app'],
+['mobile',2,'푸시 알림','Push Notification','앱이 실행되지 않아도 사용자에게 메시지를 전달하는 알림 기능','Notification delivering messages even when the app isn\'t running'],
+['mobile',3,'앱스토어 최적화','ASO','앱스토어 검색 결과에서 앱의 가시성을 높이는 최적화 작업','Optimization to increase app visibility in app store search results'],
+['mobile',3,'핫 리로드','Hot Reload','코드 변경 사항을 즉시 반영하여 빠르게 개발할 수 있는 기능','Feature that immediately reflects code changes for faster development'],
+// UIUX (추가)
+['uiux',1,'어포던스','Affordance','사물의 외관이 사용 방법을 자연스럽게 암시하는 특성','Characteristic where an object\'s appearance suggests how to use it'],
+['uiux',1,'피츠의 법칙','Fitts\'s Law','타겟이 크고 가까울수록 클릭하기 쉽다는 인터랙션 디자인 원칙','Larger and closer targets are easier to click'],
+['uiux',2,'힉의 법칙','Hick\'s Law','선택지가 많을수록 결정 시간이 길어진다는 사용자 경험 법칙','More choices lead to longer decision-making time'],
+['uiux',2,'제이콥의 법칙','Jakob\'s Law','사용자는 다른 사이트에서의 경험을 기준으로 새 사이트를 판단','Users judge new sites based on experiences with other sites'],
+['uiux',3,'게슈탈트 원칙','Gestalt Principles','인간이 시각 요소를 그룹화하고 패턴으로 인식하는 방식을 설명하는 원리','Principles explaining how humans group visual elements and perceive patterns'],
+['uiux',3,'A11y','Accessibility','장애가 있는 사용자도 웹과 앱을 사용할 수 있도록 하는 접근성 설계','Design ensuring web/apps are usable by people with disabilities'],
+// API (추가)
+['api',1,'GraphQL','GraphQL','클라이언트가 필요한 데이터만 정확히 요청할 수 있는 쿼리 언어','Query language allowing clients to request exactly the data they need'],
+['api',1,'WebSocket','WebSocket','서버와 클라이언트 간 양방향 실시간 통신을 가능하게 하는 프로토콜','Protocol enabling bidirectional real-time communication'],
+['api',2,'JWT','JSON Web Token','인증 정보를 JSON 형태로 안전하게 전송하는 토큰 기반 인증 방식','Token-based authentication transmitting auth info securely in JSON'],
+['api',2,'CORS','Cross-Origin Resource Sharing','다른 도메인의 리소스에 접근할 수 있도록 허용하는 보안 메커니즘','Security mechanism allowing access to resources from different domains'],
+['api',3,'레이트 리미팅','Rate Limiting','일정 시간 동안 API 요청 횟수를 제한하여 남용을 방지','Limiting API requests within a time period to prevent abuse'],
+['api',3,'미들웨어','Middleware','요청과 응답 사이에서 특정 작업을 수행하는 중간 처리 함수','Function performing tasks between request and response'],
+// DB (추가)
+['db',1,'인덱스','Index','데이터 검색 속도를 높이기 위해 특정 컬럼에 생성하는 색인 구조','Index structure created on columns to speed up data retrieval'],
+['db',1,'정규화','Normalization','데이터 중복을 최소화하고 무결성을 높이기 위해 테이블을 분리하는 과정','Splitting tables to minimize redundancy and improve integrity'],
+['db',2,'트랜잭션','Transaction','하나의 논리적 작업 단위로 묶인 일련의 데이터베이스 연산','Database operations grouped as one logical unit of work'],
+['db',2,'ACID','ACID','원자성, 일관성, 격리성, 지속성을 보장하는 트랜잭션의 4가지 특성','Four transaction properties: Atomicity, Consistency, Isolation, Durability'],
+['db',3,'샤딩','Sharding','대용량 데이터를 여러 데이터베이스에 분산 저장하는 수평 파티셔닝 기법','Horizontal partitioning distributing data across multiple databases'],
+['db',3,'ORM','Object-Relational Mapping','객체와 관계형 데이터베이스를 자동으로 매핑해주는 기술','Technology automatically mapping objects to relational databases'],
+// GIT (추가)
+['git',1,'리베이스','Rebase','커밋 히스토리를 재정렬하여 깔끔한 선형 구조로 만드는 작업','Reorganizing commit history into a clean linear structure'],
+['git',1,'체리픽','Cherry-pick','다른 브랜치의 특정 커밋만 선택하여 현재 브랜치에 적용','Selecting specific commits from another branch to apply'],
+['git',2,'스태시','Stash','작업 중인 변경사항을 임시로 저장하고 워킹 디렉토리를 깨끗하게 만듦','Temporarily saving work-in-progress and cleaning working directory'],
+['git',2,'Git Flow','Git Flow','브랜치를 체계적으로 관리하는 협업 워크플로우 전략','Collaborative workflow strategy for managing branches systematically'],
+['git',3,'컨플릭트','Conflict','여러 브랜치에서 같은 부분을 수정했을 때 발생하는 충돌','Collision when same parts are modified in multiple branches'],
+['git',3,'태그','Tag','특정 커밋에 의미 있는 이름을 붙여 릴리즈 버전을 표시','Marking release versions by naming specific commits'],
+// TEST (추가)
+['test',1,'목','Mock','테스트 중 실제 객체를 대체하는 가짜 객체로, 동작을 시뮬레이션','Fake object replacing real objects during testing to simulate behavior'],
+['test',1,'스텁','Stub','미리 정의된 응답을 반환하는 테스트용 더미 객체','Test dummy object that returns predefined responses'],
+['test',2,'코드 커버리지','Code Coverage','테스트가 실행한 코드의 비율을 측정하여 테스트 품질을 평가','Measuring percentage of code executed by tests'],
+['test',2,'회귀 테스트','Regression Test','코드 변경 후 기존 기능이 정상 작동하는지 확인하는 테스트','Testing existing functionality works correctly after code changes'],
+['test',3,'스냅샷 테스트','Snapshot Test','컴포넌트 출력을 저장해두고 변경사항을 감지하는 테스트 방식','Testing by saving component output and detecting changes'],
+['test',3,'테스트 더블','Test Double','테스트 목적으로 실제 객체를 대체하는 모든 종류의 가짜 객체 통칭','General term for fake objects replacing real objects for testing'],
+// CICD (추가)
+['cicd',1,'컨테이너','Container','애플리케이션과 의존성을 격리된 환경에 패키징하는 가상화 기술','Virtualization packaging apps and dependencies in isolated environments'],
+['cicd',1,'도커 이미지','Docker Image','컨테이너를 실행하기 위한 템플릿으로, 코드와 환경 설정을 포함','Template for running containers, including code and configurations'],
+['cicd',2,'블루-그린 배포','Blue-Green Deployment','새 버전을 별도 환경에 배포한 뒤 트래픽을 전환하는 무중단 배포','Zero-downtime deployment switching traffic to new version environment'],
+['cicd',2,'카나리 배포','Canary Deployment','일부 사용자에게만 새 버전을 배포하여 위험을 최소화하는 전략','Deploying new version to subset of users to minimize risk'],
+['cicd',3,'롤백','Rollback','문제 발생 시 이전 안정 버전으로 신속하게 되돌리는 작업','Quickly reverting to previous stable version when issues occur'],
+['cicd',3,'인프라 as 코드','IaC','인프라 설정을 코드로 관리하여 자동화하고 버전 관리하는 방식','Managing infrastructure as code for automation and version control'],
+// PERF (추가)
+['perf',1,'FCP','First Contentful Paint','페이지에서 첫 번째 콘텐츠가 화면에 렌더링되는 시점','When the first content is rendered on screen'],
+['perf',1,'TTI','Time to Interactive','페이지가 완전히 상호작용 가능한 상태가 되는 시점','Time when page becomes fully interactive and responsive'],
+['perf',2,'코드 스플리팅','Code Splitting','번들을 작게 나누어 필요한 코드만 로드하여 초기 로딩 속도 개선','Splitting bundles to load only needed code for faster initial load'],
+['perf',2,'웹 워커','Web Worker','메인 스레드와 별도로 백그라운드에서 스크립트를 실행하는 기술','Running scripts in background separate from main thread'],
+['perf',3,'서비스 워커','Service Worker','오프라인 기능과 백그라운드 동기화를 가능하게 하는 프록시 스크립트','Proxy script enabling offline functionality and background sync'],
+['perf',3,'프리페칭','Prefetching','사용자가 필요로 할 리소스를 미리 로드하여 성능을 향상','Preloading resources users will likely need to improve performance']
 ];
 
 /* ===== GAMIFICATION ===== */
@@ -942,7 +1310,7 @@ function isLessonUnlocked(trackId,num){return num===1||isLessonCompleted(trackId
 function completeLesson(trackId,num){
   const prog=LS.get('progress',{});if(prog[trackId+'_'+num])return;
   prog[trackId+'_'+num]=true;LS.set('progress',prog);
-  addXP(20);checkBadges();
+  addXP(20);checkBadges();trackDailyLesson();
   LS.set('lastLesson',{track:trackId,lesson:num,date:today()});
 }
 
@@ -1367,7 +1735,7 @@ function fcAns(know){
   const c=fcState.cards[fcState.current];const key=c[0]+'_'+c[1]+'_'+c[2];
   const prog=getCardProgress();const p=prog[key]||{box:0};
   p.box=know?Math.min(4,p.box+1):Math.max(0,p.box-1);p.lastReview=today();prog[key]=p;setCardProgress(prog);
-  const cr=LS.get('cardReviews',0);LS.set('cardReviews',cr+1);
+  const cr=LS.get('cardReviews',0);LS.set('cardReviews',cr+1);trackDailyCard();
   fcState.current++;fcState.flipped=false;renderFC();checkBadges();
 }
 
@@ -1407,12 +1775,40 @@ function renderHomeTab(){
         <div style="font-size:13px;color:var(--text-secondary)">레슨 ${nn}: ${nl[3]}</div></div></div>`;
     }
   }
-  html+=`<div class="home-section"><div class="home-section-title">🎯 오늘의 목표</div>
-  <div class="card" style="padding:12px 16px">
-    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>📖 레슨 완료</span><span>${completedCount>0?'✅':'⬜'}</span></div>
-    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>🎮 일일 퀴즈</span><span>${dailyDone?'✅':'⬜'}</span></div>
-    <div style="display:flex;justify-content:space-between;padding:6px 0"><span>🃏 플래시카드</span><span>${due===0?'✅':'⬜ '+due+'장'}</span></div>
-  </div></div>`;
+  // Smart Review Button
+  const weakTracks=getWeakTracks();
+  if(weakTracks.length>0||due>0||!dailyDone){
+    html+=`<div class="home-section"><div class="home-section-title">🚀 스마트 학습</div>
+    <button class="smart-review-btn" onclick="startSmartReview()">⚡ 약점 집중 학습 시작</button>
+    <div style="font-size:12px;color:var(--text-secondary);text-align:center;margin-top:-6px">약점 트랙 기반 퀴즈 + 복습 카드 자동 구성</div></div>`;
+  }
+  // Daily Mission
+  const todayLessons=LS.get('todayLessons',{date:'',count:0});const lessonToday=todayLessons.date===today()?todayLessons.count:0;
+  const todayCards=LS.get('todayCards',{date:'',count:0});const cardToday=todayCards.date===today()?todayCards.count:0;
+  const m1=lessonToday>=1,m2=dailyDone,m3=cardToday>=5,m4=lessonToday>=3;
+  const missionsDone=[m1,m2,m3,m4].filter(Boolean).length;
+  html+=`<div class="home-section"><div class="home-section-title">🎯 일일 미션 <span style="font-size:12px;color:var(--accent);font-weight:800">${missionsDone}/4</span></div>
+  <div class="daily-mission ${m1?'complete':''}"><span class="mission-icon">📖</span><span class="mission-text">레슨 1개 완료</span><span class="mission-check">${m1?'✅':'⬜'}</span></div>
+  <div class="daily-mission ${m2?'complete':''}"><span class="mission-icon">🎮</span><span class="mission-text">일일 퀴즈 완료</span><span class="mission-check">${m2?'✅':'⬜'}</span></div>
+  <div class="daily-mission ${m3?'complete':''}"><span class="mission-icon">🃏</span><span class="mission-text">플래시카드 5장 복습</span><span class="mission-check">${m3?'✅':'⬜'}</span></div>
+  <div class="daily-mission ${m4?'complete':''}"><span class="mission-icon">🏆</span><span class="mission-text">레슨 3개 완료 (보너스)</span><span class="mission-check">${m4?'✅':'⬜'}</span></div></div>`;
+  // Weakness Analysis
+  if(weakTracks.length>0){
+    html+=`<div class="home-section"><div class="home-section-title">📊 약점 분석</div>`;
+    weakTracks.slice(0,3).forEach(w=>{
+      const track=TRACKS.find(t=>t[0]===w.id);if(!track)return;
+      const pct=Math.round(w.correct/w.total*100);
+      const color=pct>=70?'var(--accent)':pct>=40?'var(--secondary)':'var(--danger)';
+      html+=`<div class="card weakness-card" style="cursor:pointer" onclick="switchTab('game');setSubjectFilter('${track[1]}');startWeaknessQuiz('${w.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><span style="font-size:14px;font-weight:700">${track[2]} ${track[3]}</span></div>
+          <div style="font-size:14px;font-weight:800;color:${color}">${pct}%</div></div>
+        <div class="weakness-bar"><div class="weakness-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  // Quick Actions
   html+=`<div class="home-section"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
     <button class="btn btn-primary btn-full" onclick="switchTab('learn')">📖 학습</button>
     <button class="btn btn-accent btn-full" onclick="switchTab('game')">🎮 게임</button>
@@ -1522,6 +1918,60 @@ function resetData(){
   if(!confirm('모든 학습 데이터가 삭제됩니다. 계속?'))return;
   ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','matchClears'].forEach(k=>localStorage.removeItem('ln_'+k));
   toast('초기화 완료','success');setTimeout(()=>location.reload(),800);
+}
+
+/* ===== WEAKNESS ANALYSIS & SMART REVIEW ===== */
+function getWeakTracks(){
+  const qh=LS.get('quizHistory',[]);const wrong=LS.get('wrongAnswers',[]);
+  const trackStats={};
+  // Analyze quiz history
+  TRACKS.forEach(t=>{trackStats[t[0]]={id:t[0],correct:0,total:0}});
+  // Count wrong answers per track
+  wrong.forEach(q=>{if(trackStats[q[0]])trackStats[q[0]].total+=2});
+  // Estimate from quiz pool answered
+  const prog=LS.get('progress',{});
+  TRACKS.forEach(t=>{
+    const trackQuiz=QUIZ_POOL.filter(q=>q[0]===t[0]);
+    const trackWrong=wrong.filter(q=>q[0]===t[0]).length;
+    const lessons=LESSONS.filter(l=>l[0]===t[0]);
+    const done=lessons.filter(l=>prog[l[0]+'_'+l[1]]===true).length;
+    if(done>0){
+      trackStats[t[0]].total=Math.max(trackStats[t[0]].total,done*3);
+      trackStats[t[0]].correct=Math.max(0,trackStats[t[0]].total-trackWrong*2);
+    }
+  });
+  return Object.values(trackStats).filter(s=>s.total>0).sort((a,b)=>(a.correct/a.total)-(b.correct/b.total));
+}
+function startSmartReview(){
+  const weak=getWeakTracks();const due=getDueCards();
+  if(weak.length>0){
+    // Focus on weakest tracks
+    const weakIds=weak.slice(0,3).map(w=>w.id);
+    const pool=QUIZ_POOL.filter(q=>weakIds.includes(q[0]));
+    if(pool.length>=5){
+      switchTab('game');
+      startQuizMode(shuffleArray(pool).slice(0,15),'스마트 복습');
+      return;
+    }
+  }
+  if(due.length>0){switchTab('game');startFlashcardGame();return}
+  switchTab('game');startDailyQuiz();
+}
+function startWeaknessQuiz(trackId){
+  const pool=QUIZ_POOL.filter(q=>q[0]===trackId);
+  if(!pool.length){toast('문제가 없습니다','error');return}
+  const track=TRACKS.find(t=>t[0]===trackId);
+  startQuizMode(shuffleArray(pool).slice(0,10),(track?track[2]+' ':'')+' 약점 집중');
+}
+function trackDailyLesson(){
+  const td=LS.get('todayLessons',{date:'',count:0});
+  if(td.date!==today())LS.set('todayLessons',{date:today(),count:1});
+  else LS.set('todayLessons',{date:today(),count:td.count+1});
+}
+function trackDailyCard(){
+  const td=LS.get('todayCards',{date:'',count:0});
+  if(td.date!==today())LS.set('todayCards',{date:today(),count:1});
+  else LS.set('todayCards',{date:today(),count:td.count+1});
 }
 
 /* ===== RENDER DISPATCHER ===== */
