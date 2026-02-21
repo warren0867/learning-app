@@ -1207,6 +1207,16 @@ const PRONUNCIATIONS={
 'Session':'세션','KPI':'케이피아이','Pageview':'페이지뷰','Dashboard':'대시보드',
 'Attribution':'어트리뷰션','Funnel Analysis':'퍼널 애널리시스','Funnel':'퍼널',
 'Cohort Analysis':'코호트 애널리시스','Heatmap':'히트맵','UTM':'유티엠',
+'DW':'디더블유','Data Mart':'데이터 마트','BI':'비아이','ETL':'이티엘',
+'CDP':'씨디피','DMP':'디엠피','First-party Data':'퍼스트파티 데이터','Third-party Data':'서드파티 데이터',
+'DAU':'디에이유','MAU':'엠에이유','Churn Rate':'처닝 레이트','NPS':'엔피에스',
+'AARRR':'에이알알알알','MRR':'엠알알','ARR':'에이알알',
+'Brand Lift':'브랜드 리프트','Incrementality':'인크리멘탈리티',
+'Nano Influencer':'나노 인플루언서','Micro Influencer':'마이크로 인플루언서',
+'Social Commerce':'소셜 커머스','Live Commerce':'라이브 커머스',
+'JTBD':'제이티비디','OKR':'오케이알','Share of Voice':'쉐어 오브 보이스',
+'SERP Auction':'서프 옥션','LSI Keyword':'엘에스아이 키워드',
+'Multi-touch Attribution':'멀티터치 어트리뷰션',
 'Unique Visitor':'유니크 비지터','Conversion Rate':'컨버전 레이트','Goal':'골','Event':'이벤트',
 'Dimension':'디멘션','Metric':'메트릭','Real-time':'리얼타임','Segment':'세그먼트',
 'A/B Test':'에이비 테스트','Bounce':'바운스',
@@ -1399,6 +1409,14 @@ const VOCAB_EXTRA=[
 ['ana','Heatmap','히트맵','웹페이지에서 사용자 클릭, 스크롤, 마우스 이동을 시각화한 분석 도구'],
 ['ana','Session','세션','사용자가 웹사이트를 방문하여 활동하는 하나의 단위 기간'],
 ['ana','UTM','UTM 파라미터','URL에 추가하여 트래픽 출처를 추적하는 태그 (source, medium, campaign)'],
+['ana','DW','데이터 웨어하우스','Data Warehouse: 분석을 위해 여러 소스의 데이터를 통합 저장하는 중앙 집중식 저장소'],
+['ana','Data Mart','데이터 마트','특정 부서나 비즈니스 영역(마케팅, 영업 등)을 위한 소규모 데이터 웨어하우스'],
+['ana','BI','비즈니스 인텔리전스','Business Intelligence: 데이터 분석을 통해 비즈니스 의사결정을 지원하는 기술과 전략 체계'],
+['ana','ETL','이티엘','Extract, Transform, Load: 다양한 소스에서 데이터를 추출하고 변환하여 저장소에 적재하는 프로세스'],
+['ana','CDP','고객 데이터 플랫폼','Customer Data Platform: 온·오프라인 고객 데이터를 통합 관리해 개인화 마케팅에 활용하는 플랫폼'],
+['ana','DMP','데이터 관리 플랫폼','Data Management Platform: 광고 타겟팅을 위해 대규모 익명 사용자 데이터를 수집·분석하는 플랫폼'],
+['ana','First-party Data','퍼스트파티 데이터','자사가 직접 수집한 고객 데이터 (구매 내역, 웹 행동 등). 가장 신뢰도 높은 데이터'],
+['ana','Third-party Data','서드파티 데이터','외부 데이터 제공업체가 수집·판매하는 데이터. 쿠키 규제로 활용이 줄어드는 추세'],
 // CRO (6)
 ['cro','Landing Page Optimization','랜딩페이지 최적화','방문자의 전환율을 높이기 위해 랜딩 페이지를 개선하는 과정'],
 ['cro','Multivariate Test','다변량 테스트','여러 요소를 동시에 변경하여 최적 조합을 찾는 실험 방법'],
@@ -1418,6 +1436,56 @@ const VOCAB_EXTRA=[
 ['brand','Positioning','포지셔닝','소비자 마음속에서 브랜드가 차지하는 고유한 위치를 정하는 전략'],
 ['brand','USP','고유 판매 제안','Unique Selling Proposition: 경쟁사와 차별화되는 고유한 가치'],
 ['brand','Brand Equity','브랜드 자산','브랜드 인지도와 이미지가 만들어내는 무형의 가치'],
+// SEO 추가
+['seo','SERPs Feature','SERP 기능','지식패널, 이미지팩, 로컬팩 등 기본 검색결과 이외에 표시되는 특별 요소'],
+['seo','NAP','NAP 정보','Name, Address, Phone: 로컬 SEO에서 일관성이 중요한 사업체 기본 정보'],
+['seo','LSI Keyword','LSI 키워드','Latent Semantic Indexing: 핵심 키워드와 의미적으로 관련된 연관 키워드'],
+['seo','Crawl Budget','크롤 예산','검색엔진 봇이 한 사이트를 일정 기간 내 크롤링할 수 있는 최대 페이지 수'],
+['seo','PageRank','페이지랭크','구글이 웹페이지의 중요도를 백링크 기반으로 평가하는 알고리즘'],
+// SEM/광고 추가
+['sem','Brand Keyword','브랜드 키워드','자사 브랜드명이 포함된 검색어. 경쟁사가 입찰하기도 함'],
+['sem','Non-brand Keyword','논브랜드 키워드','브랜드명 없이 제품·서비스 카테고리로 검색하는 키워드'],
+['sem','SERP Auction','서프 경매','키워드 검색 시 광고 순위를 결정하는 실시간 입찰 경쟁 과정'],
+['sem','View-through Conversion','뷰스루 전환','광고를 클릭하지 않고 보기만 했는데 이후 전환이 발생한 경우'],
+['sem','Brand Lift','브랜드 리프트','광고 집행 후 브랜드 인지도·선호도·구매 의향의 상승 효과'],
+['sem','Incrementality','인크리멘탈리티','광고가 실제로 추가 전환을 만들어냈는지 측정하는 순수 효과 분석'],
+// SNS 추가
+['sns','Social Commerce','소셜 커머스','SNS 플랫폼 내에서 직접 상품을 구매할 수 있는 전자상거래 형태'],
+['sns','Live Commerce','라이브 커머스','라이브 방송을 통해 실시간으로 상품을 소개하고 판매하는 방식'],
+['sns','Nano Influencer','나노 인플루언서','팔로워 1천~1만 명의 소규모 인플루언서. 높은 참여율과 신뢰도'],
+['sns','Micro Influencer','마이크로 인플루언서','팔로워 1만~10만 명의 중소형 인플루언서. 특정 분야 전문성 보유'],
+['sns','Dark Post','다크 포스트','피드에 노출되지 않고 특정 타겟에게만 보이는 비공개 광고 게시물'],
+['sns','Sponsored Content','스폰서드 콘텐츠','광고비를 받고 작성된 콘텐츠. 광고임을 표시해야 함'],
+['sns','Engagement Rate','참여율','팔로워 대비 좋아요·댓글·공유 등 상호작용 비율. 계정 건강도 지표'],
+// Analytics 추가
+['ana','DAU','일간 활성 사용자','Daily Active Users: 하루 동안 서비스를 이용한 고유 사용자 수'],
+['ana','MAU','월간 활성 사용자','Monthly Active Users: 한 달 동안 서비스를 이용한 고유 사용자 수'],
+['ana','Churn Rate','이탈율','일정 기간 서비스 이용을 중단한 고객 비율. 낮을수록 좋음'],
+['ana','Retention Rate','유지율','특정 기간 후에도 서비스를 계속 이용하는 고객 비율'],
+['ana','NPS','순추천지수','Net Promoter Score: 고객이 서비스를 타인에게 추천할 의향을 0~10점으로 측정'],
+['ana','AARRR','해적 지표','Acquisition-Activation-Retention-Referral-Revenue: 스타트업 성장 5단계 지표'],
+['ana','MRR','월간 반복 매출','Monthly Recurring Revenue: 구독 서비스의 월별 안정적 매출'],
+['ana','ARR','연간 반복 매출','Annual Recurring Revenue: 구독 서비스의 연간 안정적 매출'],
+['ana','Funnel Drop-off','퍼널 이탈','고객이 구매 여정의 특정 단계에서 중도 이탈하는 현상'],
+['ana','Last Click','라스트 클릭','전환 직전 마지막으로 클릭한 채널에 전환 공을 100% 배분하는 방식'],
+['ana','Multi-touch Attribution','멀티터치 기여','전환 경로의 여러 터치포인트에 기여도를 배분하는 어트리뷰션 모델'],
+// CRO 추가
+['cro','JTBD','해야 할 일','Jobs To Be Done: 고객이 제품을 사용하는 근본적인 목적과 동기'],
+['cro','Micro-moment','마이크로 모멘트','소비자가 즉각적인 필요에 반응하는 핵심적인 모바일 의도 순간'],
+['cro','Popup','팝업','웹사이트 방문 중 특정 조건에서 표시되는 오버레이 레이어'],
+['cro','CTA Button','CTA 버튼','구체적인 행동을 유도하는 클릭 가능한 버튼. 색상·문구가 전환율에 큰 영향'],
+// MA 추가
+['ma','Customer Segmentation','고객 세분화','공통 특성을 가진 그룹으로 고객을 분류하여 맞춤 마케팅에 활용'],
+['ma','Sales Funnel','세일즈 퍼널','잠재 고객이 실제 구매 고객으로 전환되는 단계별 영업 프로세스'],
+['ma','Abandoned Cart Email','장바구니 이탈 이메일','장바구니에 담고 결제하지 않은 고객에게 자동 발송하는 재구매 유도 이메일'],
+['ma','Welcome Series','웰컴 시리즈','신규 구독자/가입자에게 자동 발송되는 브랜드 소개 이메일 시퀀스'],
+// Branding 추가
+['brand','Brand Archetype','브랜드 아키타입','브랜드 성격을 정의하는 12가지 원형 (영웅, 현자, 탐험가 등)'],
+['brand','Share of Voice','점유율','특정 기간 경쟁사 대비 우리 브랜드의 언급·노출 비중'],
+['brand','Co-branding','코브랜딩','두 개 이상의 브랜드가 협력하여 공동으로 제품·서비스를 출시하는 전략'],
+['brand','Brand Extension','브랜드 확장','기존 브랜드의 신뢰를 활용해 새로운 카테고리의 제품을 출시하는 전략'],
+['brand','SWOT Analysis','SWOT 분석','강점(Strength)·약점(Weakness)·기회(Opportunity)·위협(Threat)을 분석하는 전략 도구'],
+['brand','OKR','목표와 핵심결과','Objectives and Key Results: 조직 목표와 측정 가능한 핵심 결과를 연결하는 목표 관리 체계'],
 // Architecture (7)
 ['arch','Singleton','싱글톤','인스턴스가 하나만 존재하도록 보장하는 디자인 패턴'],
 ['arch','Observer Pattern','옵저버 패턴','객체 상태 변화를 구독자들에게 자동으로 알리는 디자인 패턴'],
@@ -2052,15 +2120,16 @@ function getWeightedQuizPool(pool){
 // Bidirectional quiz: create reverse questions (show English term → pick Korean meaning)
 function makeReverseQuestion(q){
   if(q[2]!=='mc'||!q[4]||q[4].length<3)return null;
-  const track=TRACKS.find(t=>t[0]===q[0]);
   const trackTerms=[];
   LESSONS.forEach(l=>{if(l[0]===q[0]&&l[6])l[6].forEach(t=>trackTerms.push(t))});
   if(!trackTerms.length)return null;
   const correctOpt=q[4][q[5]];
   const termMatch=trackTerms.find(t=>t[1]===correctOpt||correctOpt.includes(t[1]));
   if(!termMatch)return null;
+  // 영어 용어의 한국어 발음이 답보기에 그대로 있으면 너무 쉬우므로 스킵
   const pron=getPron(termMatch[0]);
-  const newQ=`"${termMatch[0]}"${pron?' ('+pron+')':''}의 의미는?`;
+  if(pron&&q[4].some(opt=>opt===pron||pron===correctOpt))return null;
+  const newQ=`다음 중 "${termMatch[0]}"의 올바른 한국어 용어는?`;
   return[q[0],q[1],'mc',newQ,q[4],q[5],q[q.length-1]];
 }
 
