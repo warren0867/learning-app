@@ -378,7 +378,9 @@ const TRACKS=[
 ['git','dev','🔀','버전 관리 (Git)','Version Control (Git)'],
 ['test','dev','🧪','테스팅 & QA','Testing & QA'],
 ['cicd','dev','🚀','배포 & CI/CD','Deployment & CI/CD'],
-['perf','dev','⚡','성능 최적화','Performance Optimization']
+['perf','dev','⚡','성능 최적화','Performance Optimization'],
+['growth','mkt','🚀','그로스 해킹','Growth Hacking'],
+['privacy','mkt','🔐','개인정보·데이터','Privacy & Data']
 ];
 // TRACKS: [id, subject, icon, nameKo, nameEn]
 
@@ -460,7 +462,14 @@ const LESSONS=[
 // Performance
 ['perf',1,0,'웹 성능 최적화 기초','Web Performance Basics','<h4>왜 성능이 중요한가?</h4><ul><li>페이지 로딩 3초 이상 → 53%의 모바일 사용자 이탈</li><li>1초 지연 → 전환율 7% 감소</li><li>Google 검색 순위에 영향</li></ul><h4>핵심 지표 (Core Web Vitals)</h4><ul><li><b>LCP</b>: Largest Contentful Paint - 최대 콘텐츠 로딩 (2.5초 이내)</li><li><b>FID</b>: First Input Delay - 첫 입력 반응 (100ms 이내)</li><li><b>CLS</b>: Cumulative Layout Shift - 레이아웃 안정성 (0.1 이하)</li></ul>',[['Core Web Vitals','코어 웹 바이탈','Google이 정의한 웹 성능의 3가지 핵심 지표 (LCP, FID, CLS)'],['LCP','최대 콘텐츠풀 페인트','페이지에서 가장 큰 콘텐츠 요소가 로드되는 시간'],['CLS','누적 레이아웃 시프트','페이지 로드 중 예기치 않은 레이아웃 변경 정도를 측정한 값']]],
 ['perf',2,0,'프론트엔드 성능 최적화','Frontend Performance','<h4>렌더링 최적화</h4><ul><li>CSS를 head에, JS를 body 끝에 배치</li><li><code>defer</code>, <code>async</code> 속성 활용</li><li>크리티컬 CSS 인라이닝</li></ul><h4>리소스 최적화</h4><ul><li>이미지: WebP 포맷, lazy loading, 적절한 크기</li><li>코드: 미니파이, 트리 쉐이킹, 코드 분할</li><li>폰트: font-display: swap, 서브셋</li></ul>',[['Lazy Loading','지연 로딩','화면에 보이는 시점에 리소스를 로드하는 최적화 기법'],['Minification','미니파이','공백, 주석 등을 제거하여 파일 크기를 줄이는 최적화'],['Tree Shaking','트리 쉐이킹','사용하지 않는 코드를 빌드 결과에서 제거하는 기법']]],
-['perf',3,0,'네트워크와 로딩 최적화','Network & Loading','<h4>네트워크 최적화</h4><ul><li><b>CDN</b>: 전 세계 서버에 콘텐츠 캐싱</li><li><b>캐싱</b>: 브라우저/서버 캐시 전략 설정</li><li><b>압축</b>: Gzip/Brotli로 전송 크기 감소</li><li><b>HTTP/2</b>: 멀티플렉싱으로 병렬 요청</li></ul><h4>로딩 전략</h4><ul><li>프리로드: 중요 리소스 미리 로드</li><li>프리페치: 다음 페이지 리소스 미리 가져오기</li><li>Service Worker: 오프라인 캐싱</li></ul>',[['CDN','콘텐츠 전송 네트워크','Content Delivery Network: 전 세계 서버에 콘텐츠를 캐싱하여 빠르게 전달하는 시스템'],['Caching','캐싱','자주 사용되는 데이터를 빠르게 접근할 수 있는 곳에 임시 저장하는 기법'],['Service Worker','서비스 워커','브라우저 백그라운드에서 실행되어 캐싱, 오프라인 지원 등을 제공하는 스크립트']]]
+['perf',3,0,'네트워크와 로딩 최적화','Network & Loading','<h4>네트워크 최적화</h4><ul><li><b>CDN</b>: 전 세계 서버에 콘텐츠 캐싱</li><li><b>캐싱</b>: 브라우저/서버 캐시 전략 설정</li><li><b>압축</b>: Gzip/Brotli로 전송 크기 감소</li><li><b>HTTP/2</b>: 멀티플렉싱으로 병렬 요청</li></ul><h4>로딩 전략</h4><ul><li>프리로드: 중요 리소스 미리 로드</li><li>프리페치: 다음 페이지 리소스 미리 가져오기</li><li>Service Worker: 오프라인 캐싱</li></ul>',[['CDN','콘텐츠 전송 네트워크','Content Delivery Network: 전 세계 서버에 콘텐츠를 캐싱하여 빠르게 전달하는 시스템'],['Caching','캐싱','자주 사용되는 데이터를 빠르게 접근할 수 있는 곳에 임시 저장하는 기법'],['Service Worker','서비스 워커','브라우저 백그라운드에서 실행되어 캐싱, 오프라인 지원 등을 제공하는 스크립트']]],
+// Growth Hacking
+['growth',1,1,'AARRR 퍼널','AARRR Funnel','<h4>🎯 한 줄 요약</h4><p><b>AARRR은 그로스 해커의 지도</b>다. 고객이 어떻게 오고, 어떻게 쓰고, 어떻게 머무는지 5단계로 추적한다.</p><h4>💡 왜 알아야 할까?</h4><p>"해적 지표(Pirate Metrics)"라고도 불려. AARRR을 크게 읽으면 해적이 "아르르르"하는 소리처럼 들리거든! 스타트업이 성장 병목을 찾아 집중 개선하는 데 필수적인 프레임워크야.</p><h4>📖 5단계</h4><ul><li><b>Acquisition(획득)</b>: 사용자가 어떻게 찾아오는가? — SEO, 광고, 입소문</li><li><b>Activation(활성화)</b>: 첫 경험이 "와, 좋다!" 수준인가? — 온보딩</li><li><b>Retention(유지)</b>: 다시 돌아오는가? — D1/D7/D30 리텐션</li><li><b>Referral(추천)</b>: 친구에게 소개하는가? — 바이럴 루프</li><li><b>Revenue(매출)</b>: 돈을 내는가? — LTV, ARPU</li></ul><h4>⚡ 실전 예시</h4><p>배달 앱이라면: 광고로 앱 설치(Acquisition) → 첫 주문 5분 안에 완료(Activation) → 매주 주문(Retention) → 친구에게 1,000원 쿠폰 공유(Referral) → 유료 구독(Revenue). 어느 단계 수치가 낮으면 거기에 집중!</p>',[['AARRR','해적 지표','Acquisition·Activation·Retention·Referral·Revenue: Dave McClure가 정의한 스타트업 5단계 성장 지표'],['Activation','활성화','신규 사용자가 서비스의 핵심 가치를 처음 경험하는 순간 (Aha Moment)'],['Retention','리텐션','일정 기간 후에도 서비스를 계속 사용하는 사용자 비율']]],
+['growth',2,1,'핵심 성장 지표','Key Growth Metrics','<h4>🎯 한 줄 요약</h4><p><b>North Star Metric은 회사 전체가 바라보는 북극성</b>. 모든 팀이 하나의 지표를 위해 움직인다.</p><h4>📖 핵심 개념</h4><ul><li><b>North Star Metric(NSM)</b>: 서비스의 핵심 가치를 가장 잘 반영하는 하나의 지표. 유튜브=시청 시간, 에어비앤비=예약 숙박 일수, 슬랙=메시지 전송 수</li><li><b>Viral Coefficient(K-factor)</b>: 기존 사용자 1명이 신규 사용자 몇 명을 데려오는가. K>1이면 바이럴, K&lt;1이면 감소</li><li><b>PMF(Product-Market Fit)</b>: "이 제품 없어지면 많이 아쉽다"는 사람이 40% 이상이면 PMF 달성!</li></ul><h4>🔢 숫자로 보면</h4><ul><li>K-factor = 초대장 발송 수 × 전환율. K=0.3이면 10명이 3명을 데려옴</li><li>DAU/MAU 비율이 50% 이상이면 높은 참여도 (Slack은 ~60%)</li></ul>',[['North Star Metric','북극성 지표','서비스의 핵심 가치를 가장 잘 나타내는 단 하나의 성장 지표'],['Viral Coefficient','바이럴 계수','기존 사용자 1명이 신규 사용자를 유치하는 평균 수. K>1이면 바이럴 성장'],['PMF','제품-시장 적합성','Product-Market Fit: 제품이 시장의 실제 니즈를 충족하는 상태']]],
+['growth',3,2,'PLG와 그로스 실험','PLG & Growth Experiments','<h4>🎯 한 줄 요약</h4><p><b>PLG는 제품 자체가 마케터</b>. 영업사원 없이 제품이 알아서 고객을 끌어온다.</p><h4>📖 핵심 개념</h4><ul><li><b>PLG(Product-led Growth)</b>: 제품의 사용 경험이 성장을 이끄는 전략. Slack, Zoom, Notion이 대표적. "써보면 알아"</li><li><b>Freemium</b>: 무료로 쓰다가 유료로 전환. 무료 유저가 유료 유저를 부르는 바이럴 효과</li><li><b>Growth Loop</b>: A→B→C→A 형태의 자기강화 성장 구조. 단방향 퍼널과 다름</li><li><b>Feature Flag</b>: 코드 배포 없이 기능을 켜고 끌 수 있어 A/B 테스트가 빠름</li></ul><h4>⚡ 실전 예시</h4><p>Slack: 팀원이 가입하면 팀원을 초대(바이럴) → 팀 전체가 쓰게 됨(네트워크 효과) → 기업 유료 전환(Revenue). 제품 자체가 성장 엔진!</p>',[['PLG','제품주도성장','Product-led Growth: 제품 경험이 마케팅·영업을 대체하며 성장을 이끄는 전략'],['Growth Loop','그로스 루프','A가 B를 만들고 B가 다시 A를 강화하는 자기강화 성장 구조'],['Freemium','프리미엄','무료 기본 기능을 제공하고 프리미엄 기능은 유료로 전환하는 비즈니스 모델']]],
+// Privacy & Data
+['privacy',1,1,'GDPR & 개인정보 기초','GDPR & Privacy Basics','<h4>🎯 한 줄 요약</h4><p><b>GDPR은 유럽발 개인정보 혁명</b>. 사용자 동의 없이 데이터를 쓰면 최대 2000만 유로 벌금!</p><h4>💡 왜 알아야 할까?</h4><p>한국 기업도 EU 사용자의 데이터를 다루면 GDPR 적용 대상. 쿠키 배너, 개인정보 정책, 데이터 삭제 요청 처리 방식을 알아야 법적 리스크를 피할 수 있어.</p><h4>📖 핵심 개념</h4><ul><li><b>GDPR</b>: EU의 개인정보보호법. 동의 없이 개인 데이터 수집·활용 금지</li><li><b>CCPA</b>: 캘리포니아 소비자 개인정보 보호법. 미국판 GDPR</li><li><b>Consent Management Platform(CMP)</b>: 쿠키 동의를 관리하는 도구 (Cookiebot, OneTrust 등)</li><li><b>데이터 주체 권리</b>: 열람권, 삭제권(잊혀질 권리), 이동권, 처리 반대권</li></ul><h4>⚡ 실전 예시</h4><p>웹사이트에 처음 접속하면 나오는 "쿠키 허용하시겠습니까?" 팝업이 바로 CMP야. 선택적 동의를 가능하게 해야 GDPR을 준수한 거야.</p>',[['GDPR','일반 데이터 보호 규정','EU의 개인정보보호법으로 위반 시 전 세계 연매출 4% 또는 2000만 유로 과징금'],['Consent','동의','개인정보 수집·처리에 대한 사용자의 명시적·자발적·철회 가능한 동의'],['First-party Data','퍼스트파티 데이터','자사가 직접 수집한 고객 데이터. 쿠키리스 시대에 가장 가치 있는 데이터']]],
+['privacy',2,2,'Cookieless 시대 대응','Cookieless Future','<h4>🎯 한 줄 요약</h4><p><b>서드파티 쿠키 종료 = 타겟광고의 패러다임 전환</b>. 퍼스트파티 데이터 전략이 필수다.</p><h4>📖 핵심 개념</h4><ul><li><b>Third-party Cookie</b>: 광고 추적에 쓰이는 다른 도메인의 쿠키. Chrome이 2024년부터 단계적 폐지 중</li><li><b>First-party Data</b>: 내 사이트에서 직접 수집한 데이터 (회원가입, 구매이력, 설문). 가장 신뢰도 높음</li><li><b>Second-party Data</b>: 파트너사가 직접 수집한 데이터를 공유받는 것</li><li><b>Zero-party Data</b>: 고객이 자발적으로 제공한 데이터 (설문, 선호도 조사)</li><li><b>Google Privacy Sandbox</b>: 쿠키 없이 타겟 광고를 구현하는 Google의 대안 기술</li></ul><h4>🔢 대응 전략</h4><ul><li>이메일 리스트 구축 (뉴스레터, 회원가입)</li><li>CRM 강화 → 퍼스트파티 데이터 활용</li><li>콘텍스트 타겟팅으로 전환 (쿠키 없이 페이지 내용 기반 광고)</li></ul>',[['Third-party Cookie','서드파티 쿠키','광고 네트워크가 여러 사이트에서 사용자 행동을 추적하는 쿠키. 2024년부터 단계적 폐지'],['Zero-party Data','제로파티 데이터','고객이 자발적으로 제공한 선호도·의도 데이터. 가장 정확하고 신뢰도 높음'],['Contextual Targeting','콘텍스트 타겟팅','쿠키 없이 현재 보고 있는 페이지의 내용에 맞는 광고를 보여주는 방식']]]
 ];
 
 /* ===== QUIZ DATA (171 questions: 3 per lesson) ===== */
@@ -903,7 +912,36 @@ const QUIZ_POOL=[
 ['perf',3,'fill','JS를 비동기로 로드하는 속성은 async와 _____입니다.','defer',0,'async는 다운로드 후 즉시 실행, defer는 HTML 파싱 후 순서대로 실행합니다.'],
 ['perf',1,'mc','CLS를 개선하는 방법은?',['레이아웃 자주 변경','이미지와 광고에 명시적 크기 지정','동적 콘텐츠 많이 추가','애니메이션 증가'],1,'이미지, 광고에 크기를 지정하여 레이아웃 변경을 방지합니다.'],
 ['perf',3,'ox','Code Splitting은 필요한 코드만 로드하여 초기 로딩 시간을 단축한다.',null,1,'Code Splitting은 번들을 작은 청크로 분할하는 최적화 기법입니다.'],
-['perf',2,'mc','브라우저 캐싱을 활용하는 HTTP 헤더는?',['Content-Type','Cache-Control','Authorization','Accept-Language'],1,'Cache-Control 헤더로 캐싱 시간을 설정하여 로딩 속도를 높입니다.']
+['perf',2,'mc','브라우저 캐싱을 활용하는 HTTP 헤더는?',['Content-Type','Cache-Control','Authorization','Accept-Language'],1,'Cache-Control 헤더로 캐싱 시간을 설정하여 로딩 속도를 높입니다.'],
+// Growth Hacking
+['growth',1,'mc','AARRR 퍼널에서 A-A-R-R-R이 의미하는 것이 아닌 것은?',['Acquisition','Activation','Retention','Advertisement'],3,'AARRR은 Acquisition(획득), Activation(활성화), Retention(유지), Referral(추천), Revenue(매출)이에요. Advertisement는 없어요!'],
+['growth',1,'ox','K-factor(바이럴 계수)가 1보다 크면 바이럴 성장이 발생한다.',null,1,'K-factor = 초대장 발송 수 × 전환율. K>1이면 사용자가 기하급수적으로 증가하는 바이럴 성장이 발생해요!'],
+['growth',1,'fill','AARRR에서 기존 사용자가 친구에게 서비스를 소개하는 단계를 ___이라 한다.','Referral',0,'Referral(추천) 단계는 바이럴 성장의 핵심이에요. 친구 초대 시 쿠폰 제공 등이 대표적인 Referral 전략이에요.'],
+['growth',2,'mc','North Star Metric(북극성 지표)이란?',['가장 최근 지표','서비스의 핵심 가치를 반영하는 단 하나의 성장 지표','매출만 측정하는 지표','팀별로 다른 지표'],1,'NSM은 회사 전체가 집중하는 하나의 핵심 지표예요. 유튜브=시청 시간, 에어비앤비=예약 숙박 일수처럼 서비스 가치를 가장 잘 반영해야 해요.'],
+['growth',2,'ox','PMF(제품-시장 적합성) 달성 여부는 "이 제품 없어지면 많이 아쉽다"는 응답자 비율로 측정할 수 있다.',null,1,'Sean Ellis의 PMF 설문: "이 제품이 없어지면 어떻게 느낄까요?"에서 "매우 실망"이 40% 이상이면 PMF 달성!'],
+['growth',2,'fill','DAU를 MAU로 나눈 지표를 스티키니스 또는 ___이라 한다.','참여율',0,'DAU/MAU 비율은 사용자가 얼마나 자주 서비스를 이용하는지 보여줘요. 50% 이상이면 매우 참여도가 높은 서비스에요.'],
+['growth',3,'mc','PLG(Product-led Growth)의 핵심은?',['영업팀 강화','제품 경험 자체가 성장 엔진','광고비 증가','고객지원 확대'],1,'PLG는 Slack, Zoom처럼 제품을 써봐야 가치를 느끼는 경우에 효과적이에요. 영업 없이 제품이 알아서 퍼져나가요!'],
+['growth',3,'ox','Freemium 모델에서 무료 사용자가 바이럴 효과를 만들 수 있다.',null,1,'무료 사용자가 지인을 초대하거나 브랜드를 노출시켜 유료 전환을 돕는 바이럴 효과를 만들어요. Spotify, Dropbox가 대표적이에요.'],
+['growth',3,'fill','사용자 A가 B를 유치하고, B가 다시 C를 유치하는 자기강화 성장 구조를 그로스 ___라 한다.','루프',0,'Growth Loop는 단방향 퍼널과 달리 순환 구조로 지속적 성장을 만들어요. Pinterest=콘텐츠 생성→검색→발견→더 많은 콘텐츠가 대표적!'],
+// Privacy & Data
+['privacy',1,'mc','GDPR 위반 시 최대 과징금은?',['전 세계 연매출 1% 또는 100만 유로','전 세계 연매출 4% 또는 2000만 유로','100만 달러','무조건 500만 유로'],1,'GDPR 위반은 전 세계 연매출의 4% 또는 2000만 유로 중 더 큰 금액이에요. Google이 GDPR로 50만 유로, Facebook이 2.2억 유로 과징금을 맞았어요.'],
+['privacy',1,'ox','First-party Data는 광고 플랫폼이 수집하는 데이터다.',null,0,'First-party Data는 내 사이트/앱에서 직접 수집한 데이터예요. 광고 플랫폼(Google, Meta)이 수집하는 건 Third-party Data예요.'],
+['privacy',1,'fill','사용자가 자발적으로 선호도나 의도를 제공한 데이터를 ___파티 데이터라 한다.','제로',0,'Zero-party Data는 설문, 퀴즈, 선호도 조사 등으로 고객이 직접 준 데이터예요. 가장 정확하고 동의도 명확해서 Cookieless 시대에 핵심!'],
+['privacy',2,'mc','서드파티 쿠키 폐지의 주요 대응 전략이 아닌 것은?',['First-party Data 강화','CRM 구축','쿠키 없이 타겟팅 무시','콘텍스트 타겟팅'],2,'쿠키가 없어도 마케팅은 계속돼야 해요! First-party Data 강화, CRM, 콘텍스트 타겟팅, 클린룸 등으로 대응할 수 있어요.'],
+['privacy',2,'ox','Contextual Targeting은 쿠키 없이 현재 페이지 내용에 맞는 광고를 보여주는 방식이다.',null,1,'요리 레시피 페이지에 조리기구 광고, 스포츠 기사에 운동화 광고처럼 페이지 맥락에 맞는 광고예요. 쿠키 없이도 가능!'],
+['privacy',2,'fill','개인정보보호법에서 사용자의 개인정보 삭제 요청 권리를 ___이라 한다.','잊혀질 권리',0,'Right to be Forgotten(잊혀질 권리)은 GDPR의 핵심 권리 중 하나예요. 기업은 정당한 이유 없이는 삭제 요청을 거부할 수 없어요.'],
+// 프로그래매틱 광고 (sem 트랙에 추가)
+['sem',3,'mc','RTB(실시간 입찰)에서 광고 슬롯이 경매에 부쳐지는 시간은?',['1초 이내','100밀리초 이내','10분 이내','하루에 한 번'],1,'RTB는 Real-Time Bidding. 사용자가 페이지를 열 때 100ms 이내에 경매가 완료되고 광고가 결정돼요. 눈 깜짝할 사이에 일어나는 일이에요!'],
+['sem',3,'ox','DSP는 광고주가 여러 매체에 광고를 집행하는 플랫폼이다.',null,1,'DSP(Demand-Side Platform)는 광고주 측 플랫폼이에요. SSP(Supply-Side Platform)는 매체 측 플랫폼. 둘이 Ad Exchange를 통해 실시간 거래해요.'],
+['sem',2,'fill','광고가 실제로 사용자에게 보였는지를 측정하는 지표를 ___이라 한다.','뷰어빌리티',0,'Viewability(뷰어빌리티)는 광고의 50%가 1초 이상 화면에 표시된 경우를 기준으로 해요. 클릭보다 광고 노출 품질을 더 중시하는 추세예요.'],
+// ASO (mobile 트랙에 추가)
+['mobile',1,'mc','앱스토어 최적화(ASO)에서 가장 중요한 요소는?',['아이콘 색상','앱 이름과 키워드','개발사 이름','앱 크기'],1,'ASO에서 앱 이름, 키워드 필드, 설명문이 검색 순위에 가장 큰 영향을 줘요. 앱 이름에 핵심 키워드를 포함하면 검색 노출이 크게 올라요.'],
+['mobile',2,'ox','앱스토어에서 별점과 리뷰 수는 전환율에 영향을 미친다.',null,1,'4.5점 이상 앱의 다운로드 전환율이 평균 23% 높아요. 리뷰 수도 많을수록 신뢰도가 높아지니, 리뷰 유도 전략이 ASO의 핵심이에요.'],
+['mobile',1,'fill','앱스토어에서 검색어를 입력했을 때 앱이 노출되는 순위를 높이는 작업을 ___라 한다.','ASO',0,'ASO(App Store Optimization)는 SEO의 앱 버전이에요. 키워드 최적화, 스크린샷 A/B 테스트, 리뷰 관리 등이 핵심 전략이에요.'],
+// 퍼포먼스 마케팅 심화 (ana 트랙에 추가)
+['ana',1,'mc','마케팅 믹스 모델링(MMM)의 주요 장점은?',['실시간 분석','쿠키 없이 채널별 기여도를 통계적으로 분석','개인 수준 추적','저비용'],1,'MMM은 과거 마케팅 지출과 매출 데이터를 통계 모델로 분석해요. 쿠키 의존 없이 TV, 디지털 등 모든 채널의 기여도를 측정할 수 있어서 Cookieless 시대에 주목받아요.'],
+['ana',2,'ox','인크리멘탈리티 테스트는 광고의 순수 효과를 측정하는 실험이다.',null,1,'광고 없이도 구매했을 사람을 제외하고 실제로 광고 덕분에 발생한 추가 전환만 측정해요. 기여 모델의 과대평가 문제를 해결해요.'],
+['ana',2,'fill','전환에 기여한 터치포인트에 공을 어떻게 배분할지 결정하는 모델을 ___모델이라 한다.','어트리뷰션',0,'어트리뷰션(Attribution) 모델에는 Last Click, First Click, Linear, Data-driven 등이 있어요. 마케팅 채널의 실제 기여도를 파악하는 핵심 방법론이에요.']
 ];
 
 /* ===== FLASHCARDS DATA (114 cards: 2 per lesson) ===== */
@@ -1155,7 +1193,29 @@ const FLASHCARDS=[
 ['perf',2,'코드 스플리팅','Code Splitting','번들을 작게 나누어 필요한 코드만 로드하여 초기 로딩 속도 개선','Splitting bundles to load only needed code for faster initial load'],
 ['perf',2,'웹 워커','Web Worker','메인 스레드와 별도로 백그라운드에서 스크립트를 실행하는 기술','Running scripts in background separate from main thread'],
 ['perf',3,'서비스 워커','Service Worker','오프라인 기능과 백그라운드 동기화를 가능하게 하는 프록시 스크립트','Proxy script enabling offline functionality and background sync'],
-['perf',3,'프리페칭','Prefetching','사용자가 필요로 할 리소스를 미리 로드하여 성능을 향상','Preloading resources users will likely need to improve performance']
+['perf',3,'프리페칭','Prefetching','사용자가 필요로 할 리소스를 미리 로드하여 성능을 향상','Preloading resources users will likely need to improve performance'],
+// Growth Hacking
+['growth',1,'AARRR','Pirate Metrics','스타트업 성장 5단계: Acquisition·Activation·Retention·Referral·Revenue','5-stage startup growth framework: Acquisition·Activation·Retention·Referral·Revenue'],
+['growth',1,'바이럴 계수','Viral Coefficient (K-factor)','기존 사용자 1명이 신규 사용자를 유치하는 평균 수. K>1이면 바이럴 성장','Average new users one user brings. K>1 means viral growth'],
+['growth',2,'북극성 지표','North Star Metric','서비스의 핵심 가치를 가장 잘 나타내는 단 하나의 성장 지표','Single metric that best captures the core value your product delivers'],
+['growth',2,'제품-시장 적합성','PMF (Product-Market Fit)','제품이 시장의 실제 니즈를 충족한 상태. 40% 이상이 "없으면 아쉽다"면 달성','State where product satisfies real market need. 40%+ "very disappointed" if gone'],
+['growth',3,'제품주도성장','PLG (Product-led Growth)','제품 경험 자체가 마케팅·영업을 대체하며 성장을 이끄는 전략','Strategy where product experience replaces marketing and sales to drive growth'],
+['growth',3,'그로스 루프','Growth Loop','A→B→C→A 형태로 자기강화하는 성장 구조. 단방향 퍼널보다 강력','Self-reinforcing growth structure stronger than one-way funnels'],
+// Privacy
+['privacy',1,'일반 데이터 보호 규정','GDPR','EU의 개인정보보호법. 위반 시 연매출 4% 또는 2000만 유로 과징금','EU data protection law. Up to 4% of global revenue or €20M for violations'],
+['privacy',1,'퍼스트파티 데이터','First-party Data','자사가 직접 수집한 고객 데이터. 쿠키리스 시대에 가장 가치 있는 자산','Data directly collected by your own platform. Most valuable in cookieless era'],
+['privacy',2,'서드파티 쿠키','Third-party Cookie','타 도메인이 사용자를 추적하는 쿠키. Chrome이 2024년부터 단계적 폐지','Cross-site tracking cookie being phased out by Chrome from 2024'],
+['privacy',2,'콘텍스트 타겟팅','Contextual Targeting','쿠키 없이 현재 페이지 맥락에 맞는 광고를 보여주는 방식','Showing ads based on page content rather than user tracking cookies'],
+// 프로그래매틱 광고
+['sem',2,'실시간 입찰','RTB (Real-Time Bidding)','광고 노출 기회를 100ms 이내 실시간 경매로 구매하는 프로그래매틱 광고 방식','Buying ad impressions via real-time auction under 100ms'],
+['sem',2,'수요측 플랫폼','DSP (Demand-Side Platform)','광고주가 여러 매체의 광고 인벤토리를 자동으로 구매하는 플랫폼','Platform allowing advertisers to buy ad inventory across multiple publishers'],
+['sem',3,'뷰어빌리티','Viewability','광고의 50% 이상이 1초 이상 화면에 노출된 비율. 광고 품질 지표','% of ads that were at least 50% visible for 1+ second. Ad quality metric'],
+// ASO
+['mobile',1,'앱스토어 최적화','ASO (App Store Optimization)','앱스토어 검색 순위와 전환율을 높이는 최적화 작업. 앱의 SEO','Optimizing app store presence to improve search ranking and conversion'],
+['mobile',2,'인앱 이벤트','In-App Event','앱 내에서 발생하는 특정 사용자 행동(구매, 레벨업 등)을 트래킹하는 이벤트','Tracking specific user actions within app like purchases or level-ups'],
+// 퍼포먼스 심화
+['ana',1,'마케팅 믹스 모델링','MMM (Marketing Mix Modeling)','과거 데이터로 채널별 마케팅 기여도를 통계 분석하는 방법론. 쿠키 불필요','Statistical analysis of channel contributions using historical data. No cookies needed'],
+['ana',2,'인크리멘탈리티','Incrementality','광고 없이도 발생했을 전환을 제외한 순수 광고 효과만 측정하는 방법','Measuring only the conversions caused by advertising, excluding organic ones']
 ];
 
 /* ===== KOREAN PRONUNCIATIONS FOR ENGLISH TERMS ===== */
@@ -1349,7 +1409,26 @@ const PRONUNCIATIONS={
 'Monolithic':'모놀리식','SOLID Principles':'솔리드 프린시플','Reels':'릴스',
 "Gestalt Principles":"게슈탈트 원칙","Fitts's Law":"피츠의 법칙",
 "Jakob's Law":"제이콥스 법칙","Hick's Law":"힉스 법칙",
-'Customer Relationship Management':'씨알엠'
+'Customer Relationship Management':'씨알엠',
+// Growth Hacking
+'AARRR':'에이알알알알','North Star Metric':'노스스타 메트릭','Viral Coefficient':'바이럴 코에피션트',
+'PMF':'피엠에프','PLG':'피엘지','Growth Loop':'그로스 루프','Freemium':'프리미엄',
+'Feature Flag':'피처 플래그','Churn':'처닝','LTV:CAC Ratio':'엘티비 캐크 레이쇼',
+'Cohort Analysis':'코호트 애널리시스','Activation':'액티베이션','Retention':'리텐션','Referral':'레퍼럴',
+// Privacy
+'GDPR':'지디피알','CCPA':'씨씨피에이','First-party Data':'퍼스트파티 데이터',
+'Third-party Cookie':'서드파티 쿠키','Zero-party Data':'제로파티 데이터',
+'Consent Management Platform':'컨센트 매니지먼트 플랫폼','Cookieless':'쿠키리스',
+'Contextual Targeting':'콘텍스트 타겟팅','Privacy Sandbox':'프라이버시 샌드박스',
+// Programmatic
+'RTB':'알티비','DSP':'디에스피','SSP':'에스에스피','Ad Exchange':'애드 익스체인지',
+'PMP':'피엠피','Viewability':'뷰어빌리티','Header Bidding':'헤더 비딩','CPV':'씨피브이',
+// ASO
+'ASO':'에이에스오','Keyword Optimization':'키워드 옵티마이제이션','App Store Listing':'앱 스토어 리스팅',
+'In-App Purchase':'인앱 퍼체이스','Push Notification':'푸시 노티피케이션','Deep Link':'딥링크',
+// Performance Marketing Advanced
+'MMM':'엠엠엠','Incrementality':'인크리멘탈리티','Attribution Window':'어트리뷰션 윈도우',
+'Data-driven Attribution':'데이터드리븐 어트리뷰션','Media Mix':'미디어 믹스'
 };
 function getPron(term){if(!term)return'';const p=PRONUNCIATIONS[term];if(p)return p;const t=term.replace(/\s*\(.*\)/,'').trim();return PRONUNCIATIONS[t]||'';}
 
@@ -1767,7 +1846,61 @@ const VOCAB_EXTRA=[
 ['perf','Web Vitals','웹 바이탈','사용자 경험 품질을 측정하는 Google의 핵심 성능 지표 모음'],
 ['perf','Caching Strategy','캐싱 전략','Cache-First, Network-First 등 리소스 캐싱 방법을 결정하는 전략'],
 ['perf','Bundle Size','번들 크기','앱에서 사용하는 모든 JS/CSS 파일의 총 크기, 작을수록 로딩이 빠름'],
-['perf','TTFB','첫 바이트 도달 시간','Time to First Byte: 서버가 첫 응답 바이트를 보내기까지 걸리는 시간']
+['perf','TTFB','첫 바이트 도달 시간','Time to First Byte: 서버가 첫 응답 바이트를 보내기까지 걸리는 시간'],
+// Growth Hacking
+['growth','AARRR','해적 지표','Acquisition·Activation·Retention·Referral·Revenue: Dave McClure의 스타트업 성장 5단계 지표'],
+['growth','Acquisition','획득','AARRR의 첫 단계. 잠재 사용자가 서비스를 처음 발견하는 과정 (SEO, 광고, 바이럴 등)'],
+['growth','Activation','활성화','신규 사용자가 핵심 가치를 처음 경험하는 Aha Moment. 온보딩이 핵심'],
+['growth','Retention','리텐션','일정 기간 후에도 서비스를 계속 이용하는 비율. D1/D7/D30 리텐션으로 측정'],
+['growth','Referral','추천','기존 사용자가 새로운 사용자를 유치하는 단계. K-factor로 바이럴 측정'],
+['growth','North Star Metric','북극성 지표','서비스 핵심 가치를 반영하는 단 하나의 성장 지표. 유튜브=시청시간, 에어비앤비=예약 숙박일'],
+['growth','Viral Coefficient','바이럴 계수','기존 사용자 1명이 신규 사용자를 유치하는 평균 수. K>1이면 기하급수적 성장'],
+['growth','PMF','제품-시장 적합성','Product-Market Fit: "없어지면 매우 아쉽다" 응답자 40% 이상이면 달성'],
+['growth','PLG','제품주도성장','Product-led Growth: 제품 경험이 마케팅을 대체하여 성장을 이끄는 전략'],
+['growth','Growth Loop','그로스 루프','A→B→C→A 자기강화 성장 구조. 단방향 퍼널 대비 복리 효과'],
+['growth','Freemium','프리미엄','무료 기본 기능 제공 후 프리미엄 기능 유료 전환. Spotify·Dropbox가 대표적'],
+['growth','Feature Flag','피처 플래그','코드 배포 없이 기능을 켜고 끌 수 있는 설정 기반 토글. 빠른 A/B 테스트 가능'],
+['growth','Churn','이탈','구독이나 서비스를 중단하는 사용자 비율. 낮을수록 건강한 서비스'],
+['growth','LTV:CAC Ratio','LTV 대 CAC 비율','고객 생애 가치와 고객 획득 비용의 비율. 3:1 이상이 건강한 비즈니스 기준'],
+['growth','Cohort Analysis','코호트 분석','같은 기간에 가입한 사용자 그룹의 행동 패턴을 시간순으로 분석하는 방법'],
+// Privacy & Data
+['privacy','GDPR','일반 데이터 보호 규정','EU의 개인정보보호법. 위반 시 연매출 4% 또는 2000만 유로 과징금'],
+['privacy','CCPA','캘리포니아 소비자 개인정보보호법','California Consumer Privacy Act. 미국판 GDPR로 캘리포니아 거주자 보호'],
+['privacy','First-party Data','퍼스트파티 데이터','자사 플랫폼에서 직접 수집한 고객 데이터. 쿠키리스 시대에 가장 가치 있는 자산'],
+['privacy','Second-party Data','세컨드파티 데이터','파트너사가 직접 수집한 데이터를 공유받는 방식. 신뢰도 높음'],
+['privacy','Third-party Cookie','서드파티 쿠키','광고 네트워크가 여러 사이트에서 사용자를 추적하는 쿠키. Chrome이 2024년부터 폐지'],
+['privacy','Zero-party Data','제로파티 데이터','고객이 설문·퀴즈 등으로 자발적으로 제공한 데이터. 가장 정확하고 동의가 명확'],
+['privacy','Consent Management Platform','동의 관리 플랫폼','쿠키·개인정보 동의를 관리하는 도구 (Cookiebot, OneTrust 등)'],
+['privacy','Cookieless','쿠키리스','서드파티 쿠키 없이 광고 타겟팅·성과 측정을 하는 새로운 마케팅 패러다임'],
+['privacy','Contextual Targeting','콘텍스트 타겟팅','쿠키 없이 현재 페이지 내용에 맞는 광고를 노출하는 방식'],
+['privacy','Privacy Sandbox','프라이버시 샌드박스','Google이 서드파티 쿠키 대안으로 개발 중인 개인정보 보호 광고 기술'],
+// 프로그래매틱 광고
+['sem','RTB','실시간 입찰','Real-Time Bidding: 광고 노출 기회를 100ms 이내 실시간 경매로 구매하는 방식'],
+['sem','DSP','수요측 플랫폼','Demand-Side Platform: 광고주가 여러 매체 인벤토리를 자동 구매하는 플랫폼'],
+['sem','SSP','공급측 플랫폼','Supply-Side Platform: 매체(퍼블리셔)가 광고 인벤토리를 자동 판매하는 플랫폼'],
+['sem','Ad Exchange','광고 거래소','DSP와 SSP를 연결하여 광고 인벤토리를 실시간 거래하는 마켓플레이스'],
+['sem','PMP','프리미엄 마켓플레이스','Private Marketplace: 선별된 광고주와 매체 간의 초대 전용 프리미엄 거래'],
+['sem','Viewability','뷰어빌리티','광고의 50%가 1초 이상 화면에 노출된 비율. 클릭률보다 광고 품질을 정확히 반영'],
+['sem','Header Bidding','헤더 비딩','매체가 광고 서버보다 먼저 여러 DSP에 동시 입찰 기회를 주는 방식. 수익 극대화'],
+['sem','CPV','조회당 비용','Cost Per View: 동영상 광고가 1회 조회될 때마다 지불하는 비용'],
+// ASO
+['mobile','ASO','앱스토어 최적화','App Store Optimization: 앱스토어 검색 순위와 전환율을 높이는 최적화 작업'],
+['mobile','Keyword Optimization','키워드 최적화','앱 이름·부제목·키워드 필드를 최적화하여 검색 노출을 극대화하는 ASO 핵심 전략'],
+['mobile','App Store Listing','앱 리스팅','스크린샷, 미리보기 영상, 설명문 등 앱스토어 내 앱 소개 페이지 구성 요소'],
+['mobile','Rating Optimization','리뷰·별점 최적화','긍정적 순간에 리뷰 요청을 유도하여 앱 평점을 높이는 전략'],
+['mobile','In-App Purchase','인앱 구매','앱 내에서 디지털 상품·구독·기능을 직접 구매하는 방식'],
+['mobile','Push Notification','푸시 알림','앱이 닫혀 있어도 기기에 알림을 보내는 기능. 재방문율 향상에 효과적'],
+['mobile','Deep Link','딥링크','앱의 특정 화면으로 직접 이동하는 링크. UA 캠페인의 랜딩페이지 역할'],
+['mobile','App Retention','앱 리텐션','설치 후 특정 기간(D1/D7/D30) 이후에도 앱을 계속 사용하는 비율'],
+// 퍼포먼스 마케팅 심화
+['ana','MMM','마케팅 믹스 모델링','Marketing Mix Modeling: 과거 데이터로 채널별 기여도를 통계 분석. 쿠키 불필요'],
+['ana','Incrementality','인크리멘탈리티','광고 없이도 발생했을 전환을 제외한 순수 광고 효과만 측정하는 방법'],
+['ana','Attribution Window','어트리뷰션 윈도우','광고 클릭 후 전환을 인정하는 기간. 일반적으로 7일 또는 30일'],
+['ana','Data-driven Attribution','데이터 기반 기여 모델','Google ML이 실제 전환 데이터로 각 터치포인트의 기여도를 자동 계산하는 모델'],
+['ana','Cross-channel Analytics','크로스채널 분석','여러 마케팅 채널의 성과를 통합하여 전체 고객 여정을 분석하는 방법'],
+['ana','Customer Lifetime Value','고객 생애 가치','한 고객이 서비스를 이용하는 전 기간 동안 창출하는 총 수익'],
+['ana','Media Mix','미디어 믹스','마케팅 목표 달성을 위한 다양한 채널의 조합과 예산 배분 전략'],
+['ana','ROAS Target','목표 ROAS','광고비 대비 매출 목표 비율. 자동 입찰 전략의 기준값으로 활용']
 ];
 
 /* ===== GAMIFICATION ===== */
@@ -1957,7 +2090,9 @@ db:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>정
 git:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>커밋 메시지를 잘 쓰면 미래의 나에게 큰 도움</li><li>feature 브랜치 → PR → 코드리뷰 워크플로 익히기</li><li>.gitignore 설정을 프로젝트 시작 시 반드시</li></ul><div class="tool-chips"><span class="tool-chip">GitHub</span><span class="tool-chip">GitKraken</span><span class="tool-chip">Conventional Commits</span></div></div>',
 test:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>100% 커버리지보다 핵심 비즈니스 로직 테스트 우선</li><li>테스트 작성이 어려우면 코드 설계가 잘못된 신호</li><li>CI에서 테스트 자동 실행 설정하기</li></ul><div class="tool-chips"><span class="tool-chip">Jest</span><span class="tool-chip">Cypress</span><span class="tool-chip">Playwright</span></div></div>',
 cicd:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>GitHub Actions로 CI/CD 시작 - 무료 티어 충분</li><li>Dockerfile 작성법을 꼭 익혀라</li><li>롤백 절차를 미리 정의하고 연습하라</li></ul><div class="tool-chips"><span class="tool-chip">GitHub Actions</span><span class="tool-chip">Docker</span><span class="tool-chip">Vercel</span></div></div>',
-perf:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>Lighthouse 점수 90+ 목표로 시작</li><li>이미지 최적화만으로도 체감 속도 크게 향상</li><li>CDN(CloudFlare 무료) 적용이 가성비 최고</li></ul><div class="tool-chips"><span class="tool-chip">Lighthouse</span><span class="tool-chip">WebPageTest</span><span class="tool-chip">Cloudflare</span></div></div>'
+perf:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>Lighthouse 점수 90+ 목표로 시작</li><li>이미지 최적화만으로도 체감 속도 크게 향상</li><li>CDN(CloudFlare 무료) 적용이 가성비 최고</li></ul><div class="tool-chips"><span class="tool-chip">Lighthouse</span><span class="tool-chip">WebPageTest</span><span class="tool-chip">Cloudflare</span></div></div>',
+growth:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>AARRR 퍼널에서 가장 약한 단계 하나만 집중 개선</li><li>North Star Metric은 팀 전체가 매주 체크하는 대시보드에 올려라</li><li>그로스 실험은 최소 2주, 표본 100건 이상 모아야 신뢰할 수 있어</li></ul><div class="tool-chips"><span class="tool-chip">Mixpanel</span><span class="tool-chip">Amplitude</span><span class="tool-chip">PostHog</span></div></div>',
+privacy:'<div class="tip-box"><div class="tip-title">💼 실무 팁</div><ul><li>개인정보 처리방침과 쿠키 배너부터 법무 검토 받아라</li><li>First-party 데이터 수집 시 사용자에게 명확한 가치를 제공해야 자발적 동의를 얻을 수 있어</li><li>Google 태그매니저로 동의 기반 태그 관리를 체계화하라</li></ul><div class="tool-chips"><span class="tool-chip">OneTrust</span><span class="tool-chip">Cookiebot</span><span class="tool-chip">Segment</span></div></div>'
 };
 
 function renderLearnTab(){
@@ -2491,7 +2626,7 @@ function renderHomeTab(){
     <div style="font-size:40px;margin-bottom:8px">${TREES[Math.min(lv,TREES.length-1)]}</div>
     <div style="font-size:20px;font-weight:800">Lv.${lv}</div>
     <div style="font-size:13px;color:var(--text-secondary)">${xp} XP · 🔥 ${streak}일 연속</div>
-    <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${completedCount}/57 레슨 완료</div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${completedCount}/${LESSONS.length} 레슨 완료</div>
   </div></div>`;
   if(todayTerm){
     const todayPron=getPron(todayTerm.term[0]);
@@ -2569,7 +2704,7 @@ function renderMyTab(){
     <div class="card" style="text-align:center;padding:20px"><div style="font-size:48px">${TREES[Math.min(lv,TREES.length-1)]}</div>
     <div style="font-size:24px;font-weight:800;margin-top:4px">Lv.${lv}</div><div style="font-size:14px;color:var(--text-secondary)">${xp} XP</div></div>
     <div class="stat-row"><span class="stat-label">🔥 연속 출석</span><span class="stat-value">${streak}일</span></div>
-    <div class="stat-row"><span class="stat-label">📖 완료 레슨</span><span class="stat-value">${completedCount}/57</span></div>
+    <div class="stat-row"><span class="stat-label">📖 완료 레슨</span><span class="stat-value">${completedCount}/${LESSONS.length}</span></div>
     <div class="stat-row"><span class="stat-label">🎮 게임 횟수</span><span class="stat-value">${qh.length}회</span></div>
     <div class="stat-row"><span class="stat-label">⚡ 스피드 최고</span><span class="stat-value">${LS.get('speedBest',0)}점</span></div>
     <div class="stat-row"><span class="stat-label">🛡️ 서바이벌 최고</span><span class="stat-value">${LS.get('survivalBest',0)}연속</span></div>
