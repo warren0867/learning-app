@@ -1921,7 +1921,7 @@ const BADGE_DEFS=[
 {id:'mkt_track',name:'마케터',icon:'📊',desc:'마케팅 트랙 3개 시작',check:s=>s.mktTracks>=3},
 {id:'dev_track',name:'개발자',icon:'💻',desc:'앱개발 트랙 3개 시작',check:s=>s.devTracks>=3},
 {id:'bookmarks_5',name:'북마크 수집',icon:'🔖',desc:'5개 북마크 저장',check:s=>s.bookmarks>=5},
-{id:'all_beginner',name:'입문 완료',icon:'🎓',desc:'모든 초급 레슨 완료',check:s=>s.completedLessons>=57},
+{id:'all_beginner',name:'입문 완료',icon:'🎓',desc:'모든 초급 레슨 완료',check:s=>s.completedLessons>=LESSONS.length},
 {id:'speed_50',name:'스피드스터',icon:'⚡',desc:'스피드퀴즈 50점+',check:s=>s.speedBest>=50},
 {id:'survival_10',name:'생존왕',icon:'🛡️',desc:'서바이벌 10연속',check:s=>s.survivalBest>=10},
 {id:'match_clear',name:'매칭 달인',icon:'🧩',desc:'매칭게임 클리어',check:s=>s.matchClears>=1}
