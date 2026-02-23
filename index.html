@@ -254,6 +254,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .progress-ring .ring-fill{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .6s}
 .progress-ring .ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
 @media(min-width:480px){#app-content{max-width:480px;margin-left:auto;margin-right:auto}#bottom-nav{max-width:480px;left:50%;transform:translateX(-50%)}#app-header{max-width:480px;left:50%;transform:translateX(-50%)}#gami-bar{max-width:480px;left:50%;transform:translateX(-50%)}.modal-content{max-width:480px}}
+/* Term Detail Modal */
+.td-header{color:#fff;padding:16px 20px}
+.td-title{font-size:22px;font-weight:800;line-height:1.3}
+.td-title-ko{font-size:14px;font-weight:400;opacity:.85}
+.td-body{padding:16px 20px}
+.td-def{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border-left:3px solid var(--primary)}
+.td-section{margin-bottom:16px}
+.td-section-title{font-size:11px;font-weight:700;margin-bottom:8px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.8px}
+.formula-box{background:#1e1b4b;color:#a5b4fc;font-family:monospace;font-size:13px;padding:12px 16px;border-radius:10px;font-weight:700;text-align:center;line-height:1.5}
+[data-theme="dark"] .formula-box{background:#0f0e2a;color:#c4b5fd}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.calc-label{font-size:11px;color:var(--text-secondary);font-weight:600;margin-bottom:3px}
+.calc-input{padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;width:100%}
+.calc-input:focus{outline:none;border-color:var(--primary)}
+.calc-result{background:var(--accent-light);color:var(--accent);font-size:15px;font-weight:700;padding:10px 14px;border-radius:10px;text-align:center;margin-top:4px;min-height:42px;display:flex;align-items:center;justify-content:center}
+.td-example-box{background:var(--secondary-light);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.8}
+[data-theme="dark"] .td-example-box{background:#292524}
+.td-highlight{color:var(--accent);font-weight:800;font-size:15px}
+.td-tip-list{list-style:none;padding:0;margin:0}
+.td-tip-list li{padding:7px 0 7px 20px;position:relative;font-size:13px;line-height:1.5;border-bottom:1px solid var(--border)}
+.td-tip-list li:last-child{border-bottom:none}
+.td-tip-list li::before{content:"→";position:absolute;left:0;color:var(--accent);font-weight:700}
+.td-close-btn{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;border-radius:0}
 </style>
 </head>
 <body>
@@ -344,6 +367,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div id="lesson-viewer-content"></div>
 </div>
 </div>
+<!-- Term Detail Modal -->
+<div id="term-detail-modal" class="modal-overlay"><div class="modal-content" style="max-height:92vh;padding:0;overflow:hidden;display:flex;flex-direction:column"><div id="term-detail-content" style="overflow-y:auto;flex:1"></div></div></div>
 
 <script>
 /* ===== CORE UTILITIES ===== */
@@ -2013,6 +2038,75 @@ const SRS_INTERVALS=[0,1,3,6,13];
 function getCardProgress(){return LS.get('flashProgress',{})}
 function setCardProgress(p){LS.set('flashProgress',p)}
 
+/* ===== TERM DETAIL MAP ===== */
+const TERM_DETAIL_MAP={
+'eCPM':{color:'#6366f1',rid:'ecpm',formula:'eCPM = (총 광고 수익 ÷ 총 노출수) × 1,000',inputs:[{id:'ecpm-rev',label:'총 광고 수익 (원)',ph:'예: 500000'},{id:'ecpm-imp',label:'총 노출수',ph:'예: 1000000'}],calcFn:'calcEcpm',example:'100만 노출에 ₩500,000 수익 → eCPM = <span class="td-highlight">₩500</span>',note:'노출 1,000회당 ₩500 수익',tips:['eCPM이 높을수록 같은 노출로 더 많은 수익','배너(₩500~2,000) &lt; 전면(₩2,000~5,000) &lt; 리워드(₩5,000+)','AdMob, Meta Audience Network 등 플랫폼 수익 최적화의 핵심 지표']},
+'ROAS':{color:'#f59e0b',rid:'roas',formula:'ROAS = (광고를 통한 매출 ÷ 광고비) × 100',inputs:[{id:'roas-rev',label:'광고 통한 매출 (원)',ph:'예: 4000000'},{id:'roas-cost',label:'광고비 (원)',ph:'예: 1000000'}],calcFn:'calcRoas',example:'광고비 ₩100만, 매출 ₩400만 → ROAS = <span class="td-highlight">400%</span>',note:'광고비 1원당 4원의 매출 창출',tips:['손익분기 ROAS = 100% ÷ 마진율 (마진 25% → 손익분기 400%)','산업 평균: 이커머스 약 400%, SaaS 약 300%','ROAS 200% 미만은 대부분 손해, 캠페인 개선 필요']},
+'CAC':{color:'#ef4444',rid:'cac',formula:'CAC = 총 마케팅·영업 비용 ÷ 신규 고객 수',inputs:[{id:'cac-cost',label:'총 마케팅 비용 (원)',ph:'예: 10000000'},{id:'cac-users',label:'신규 고객 수 (명)',ph:'예: 100'}],calcFn:'calcCac',example:'₩1,000만 투자, 100명 신규 고객 → CAC = <span class="td-highlight">₩100,000</span>',note:'고객 1명 확보에 10만원 소요',tips:['건강한 비즈니스: LTV ≥ 3 × CAC','CAC 회수 기간 = CAC ÷ 월 ARPU','채널별 CAC 비교로 효율 높은 채널에 집중']},
+'LTV':{color:'#8b5cf6',rid:'ltv',formula:'LTV = 평균 구매액 × 구매 빈도 × 고객 유지 기간',inputs:[{id:'ltv-avg',label:'평균 구매액 (원)',ph:'예: 30000'},{id:'ltv-freq',label:'연간 구매 횟수',ph:'예: 4'},{id:'ltv-life',label:'고객 유지 기간 (년)',ph:'예: 3'}],calcFn:'calcLtv',example:'구매 ₩30,000 × 연 4회 × 3년 → LTV = <span class="td-highlight">₩360,000</span>',note:'한 고객이 전체 기간 동안 가져다주는 가치',tips:['LTV ÷ CAC ≥ 3이면 건강한 비즈니스 모델','리텐션 개선이 LTV를 가장 효과적으로 높이는 방법','구독 서비스: LTV = ARPU ÷ 월 이탈률']},
+'ARPU':{color:'#10b981',rid:'arpu',formula:'ARPU = 총 수익 ÷ 활성 사용자 수',inputs:[{id:'arpu-rev',label:'총 수익 (원)',ph:'예: 10000000'},{id:'arpu-users',label:'활성 사용자 수 (명)',ph:'예: 5000'}],calcFn:'calcArpu',example:'월 수익 ₩1,000만, MAU 5,000명 → ARPU = <span class="td-highlight">₩2,000</span>',note:'사용자 1명이 월평균 ₩2,000 기여',tips:['DAU 기준 DARPU, MAU 기준 MARPU로 구분','업셀링·인앱 구매·광고로 ARPU 상승 가능','ARPU × 사용자 수 = 총 수익']},
+'CPA':{color:'#f97316',rid:'cpa',formula:'CPA = 총 광고비 ÷ 전환 수',inputs:[{id:'cpa-cost',label:'총 광고비 (원)',ph:'예: 1000000'},{id:'cpa-conv',label:'전환 수 (건)',ph:'예: 50'}],calcFn:'calcCpa',example:'광고비 ₩100만, 전환 50건 → CPA = <span class="td-highlight">₩20,000</span>',note:'전환 1건당 ₩20,000 소요',tips:['Google/Meta 타겟 CPA 자동 입찰 전략 활용 가능','전환 목표를 명확히 정의 (구매? 가입? 상담 신청?)','CPA &lt; 제품 마진이어야 수익 발생']},
+'CPL':{color:'#0ea5e9',rid:'cpl',formula:'CPL = 총 광고비 ÷ 리드 수',inputs:[{id:'cpl-cost',label:'총 광고비 (원)',ph:'예: 500000'},{id:'cpl-leads',label:'리드 수 (건)',ph:'예: 100'}],calcFn:'calcCpl',example:'광고비 ₩50만, 리드 100건 → CPL = <span class="td-highlight">₩5,000</span>',note:'리드 1건 확보에 ₩5,000 소요',tips:['B2B 마케팅에서 가장 중요한 KPI 중 하나','리드 품질 × CPL로 실제 효율 판단 필요','랜딩 페이지 폼 간소화로 CPL 개선 가능']},
+'CPI':{color:'#7c3aed',rid:'cpi',formula:'CPI = 총 광고비 ÷ 앱 설치 수',inputs:[{id:'cpi-cost',label:'총 광고비 (원)',ph:'예: 1000000'},{id:'cpi-inst',label:'앱 설치 수 (건)',ph:'예: 2000'}],calcFn:'calcCpi',example:'광고비 ₩100만, 설치 2,000건 → CPI = <span class="td-highlight">₩500</span>',note:'앱 설치 1건당 ₩500 소요',tips:['글로벌 평균: iOS $1~3, Android $0.5~1.5','설치 후 리텐션·인앱 구매율이 진짜 성과 지표','ASO로 오가닉 설치를 늘려 실질 CPI 낮추기']},
+'CPV':{color:'#ec4899',rid:'cpv',formula:'CPV = 총 광고비 ÷ 영상 조회 수',inputs:[{id:'cpv-cost',label:'총 광고비 (원)',ph:'예: 300000'},{id:'cpv-views',label:'조회 수',ph:'예: 10000'}],calcFn:'calcCpv',example:'광고비 ₩30만, 조회 1만회 → CPV = <span class="td-highlight">₩30</span>',note:'영상 조회 1회당 ₩30 소요',tips:['YouTube TrueView: 30초 이상 or 끝까지 시청 시 과금','첫 5초에서 시선을 잡아야 스킵 방지','스킵 광고 CPV vs 스킵 불가 CPM 비교 필요']},
+'CPE':{color:'#14b8a6',rid:'cpe',formula:'CPE = 총 광고비 ÷ 참여 수',inputs:[{id:'cpe-cost',label:'총 광고비 (원)',ph:'예: 200000'},{id:'cpe-eng',label:'참여 수 (건)',ph:'예: 4000'}],calcFn:'calcCpe',example:'광고비 ₩20만, 참여 4,000건 → CPE = <span class="td-highlight">₩50</span>',note:'참여 1건당 ₩50 소요',tips:['참여: 좋아요·댓글·공유·저장·클릭 포함','CPE가 낮을수록 인터랙티브 콘텐츠 효율 높음','브랜드 인지도 캠페인에서 주로 활용']},
+'CPS':{color:'#d97706',rid:'cps',formula:'CPS = 총 광고비 ÷ 판매 건수',inputs:[{id:'cps-cost',label:'총 광고비 (원)',ph:'예: 500000'},{id:'cps-sales',label:'판매 건수',ph:'예: 25'}],calcFn:'calcCps',example:'광고비 ₩50만, 판매 25건 → CPS = <span class="td-highlight">₩20,000</span>',note:'판매 1건당 ₩20,000 광고비 소요',tips:['CPS &lt; 제품 마진이어야 실질 수익 발생','CPA와 유사하나 CPS는 구매 완료만 집계','이커머스 퍼포먼스 마케팅의 핵심 지표']}
+};
+function calcEcpm(){const r=parseFloat(document.getElementById('tdi-ecpm-rev')?.value)||0,i=parseFloat(document.getElementById('tdi-ecpm-imp')?.value)||0,el=document.getElementById('tdo-ecpm');if(el)el.textContent=i>0?'eCPM = ₩'+(r/i*1000).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcRoas(){const r=parseFloat(document.getElementById('tdi-roas-rev')?.value)||0,c=parseFloat(document.getElementById('tdi-roas-cost')?.value)||0,el=document.getElementById('tdo-roas');if(el)el.textContent=c>0?'ROAS = '+(r/c*100).toFixed(1)+'%':'값을 입력하세요'}
+function calcCac(){const c=parseFloat(document.getElementById('tdi-cac-cost')?.value)||0,u=parseFloat(document.getElementById('tdi-cac-users')?.value)||0,el=document.getElementById('tdo-cac');if(el)el.textContent=u>0?'CAC = ₩'+(c/u).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcLtv(){const a=parseFloat(document.getElementById('tdi-ltv-avg')?.value)||0,f=parseFloat(document.getElementById('tdi-ltv-freq')?.value)||0,l=parseFloat(document.getElementById('tdi-ltv-life')?.value)||0,el=document.getElementById('tdo-ltv');if(el)el.textContent=(a&&f&&l)?'LTV = ₩'+(a*f*l).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcArpu(){const r=parseFloat(document.getElementById('tdi-arpu-rev')?.value)||0,u=parseFloat(document.getElementById('tdi-arpu-users')?.value)||0,el=document.getElementById('tdo-arpu');if(el)el.textContent=u>0?'ARPU = ₩'+(r/u).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCpa(){const c=parseFloat(document.getElementById('tdi-cpa-cost')?.value)||0,v=parseFloat(document.getElementById('tdi-cpa-conv')?.value)||0,el=document.getElementById('tdo-cpa');if(el)el.textContent=v>0?'CPA = ₩'+(c/v).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCpl(){const c=parseFloat(document.getElementById('tdi-cpl-cost')?.value)||0,l=parseFloat(document.getElementById('tdi-cpl-leads')?.value)||0,el=document.getElementById('tdo-cpl');if(el)el.textContent=l>0?'CPL = ₩'+(c/l).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCpi(){const c=parseFloat(document.getElementById('tdi-cpi-cost')?.value)||0,i=parseFloat(document.getElementById('tdi-cpi-inst')?.value)||0,el=document.getElementById('tdo-cpi');if(el)el.textContent=i>0?'CPI = ₩'+(c/i).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCpv(){const c=parseFloat(document.getElementById('tdi-cpv-cost')?.value)||0,v=parseFloat(document.getElementById('tdi-cpv-views')?.value)||0,el=document.getElementById('tdo-cpv');if(el)el.textContent=v>0?'CPV = ₩'+(c/v).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCpe(){const c=parseFloat(document.getElementById('tdi-cpe-cost')?.value)||0,e=parseFloat(document.getElementById('tdi-cpe-eng')?.value)||0,el=document.getElementById('tdo-cpe');if(el)el.textContent=e>0?'CPE = ₩'+(c/e).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function calcCps(){const c=parseFloat(document.getElementById('tdi-cps-cost')?.value)||0,s=parseFloat(document.getElementById('tdi-cps-sales')?.value)||0,el=document.getElementById('tdo-cps');if(el)el.textContent=s>0?'CPS = ₩'+(c/s).toLocaleString('ko-KR',{maximumFractionDigits:0}):'값을 입력하세요'}
+function openTermDetail(en,ko,def,track){
+  const d=TERM_DETAIL_MAP[en];
+  const pron=getPron(en);
+  const tr=TRACKS.find(t=>t[0]===track);
+  let html='';
+  if(d){
+    html+=`<div class="td-header" style="background:linear-gradient(135deg,${d.color},${d.color}cc)">`;
+    html+=`<div style="display:flex;justify-content:space-between;align-items:flex-start">`;
+    html+=`<div><div class="td-title">${en} <span class="td-title-ko">${ko}</span></div>`;
+    if(pron)html+=`<div style="font-size:13px;opacity:.85;margin-top:3px">[${pron}]</div>`;
+    html+=`</div><button onclick="closeModal('term-detail-modal')" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0">✕</button></div>`;
+    html+='</div>';
+    html+='<div class="td-body">';
+    html+=`<div class="td-def">${def}</div>`;
+    html+=`<div class="td-section"><div class="td-section-title">📐 계산 공식</div><div class="formula-box">${d.formula}</div></div>`;
+    html+=`<div class="td-section"><div class="td-section-title">🔢 직접 계산해보기</div><div class="calc-grid">`;
+    d.inputs.forEach(inp=>{html+=`<div><div class="calc-label">${inp.label}</div><input type="number" class="calc-input" id="tdi-${inp.id}" placeholder="${inp.ph}" oninput="${d.calcFn}()"></div>`;});
+    html+=`</div><div class="calc-result" id="tdo-${d.rid}">계산기에 값을 입력하세요</div></div>`;
+    html+=`<div class="td-section"><div class="td-section-title">💡 예시</div><div class="td-example-box">${d.example}<br><span style="color:var(--text-secondary);font-size:12px;margin-top:4px;display:block">${d.note}</span></div></div>`;
+    html+=`<div class="td-section"><div class="td-section-title">📌 실무 포인트</div><ul class="td-tip-list">${d.tips.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+    html+='</div>';
+  } else {
+    const headerColor='var(--primary)';
+    html+=`<div class="td-header" style="background:linear-gradient(135deg,${headerColor},var(--primary-dark))">`;
+    html+=`<div style="display:flex;justify-content:space-between;align-items:flex-start">`;
+    html+=`<div><div class="td-title">${en} <span class="td-title-ko">${ko}</span></div>`;
+    if(pron)html+=`<div style="font-size:13px;opacity:.85;margin-top:3px">[${pron}]</div>`;
+    if(tr)html+=`<div style="font-size:12px;opacity:.75;margin-top:4px">${tr[2]} ${tr[3]}</div>`;
+    html+=`</div><button onclick="closeModal('term-detail-modal')" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0">✕</button></div>`;
+    html+='</div>';
+    html+='<div class="td-body">';
+    html+=`<div class="td-def">${def}</div>`;
+    if(tr)html+=`<div style="text-align:center;padding:24px 0;color:var(--text-secondary);font-size:14px;line-height:1.8">${tr[2]}<br><strong>${tr[3]}</strong> 트랙에서<br>자세히 학습할 수 있어요</div>`;
+    html+='</div>';
+  }
+  html+=`<button class="td-close-btn" onclick="closeModal('term-detail-modal')">닫기</button>`;
+  document.getElementById('term-detail-content').innerHTML=html;
+  openModal('term-detail-modal');
+}
+function vocabItemClick(el){
+  const track=el.dataset.track,lesson=parseInt(el.dataset.lesson),en=el.dataset.en,ko=el.dataset.ko,def=el.dataset.def;
+  if(lesson>0){openLesson(track,lesson)}else{openTermDetail(en,ko,def,track)}
+}
+
 /* ===== VOCAB TAB (단어장) ===== */
 let vocabSearch='';
 function renderVocabTab(){
@@ -2048,7 +2142,7 @@ function renderVocabResults(){
       const bmKey='term_'+key;
       const isB=bm.includes(bmKey);
       const pron=getPron(t.en);
-      html+=`<div class="vocab-item" onclick="openLesson('${t.track}',${t.lesson||1})">
+      html+=`<div class="vocab-item" onclick="vocabItemClick(this)" data-track="${t.track}" data-lesson="${t.lesson}" data-en="${t.en.replace(/"/g,'&quot;')}" data-ko="${t.ko.replace(/"/g,'&quot;')}" data-def="${t.def.replace(/"/g,'&quot;')}">
         <div class="vocab-term">
           <div class="vocab-en">${t.en}${pron?` <span class="term-pron">(${pron})</span>`:''} <span class="vocab-ko">${t.ko}</span></div>
           <div class="vocab-def">${t.def}</div>
