@@ -187,7 +187,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .game-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;opacity:.06;z-index:0}
 .game-card.gc-daily::before{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
 .game-card.gc-speed::before{background:linear-gradient(135deg,#ef4444,#f97316)}
-.game-card.gc-match::before{background:linear-gradient(135deg,#14b8a6,#06b6d4)}
+.game-card.gc-typing::before{background:linear-gradient(135deg,#10b981,#059669)}
 .game-card.gc-survival::before{background:linear-gradient(135deg,#f59e0b,#eab308)}
 .game-card.gc-flip::before{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
 .game-card.gc-wrong::before{background:linear-gradient(135deg,#64748b,#475569)}
@@ -1723,7 +1723,7 @@ const BADGE_DEFS=[
 {id:'all_beginner',name:'입문 완료',icon:'🎓',desc:'모든 초급 레슨 완료',check:s=>s.completedLessons>=57},
 {id:'speed_50',name:'스피드스터',icon:'⚡',desc:'스피드퀴즈 50점+',check:s=>s.speedBest>=50},
 {id:'survival_10',name:'생존왕',icon:'🛡️',desc:'서바이벌 10연속',check:s=>s.survivalBest>=10},
-{id:'match_clear',name:'매칭 달인',icon:'🧩',desc:'매칭게임 클리어',check:s=>s.matchClears>=1}
+{id:'typing_master',name:'타이핑 달인',icon:'⌨️',desc:'타이핑 챌린지 50점+',check:s=>s.typingBest>=50}
 ];
 
 function getXP(){return LS.get('xp',0)}
@@ -1779,8 +1779,8 @@ function getStats(){
   const devTracks=new Set(Object.keys(prog).filter(k=>{const t=TRACKS.find(tr=>k.startsWith(tr[0]+'_'));return t&&t[1]==='dev'})).size;
   const speedBest=LS.get('speedBest',0);
   const survivalBest=LS.get('survivalBest',0);
-  const matchClears=LS.get('matchClears',0);
-  return{completedLessons,quizCount,perfectQuiz,cardReviews,streak,level,bookmarks,mktTracks:Math.min(mktTracks,9),devTracks:Math.min(devTracks,10),speedBest,survivalBest,matchClears};
+  const typingBest=LS.get('typingBest',0);
+  return{completedLessons,quizCount,perfectQuiz,cardReviews,streak,level,bookmarks,mktTracks:Math.min(mktTracks,9),devTracks:Math.min(devTracks,10),speedBest,survivalBest,typingBest};
 }
 function checkBadges(){
   const stats=getStats();const earned=LS.get('badges',[]);let newB=false;
@@ -2059,8 +2059,7 @@ function makeReverseQuestion(q){
   const correctOpt=q[4][q[5]];
   const termMatch=trackTerms.find(t=>t[1]===correctOpt||correctOpt.includes(t[1]));
   if(!termMatch)return null;
-  const pron=getPron(termMatch[0]);
-  const newQ=`"${termMatch[0]}"${pron?' ('+pron+')':''}의 의미는?`;
+  const newQ=`"${termMatch[0]}"의 의미는?`;
   return[q[0],q[1],'mc',newQ,q[4],q[5],q[q.length-1]];
 }
 
@@ -2083,6 +2082,7 @@ function renderGameTab(){
   const dq=LS.get('dailyQuiz',{});const dailyDone=dq.date===today();
   const speedBest=LS.get('speedBest',0);
   const survivalBest=LS.get('survivalBest',0);
+  const typingBest=LS.get('typingBest',0);
   const due=getDueCards().length;
 
   let html=`<div class="game-grid">
@@ -2098,10 +2098,11 @@ function renderGameTab(){
       <div class="game-title">스피드 퀴즈</div>
       <div class="game-desc">60초 안에 최대한!</div>
     </div>
-    <div class="card game-card gc-match" onclick="startMatchGame()">
-      <span class="game-icon">🧩</span>
-      <div class="game-title">용어 매칭</div>
-      <div class="game-desc">한↔영 짝 맞추기</div>
+    <div class="card game-card gc-typing" onclick="startTypingChallenge()">
+      ${typingBest?`<div class="game-badge" style="background:var(--accent);color:#fff">🏆${typingBest}</div>`:''}
+      <span class="game-icon">⌨️</span>
+      <div class="game-title">타이핑 챌린지</div>
+      <div class="game-desc">뜻 보고 영단어 입력!</div>
     </div>
     <div class="card game-card gc-survival" onclick="startSurvival()">
       ${survivalBest?`<div class="game-badge" style="background:var(--secondary);color:#fff">🏆${survivalBest}</div>`:''}
@@ -2174,9 +2175,10 @@ function qAnswer(type,sel,cor){
   }
   processQuizAnswer(correct);
 }
+function normAnswer(s){s=s.trim().replace(/\s+/g,'').toLowerCase();let r='';for(let i=0;i<s.length;i++){let c=s.charCodeAt(i);if(c>=0xAC00&&c<=0xD7A3){const o=c-0xAC00;let v=Math.floor((o%588)/28);if(v===5)v=1;if(v===10)v=4;c=0xAC00+Math.floor(o/588)*588+v*28+o%28}r+=String.fromCharCode(c)}return r;}
 function qAnswerFill(){
   const inp=$('fill-answer');if(!inp)return;
-  const q=quizState.questions[quizState.current];const correct=inp.value.trim()===q[4];
+  const q=quizState.questions[quizState.current];const correct=normAnswer(inp.value)===normAnswer(q[4]);
   inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
   if(!correct){const h=document.createElement('div');h.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';h.textContent='정답: '+q[4];inp.parentNode.appendChild(h)}
   document.querySelector('.btn-primary').style.display='none';
@@ -2311,54 +2313,73 @@ function endSurvival(){
     <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
 }
 
-// ---- Memory Match Game ----
-let matchState=null;
-function startMatchGame(){
-  const cards=shuffleArray(getFilteredCards()).slice(0,6);
-  if(cards.length<4){toast('카드가 부족합니다','error');return}
-  const pairs=[];cards.forEach(c=>{pairs.push({id:c[2],text:c[2],pair:c[2]});pairs.push({id:c[2],text:c[3],pair:c[2]})});
-  matchState={cells:shuffleArray(pairs),revealed:[],matched:[],moves:0,startTime:Date.now()};
-  renderMatchGame();
+// ---- Typing Challenge (90s) ----
+let typingTimer=null;
+function startTypingChallenge(){
+  const pool=shuffleArray(getFilteredCards());
+  if(!pool.length){toast('카드가 없습니다','error');return}
+  quizState={cards:pool,current:0,score:0,combo:0,maxCombo:0,mode:'타이핑 챌린지',timeLeft:90};
+  renderTypingQ();
+  typingTimer=setInterval(()=>{
+    quizState.timeLeft--;
+    const te=$('typing-time');if(te){te.textContent=quizState.timeLeft;if(quizState.timeLeft<=10)te.className='speed-timer urgent'}
+    if(quizState.timeLeft<=0){clearInterval(typingTimer);typingTimer=null;endTypingChallenge()}
+  },1000);
 }
-function renderMatchGame(){
-  const m=matchState;const allDone=m.matched.length===m.cells.length;
-  let h=`<div style="text-align:center;margin-bottom:12px">
-    <div style="font-size:18px;font-weight:700">🧩 용어 매칭</div>
-    <div style="font-size:13px;color:var(--text-secondary)">한국어↔영어 짝을 맞추세요 · ${m.moves}회</div>
-  </div><div class="memory-grid">`;
-  m.cells.forEach((c,i)=>{
-    const isRevealed=m.revealed.includes(i);const isMatched=m.matched.includes(i);
-    const mp=getPron(c.text);const mpHtml=mp?`<span class="match-pron">(${mp})</span>`:'';
-    if(isMatched)h+=`<div class="memory-cell matched">${c.text}${mpHtml}</div>`;
-    else if(isRevealed)h+=`<div class="memory-cell revealed">${c.text}${mpHtml}</div>`;
-    else h+=`<div class="memory-cell" onclick="matchTap(${i})">?</div>`;
-  });
-  h+='</div>';
-  if(allDone){
-    const sec=Math.round((Date.now()-m.startTime)/1000);
-    const mc=LS.get('matchClears',0);LS.set('matchClears',mc+1);
-    addXP(30);checkBadges();
-    const qh=LS.get('quizHistory',[]);qh.push({mode:'🧩매칭',score:m.moves,total:0,date:today()});LS.set('quizHistory',qh);
-    h+=`<div style="text-align:center;padding:16px"><div style="font-size:40px">🎉</div>
-      <div style="font-size:16px;font-weight:700;margin:8px 0">${m.moves}회 만에 클리어! (${sec}초)</div>
-      <div style="font-size:14px;color:var(--secondary);font-weight:700">+30 XP</div></div>`;
-  }
-  h+=`<button class="btn btn-outline btn-full" style="margin-top:12px" onclick="renderGameTab()">← 뒤로</button>`;
+function renderTypingQ(){
+  if(quizState.current>=quizState.cards.length){quizState.cards=shuffleArray(getFilteredCards());quizState.current=0}
+  const c=quizState.cards[quizState.current];
+  const comboText=quizState.combo>=3?`<div class="combo-display hot">🔥 ${quizState.combo} COMBO!</div>`:(quizState.combo>=2?`<div class="combo-display">⚡ ${quizState.combo} combo</div>`:'');
+  let h=`<div style="text-align:center"><div class="speed-timer" id="typing-time">${quizState.timeLeft}</div>
+    <div style="font-size:24px;font-weight:800;color:var(--accent);margin-bottom:4px">⌨️ ${quizState.score}점</div>
+    ${comboText}</div>`;
+  h+=`<div class="card" style="padding:20px">
+    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">뜻을 보고 영어 용어를 입력하세요</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--primary)">${c[2]}</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.5">${c[4]}</div>
+    <input class="fill-input" id="typing-answer" placeholder="영어 용어 입력..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')typingCheck()">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="typingSkip()">건너뛰기</button>
+      <button class="btn btn-primary" style="flex:2" onclick="typingCheck()">확인 →</button>
+    </div>
+  </div>
+  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="clearInterval(typingTimer);typingTimer=null;renderGameTab()">← 포기</button>`;
   $('game-content').innerHTML=h;
+  const inp=$('typing-answer');if(inp)setTimeout(()=>inp.focus(),100);
 }
-function matchTap(i){
-  const m=matchState;if(!m||m.revealed.includes(i)||m.matched.includes(i))return;
-  if(m.revealed.length>=2)return;
-  m.revealed.push(i);renderMatchGame();
-  if(m.revealed.length===2){
-    m.moves++;
-    const[a,b]=m.revealed;
-    if(m.cells[a].pair===m.cells[b].pair&&a!==b){
-      setTimeout(()=>{m.matched.push(a,b);m.revealed=[];renderMatchGame()},500);
-    }else{
-      setTimeout(()=>{m.revealed=[];renderMatchGame()},800);
-    }
+function typingCheck(){
+  const inp=$('typing-answer');if(!inp)return;
+  const c=quizState.cards[quizState.current];
+  const answer=inp.value.trim();
+  if(!answer)return;
+  const correct=answer.toLowerCase()===c[3].toLowerCase();
+  if(correct){
+    quizState.score+=10+(quizState.combo>=3?5:0);quizState.combo++;quizState.maxCombo=Math.max(quizState.maxCombo,quizState.combo);
+    inp.style.borderColor='var(--accent)';inp.disabled=true;
+    document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
+  }else{
+    quizState.combo=0;
+    inp.style.borderColor='var(--danger)';inp.disabled=true;
+    const hint=document.createElement('div');hint.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';hint.textContent='정답: '+c[3];inp.parentNode.appendChild(hint);
+    document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
   }
+  setTimeout(()=>{quizState.current++;renderTypingQ()},correct?500:1000);
+}
+function typingSkip(){
+  quizState.combo=0;quizState.current++;renderTypingQ();
+}
+function endTypingChallenge(){
+  const s=quizState.score;const best=LS.get('typingBest',0);
+  if(s>best)LS.set('typingBest',s);
+  addXP(Math.floor(s/2));
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'⌨️타이핑',score:s,total:0,date:today()});LS.set('quizHistory',qh);checkBadges();
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">⌨️</div>
+    <div style="font-size:32px;font-weight:800;color:var(--accent)">${s}점</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최대 콤보: ${quizState.maxCombo} · 최고기록: ${Math.max(s,best)}</div>
+    ${s>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s/2)} XP</div>
+    <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
 }
 
 // ---- Flashcard Game (Leitner SRS) ----
@@ -2590,7 +2611,7 @@ function doSearch(query){
 
 /* ===== BACKUP / RESTORE ===== */
 function exportData(){
-  const data={};['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','theme','speedBest','survivalBest','matchClears'].forEach(k=>{const v=LS.get(k);if(v!==null)data[k]=v});
+  const data={};['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','theme','speedBest','survivalBest','typingBest'].forEach(k=>{const v=LS.get(k);if(v!==null)data[k]=v});
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`learnnote-backup-${today()}.json`;a.click();toast('백업 완료','success');
 }
@@ -2601,7 +2622,7 @@ function importData(event){
 }
 function resetData(){
   if(!confirm('모든 학습 데이터가 삭제됩니다. 계속?'))return;
-  ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','matchClears'].forEach(k=>localStorage.removeItem('ln_'+k));
+  ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','typingBest'].forEach(k=>localStorage.removeItem('ln_'+k));
   toast('초기화 완료','success');setTimeout(()=>location.reload(),800);
 }
 
