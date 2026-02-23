@@ -189,7 +189,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .game-card.gc-speed::before{background:linear-gradient(135deg,#ef4444,#f97316)}
 .game-card.gc-typing::before{background:linear-gradient(135deg,#10b981,#059669)}
 .game-card.gc-survival::before{background:linear-gradient(135deg,#f59e0b,#eab308)}
-.game-card.gc-flip::before{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
+.game-card.gc-chosung::before{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.game-card.gc-hint::before{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+.game-card.gc-ox::before{background:linear-gradient(135deg,#14b8a6,#06b6d4)}
 .game-card.gc-wrong::before{background:linear-gradient(135deg,#64748b,#475569)}
 .game-card>*{position:relative;z-index:1}
 .game-icon{font-size:32px;display:block;margin-bottom:6px}
@@ -1912,7 +1914,9 @@ const BADGE_DEFS=[
 {id:'quiz_first',name:'퀴즈 도전',icon:'🎯',desc:'첫 퀴즈 완료',check:s=>s.quizCount>=1},
 {id:'quiz_perfect',name:'만점왕',icon:'💯',desc:'퀴즈 만점 달성',check:s=>s.perfectQuiz>=1},
 {id:'quiz_10',name:'퀴즈마스터',icon:'🏅',desc:'10회 퀴즈 완료',check:s=>s.quizCount>=10},
-{id:'card_50',name:'카드 수집가',icon:'🃏',desc:'50장 플래시카드 복습',check:s=>s.cardReviews>=50},
+{id:'chosung_master',name:'초성 달인',icon:'🔤',desc:'초성 챔린지 80점+',check:s=>s.chosungBest>=80},
+{id:'hint_master',name:'힌트 달인',icon:'💡',desc:'힌트게임 100점+',check:s=>s.hintBest>=100},
+{id:'ox_master',name:'OX 달인',icon:'⭕',desc:'OX 마라톤 50점+',check:s=>s.oxBest>=50},
 {id:'streak_3',name:'3일 연속',icon:'🔥',desc:'3일 연속 출석',check:s=>s.streak>=3},
 {id:'streak_7',name:'일주일 완주',icon:'⭐',desc:'7일 연속 출석',check:s=>s.streak>=7},
 {id:'streak_30',name:'한 달 마스터',icon:'👑',desc:'30일 연속 출석',check:s=>s.streak>=30},
@@ -1971,7 +1975,7 @@ function getStats(){
   const qh=LS.get('quizHistory',[]);
   const quizCount=qh.length;
   const perfectQuiz=qh.filter(q=>q.score===q.total).length;
-  const cardReviews=LS.get('cardReviews',0);
+  const chosungBest=LS.get('chosungBest',0);const hintBest=LS.get('hintBest',0);const oxBest=LS.get('oxBest',0);
   const att=LS.get('attendance',{});
   const streak=calcStreak(att);
   const xp=getXP();const level=Math.floor(Math.sqrt(xp/100));
@@ -1981,7 +1985,7 @@ function getStats(){
   const speedBest=LS.get('speedBest',0);
   const survivalBest=LS.get('survivalBest',0);
   const typingBest=LS.get('typingBest',0);
-  return{completedLessons,quizCount,perfectQuiz,cardReviews,streak,level,bookmarks,mktTracks:Math.min(mktTracks,9),devTracks:Math.min(devTracks,10),speedBest,survivalBest,typingBest};
+  return{completedLessons,quizCount,perfectQuiz,streak,level,bookmarks,mktTracks:Math.min(mktTracks,9),devTracks:Math.min(devTracks,10),speedBest,survivalBest,typingBest,chosungBest,hintBest,oxBest};
 }
 function checkBadges(){
   const stats=getStats();const earned=LS.get('badges',[]);let newB=false;
@@ -2280,7 +2284,7 @@ function checkLearningPace(){
 }
 
 /* ===== GAME TAB ===== */
-let quizState=null,speedTimer=null,fcState=null;
+let quizState=null,speedTimer=null,chosungState=null,hintState=null,oxState=null;
 
 function renderGameTab(){
   const wrong=LS.get('wrongAnswers',[]);
@@ -2288,7 +2292,6 @@ function renderGameTab(){
   const speedBest=LS.get('speedBest',0);
   const survivalBest=LS.get('survivalBest',0);
   const typingBest=LS.get('typingBest',0);
-  const due=getDueCards().length;
 
   let html=`<div class="game-grid">
     <div class="card game-card gc-daily" onclick="${dailyDone?'':'startDailyQuiz()'}">
@@ -2307,7 +2310,7 @@ function renderGameTab(){
       ${typingBest?`<div class="game-badge" style="background:var(--accent);color:#fff">🏆${typingBest}</div>`:''}
       <span class="game-icon">⌨️</span>
       <div class="game-title">타이핑 챌린지</div>
-      <div class="game-desc">뜻 보고 영단어 입력!</div>
+      <div class="game-desc">영문 보고 한글 입력!</div>
     </div>
     <div class="card game-card gc-survival" onclick="startSurvival()">
       ${survivalBest?`<div class="game-badge" style="background:var(--secondary);color:#fff">🏆${survivalBest}</div>`:''}
@@ -2315,11 +2318,23 @@ function renderGameTab(){
       <div class="game-title">서바이벌</div>
       <div class="game-desc">3목숨, 몇 연속?</div>
     </div>
-    <div class="card game-card gc-flip" onclick="startFlashcardGame()">
-      ${due?`<div class="game-badge" style="background:var(--primary);color:#fff">${due}장</div>`:''}
-      <span class="game-icon">🃏</span>
-      <div class="game-title">플래시카드</div>
-      <div class="game-desc">${due?due+'장 복습 대기':'오늘 복습 완료!'}</div>
+    <div class="card game-card gc-chosung" onclick="startChosungGame()">
+      ${LS.get('chosungBest',0)?`<div class="game-badge" style="background:var(--secondary);color:#fff">🏆${LS.get('chosungBest',0)}</div>`:''}
+      <span class="game-icon">🔤</span>
+      <div class="game-title">초성 챌린지</div>
+      <div class="game-desc">초성 힌트로 한글 맞추기!</div>
+    </div>
+    <div class="card game-card gc-hint" onclick="startHintGame()">
+      ${LS.get('hintBest',0)?`<div class="game-badge" style="background:var(--primary);color:#fff">🏆${LS.get('hintBest',0)}</div>`:''}
+      <span class="game-icon">💡</span>
+      <div class="game-title">힌트 게임</div>
+      <div class="game-desc">적은 힌트로 고득점!</div>
+    </div>
+    <div class="card game-card gc-ox" onclick="startOXMarathon()">
+      ${LS.get('oxBest',0)?`<div class="game-badge" style="background:var(--accent);color:#fff">🏆${LS.get('oxBest',0)}</div>`:''}
+      <span class="game-icon">⭕</span>
+      <div class="game-title">OX 마라톤</div>
+      <div class="game-desc">영-한 짝 맞으면 O!</div>
     </div>
     <div class="card game-card gc-wrong" onclick="startWrongQuiz()" ${wrong.length===0?'style="opacity:.4;pointer-events:none"':''}>
       <span class="game-icon">🔄</span>
@@ -2517,37 +2532,33 @@ function endSurvival(){
     <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
 }
 
-// ---- Typing Challenge (90s) ----
-let typingTimer=null;
+// ---- Typing Challenge (no timer, EN→KO) ----
 function startTypingChallenge(){
-  const pool=shuffleArray(getFilteredCards());
+  const pool=shuffleArray(getFilteredCards()).slice(0,10);
   if(!pool.length){toast('카드가 없습니다','error');return}
-  quizState={cards:pool,current:0,score:0,combo:0,maxCombo:0,mode:'타이핑 챌린지',timeLeft:90};
+  quizState={cards:pool,current:0,score:0,correct:0,combo:0,maxCombo:0,mode:'타이핑 챌린지'};
   renderTypingQ();
-  typingTimer=setInterval(()=>{
-    quizState.timeLeft--;
-    const te=$('typing-time');if(te){te.textContent=quizState.timeLeft;if(quizState.timeLeft<=10)te.className='speed-timer urgent'}
-    if(quizState.timeLeft<=0){clearInterval(typingTimer);typingTimer=null;endTypingChallenge()}
-  },1000);
 }
 function renderTypingQ(){
-  if(quizState.current>=quizState.cards.length){quizState.cards=shuffleArray(getFilteredCards());quizState.current=0}
-  const c=quizState.cards[quizState.current];
-  const comboText=quizState.combo>=3?`<div class="combo-display hot">🔥 ${quizState.combo} COMBO!</div>`:(quizState.combo>=2?`<div class="combo-display">⚡ ${quizState.combo} combo</div>`:'');
-  let h=`<div style="text-align:center"><div class="speed-timer" id="typing-time">${quizState.timeLeft}</div>
-    <div style="font-size:24px;font-weight:800;color:var(--accent);margin-bottom:4px">⌨️ ${quizState.score}점</div>
+  const s=quizState;
+  if(s.current>=s.cards.length){endTypingChallenge();return}
+  const c=s.cards[s.current];
+  const comboText=s.combo>=3?`<div class="combo-display hot">🔥 ${s.combo} COMBO!</div>`:(s.combo>=2?`<div class="combo-display">⚡ ${s.combo} combo</div>`:'');
+  let h=`<div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:13px;color:var(--text-secondary)">${s.current+1} / ${s.cards.length}</div>
+    <div style="font-size:20px;font-weight:800;color:var(--accent);margin:4px 0">⌨️ ${s.score}점</div>
     ${comboText}</div>`;
   h+=`<div class="card" style="padding:20px">
-    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">뜻을 보고 영어 용어를 입력하세요</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--primary)">${c[2]}</div>
-    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.5">${c[4]}</div>
-    <input class="fill-input" id="typing-answer" placeholder="영어 용어 입력..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')typingCheck()">
+    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">영어 용어의 한글 뜻을 입력하세요</div>
+    <div style="font-size:24px;font-weight:800;color:var(--primary);margin-bottom:6px;text-align:center">${c[3]}</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.5;text-align:center">${c[4]}</div>
+    <input class="fill-input" id="typing-answer" placeholder="한글로 입력..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter')typingCheck()">
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn btn-outline btn-sm" style="flex:1" onclick="typingSkip()">건너뛰기</button>
       <button class="btn btn-primary" style="flex:2" onclick="typingCheck()">확인 →</button>
     </div>
   </div>
-  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="clearInterval(typingTimer);typingTimer=null;renderGameTab()">← 포기</button>`;
+  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="quizState=null;renderGameTab()">← 그만하기</button>`;
   $('game-content').innerHTML=h;
   const inp=$('typing-answer');if(inp)setTimeout(()=>inp.focus(),100);
 }
@@ -2556,37 +2567,34 @@ function typingCheck(){
   const c=quizState.cards[quizState.current];
   const answer=inp.value.trim();
   if(!answer)return;
-  const correct=answer.toLowerCase()===c[3].toLowerCase();
+  const correct=answer===c[2]||answer.replace(/\s/g,'')===c[2].replace(/\s/g,'');
   if(correct){
-    quizState.score+=10+(quizState.combo>=3?5:0);quizState.combo++;quizState.maxCombo=Math.max(quizState.maxCombo,quizState.combo);
+    quizState.score+=10+(quizState.combo>=3?5:0);quizState.combo++;quizState.maxCombo=Math.max(quizState.maxCombo,quizState.combo);quizState.correct++;
     inp.style.borderColor='var(--accent)';inp.disabled=true;
-    document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
   }else{
-    quizState.combo=0;
-    inp.style.borderColor='var(--danger)';inp.disabled=true;
-    const hint=document.createElement('div');hint.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';hint.textContent='정답: '+c[3];inp.parentNode.appendChild(hint);
-    document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
+    quizState.combo=0;inp.style.borderColor='var(--danger)';inp.disabled=true;
+    const hint=document.createElement('div');hint.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';hint.textContent='정답: '+c[2];inp.parentNode.appendChild(hint);
   }
-  setTimeout(()=>{quizState.current++;renderTypingQ()},correct?500:1000);
+  document.querySelectorAll('#game-content .btn').forEach(b=>b.disabled=true);
+  setTimeout(()=>{quizState.current++;renderTypingQ()},correct?600:1200);
 }
-function typingSkip(){
-  quizState.combo=0;quizState.current++;renderTypingQ();
-}
+function typingSkip(){quizState.combo=0;quizState.current++;renderTypingQ();}
 function endTypingChallenge(){
-  const s=quizState.score;const best=LS.get('typingBest',0);
-  if(s>best)LS.set('typingBest',s);
-  addXP(Math.floor(s/2));
-  const qh=LS.get('quizHistory',[]);qh.push({mode:'⌨️타이핑',score:s,total:0,date:today()});LS.set('quizHistory',qh);checkBadges();
+  const s=quizState;const best=LS.get('typingBest',0);
+  if(s.score>best)LS.set('typingBest',s.score);
+  addXP(Math.floor(s.score/2));trackDailyGame();
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'⌨️타이핑',score:s.correct,total:s.cards.length,date:today()});LS.set('quizHistory',qh);checkBadges();
   $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
     <div style="font-size:60px;margin-bottom:12px">⌨️</div>
-    <div style="font-size:32px;font-weight:800;color:var(--accent)">${s}점</div>
-    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최대 콤보: ${quizState.maxCombo} · 최고기록: ${Math.max(s,best)}</div>
-    ${s>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
-    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s/2)} XP</div>
-    <button class="btn btn-primary btn-full" onclick="renderGameTab()">확인</button></div>`;
+    <div style="font-size:28px;font-weight:800;color:var(--accent)">${s.correct}/${s.cards.length} 정답 (${s.score}점)</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최대 콤보: ${s.maxCombo} · 최고기록: ${Math.max(s.score,best)}</div>
+    ${s.score>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s.score/2)} XP</div>
+    <button class="btn btn-primary btn-full" style="margin-bottom:8px" onclick="startTypingChallenge()">다시하기</button>
+    <button class="btn btn-outline btn-full" onclick="renderGameTab()">확인</button></div>`;
 }
 
-// ---- Flashcard Game (Leitner SRS) ----
+// ---- Flashcard helpers (kept for vocab tab SRS) ----
 function getDueCards(){
   const cards=getFilteredCards();const prog=getCardProgress();const now=new Date();
   return cards.filter(c=>{
@@ -2594,39 +2602,173 @@ function getDueCards(){
     if(!p.lastReview)return true;
     const diff=Math.floor((now-new Date(p.lastReview))/(86400000));
     return diff>=(SRS_INTERVALS[p.box]||0);
-  }).sort((a,b)=>{const pa=(getCardProgress()[a[0]+'_'+a[1]+'_'+a[2]]||{box:0}).box;const pb=(getCardProgress()[b[0]+'_'+b[1]+'_'+b[2]]||{box:0}).box;return pa-pb});
+  });
 }
-function startFlashcardGame(){
-  const due=getDueCards();
-  if(!due.length){const all=shuffleArray(getFilteredCards());if(!all.length){toast('카드가 없습니다','error');return}fcState={cards:all,current:0,flipped:false}}
-  else fcState={cards:due,current:0,flipped:false};
-  renderFC();
+
+// ---- trackDailyGame ----
+function trackDailyGame(){LS.set('todayGame',{date:today(),done:true});}
+
+// ---- 초성 챌린지 ----
+function getChosung(str){const CS=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];return str.split('').map(c=>{const code=c.charCodeAt(0);return(code>=0xAC00&&code<=0xD7A3)?CS[Math.floor((code-0xAC00)/588)]:c;}).join('');}
+function startChosungGame(){
+  const pool=shuffleArray(getFilteredCards()).slice(0,10);
+  if(pool.length<3){toast('카드가 부족합니다','error');return}
+  chosungState={cards:pool,current:0,score:0,correct:0};renderChosungQ();
 }
-function renderFC(){
-  if(!fcState||fcState.current>=fcState.cards.length){toast('카드 복습 완료! 🎉','success');renderGameTab();return}
-  const c=fcState.cards[fcState.current];const key=c[0]+'_'+c[1]+'_'+c[2];
-  const prog=getCardProgress();const p=prog[key]||{box:0};const track=TRACKS.find(t=>t[0]===c[0]);
-  const rem=fcState.cards.length-fcState.current;
-  let h=`<div style="text-align:center;font-size:13px;color:var(--text-secondary);margin-bottom:8px">${track?track[2]+' ':''} ${fcState.current+1}/${fcState.cards.length} · 남은 ${rem}장</div>
-  <div class="fc-box-indicator">${[0,1,2,3,4].map(i=>`<div class="fc-box-dot ${i<=p.box?'active':''}"></div>`).join('')}</div>
-  <div class="fc-container" onclick="fcFlip()">
-    <div class="fc-card ${fcState.flipped?'flipped':''}">
-      <div class="fc-face fc-front"><div class="fc-main">${c[2]}</div><div class="fc-sub">${c[3]}</div>${getPron(c[3])?`<div class="fc-pron">(${getPron(c[3])})</div>`:''}<div class="fc-hint">탭하여 뒤집기</div></div>
-      <div class="fc-face fc-back"><div class="fc-main">${c[4]}</div><div class="fc-sub">${c[5]}</div></div>
+function renderChosungQ(){
+  const s=chosungState;if(s.current>=s.cards.length){endChosungGame();return}
+  const c=s.cards[s.current];const chosung=getChosung(c[2]);
+  let h=`<div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:13px;color:var(--text-secondary)">${s.current+1} / ${s.cards.length}</div>
+    <div style="font-size:20px;font-weight:800;color:var(--secondary);margin:4px 0">🔤 초성 챌린지</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center">
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">이 영어 용어의 한글 뜻은?</div>
+    <div style="font-size:22px;font-weight:800;color:var(--primary);margin-bottom:14px">${c[3]}</div>
+    <div style="font-size:26px;font-weight:800;letter-spacing:8px;color:var(--secondary);background:var(--secondary-light);padding:12px 20px;border-radius:12px;margin-bottom:16px">${chosung}</div>
+    <input class="fill-input" id="chosung-answer" placeholder="한글로 입력..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')chosungCheck()">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="chosungSkip()">건너뛰기</button>
+      <button class="btn btn-primary" style="flex:2" onclick="chosungCheck()">확인 →</button>
     </div>
-  </div>`;
-  if(fcState.flipped){h+=`<div class="fc-actions"><button class="fc-action-btn fc-dunno" onclick="fcAns(false)">😕 몰라요</button><button class="fc-action-btn fc-know" onclick="fcAns(true)">😊 알아요</button></div>`}
-  else{h+='<div style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:12px">카드를 탭하여 뒤집으세요</div>'}
-  h+=`<button class="btn btn-outline btn-full" style="margin-top:16px" onclick="fcState=null;renderGameTab()">← 그만하기</button>`;
+  </div>
+  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="chosungState=null;renderGameTab()">← 그만하기</button>`;
+  $('game-content').innerHTML=h;
+  const inp=$('chosung-answer');if(inp)setTimeout(()=>inp.focus(),100);
+}
+function chosungCheck(){
+  const inp=$('chosung-answer');if(!inp)return;
+  const c=chosungState.cards[chosungState.current];const answer=inp.value.trim();if(!answer)return;
+  const correct=answer===c[2]||answer.replace(/\s/g,'')===c[2].replace(/\s/g,'');
+  if(correct){chosungState.score+=10;chosungState.correct++;}
+  inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
+  if(!correct){const hint=document.createElement('div');hint.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';hint.textContent='정답: '+c[2];inp.parentNode.appendChild(hint)}
+  document.querySelectorAll('#game-content .btn').forEach(b=>b.disabled=true);
+  setTimeout(()=>{chosungState.current++;renderChosungQ()},correct?600:1200);
+}
+function chosungSkip(){chosungState.current++;renderChosungQ();}
+function endChosungGame(){
+  const s=chosungState;const best=LS.get('chosungBest',0);
+  if(s.score>best)LS.set('chosungBest',s.score);
+  addXP(s.score);trackDailyGame();checkBadges();
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'🔤초성',score:s.correct,total:s.cards.length,date:today()});LS.set('quizHistory',qh);
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">🔤</div>
+    <div style="font-size:28px;font-weight:800;color:var(--secondary)">${s.correct}/${s.cards.length} 정답 (${s.score}점)</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">${s.score>best?'🏆 신기록! ':''}최고기록: ${Math.max(s.score,best)}점</div>
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${s.score} XP</div>
+    <button class="btn btn-primary btn-full" style="margin-bottom:8px" onclick="startChosungGame()">다시하기</button>
+    <button class="btn btn-outline btn-full" onclick="renderGameTab()">확인</button></div>`;
+}
+
+// ---- 힌트 게임 ----
+function startHintGame(){
+  const pool=shuffleArray(getFilteredCards()).slice(0,10);
+  if(pool.length<3){toast('카드가 부족합니다','error');return}
+  hintState={cards:pool,current:0,score:0,correct:0,revealedHints:0};renderHintQ();
+}
+function renderHintQ(){
+  const s=hintState;if(s.current>=s.cards.length){endHintGame();return}
+  const c=s.cards[s.current];
+  const words=c[4].replace(/[^\uAC00-\uD7A3\s]/g,'').trim().split(/\s+/).filter(w=>w.length>0).slice(0,5);
+  const maxPts=Math.max(20-s.revealedHints*4,2);
+  const hintText=words.slice(0,s.revealedHints).join(' ');
+  let h=`<div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:13px;color:var(--text-secondary)">${s.current+1} / ${s.cards.length} · 최대 ${maxPts}점</div>
+    <div style="font-size:20px;font-weight:800;color:var(--primary);margin:4px 0">💡 힌트 게임</div>
+  </div>
+  <div class="card" style="padding:20px">
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">이 영어 용어의 한글 뜻은?</div>
+    <div style="font-size:22px;font-weight:800;color:var(--primary);margin-bottom:12px;text-align:center">${c[3]}</div>
+    <div style="min-height:44px;background:var(--bg);border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.6;margin-bottom:12px;color:${s.revealedHints>0?'var(--text)':'var(--text-secondary)'}">${s.revealedHints>0?hintText:'💡 힌트 버튼으로 단서를 확인하세요'}</div>
+    <input class="fill-input" id="hint-answer" placeholder="한글로 입력..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')hintCheck()">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="hintReveal()" ${s.revealedHints>=words.length||!words.length?'disabled':''}>💡 힌트 (${s.revealedHints})</button>
+      <button class="btn btn-primary" style="flex:2" onclick="hintCheck()">확인 →</button>
+    </div>
+  </div>
+  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="hintState=null;renderGameTab()">← 그만하기</button>`;
+  $('game-content').innerHTML=h;
+  const inp=$('hint-answer');if(inp)setTimeout(()=>inp.focus(),100);
+}
+function hintReveal(){hintState.revealedHints++;renderHintQ();}
+function hintCheck(){
+  const inp=$('hint-answer');if(!inp)return;
+  const c=hintState.cards[hintState.current];const answer=inp.value.trim();if(!answer)return;
+  const correct=answer===c[2]||answer.replace(/\s/g,'')===c[2].replace(/\s/g,'');
+  const pts=correct?Math.max(20-hintState.revealedHints*4,2):0;
+  hintState.score+=pts;if(correct)hintState.correct++;
+  inp.style.borderColor=correct?'var(--accent)':'var(--danger)';inp.disabled=true;
+  if(!correct){const hint=document.createElement('div');hint.style.cssText='margin-top:8px;font-size:14px;color:var(--accent);font-weight:700';hint.textContent='정답: '+c[2];inp.parentNode.appendChild(hint)}
+  document.querySelectorAll('#game-content .btn').forEach(b=>b.disabled=true);
+  setTimeout(()=>{hintState.current++;hintState.revealedHints=0;renderHintQ()},correct?600:1200);
+}
+function endHintGame(){
+  const s=hintState;const best=LS.get('hintBest',0);
+  if(s.score>best)LS.set('hintBest',s.score);
+  addXP(Math.floor(s.score/2));trackDailyGame();checkBadges();
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'💡힌트',score:s.correct,total:s.cards.length,date:today()});LS.set('quizHistory',qh);
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">💡</div>
+    <div style="font-size:28px;font-weight:800;color:var(--primary)">${s.score}점 (${s.correct}/${s.cards.length} 정답)</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">${s.score>best?'🏆 신기록! ':''}최고기록: ${Math.max(s.score,best)}점</div>
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s.score/2)} XP</div>
+    <button class="btn btn-primary btn-full" style="margin-bottom:8px" onclick="startHintGame()">다시하기</button>
+    <button class="btn btn-outline btn-full" onclick="renderGameTab()">확인</button></div>`;
+}
+
+// ---- OX 마라톤 ----
+function startOXMarathon(){
+  const cards=getFilteredCards();if(cards.length<4){toast('카드가 부족합니다','error');return}
+  const qs=[];
+  shuffleArray(cards).slice(0,20).forEach(c=>{
+    qs.push({en:c[3],ko:c[2],correct:true});
+    const other=cards.filter(x=>x[2]!==c[2]);
+    if(other.length){const rnd=other[Math.floor(Math.random()*other.length)];qs.push({en:c[3],ko:rnd[2],correct:false})}
+  });
+  oxState={questions:shuffleArray(qs),current:0,score:0,lives:3,streak:0,maxStreak:0};renderOXQ();
+}
+function renderOXQ(){
+  const s=oxState;if(s.lives<=0||s.current>=s.questions.length){endOXMarathon();return}
+  const q=s.questions[s.current];
+  let h=`<div style="text-align:center;margin-bottom:12px">
+    <div class="lives" style="font-size:20px">${'❤️'.repeat(s.lives)}${'🖤'.repeat(3-s.lives)}</div>
+    <div style="font-size:20px;font-weight:800;color:var(--primary);margin:4px 0">⭕ ${s.score}점 · ${s.streak}연속</div>
+  </div>
+  <div class="card" style="padding:24px;text-align:center">
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">영어 용어와 한글 뜻이 올바른 짝인가요?</div>
+    <div style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:8px">${q.en}</div>
+    <div style="font-size:22px;color:var(--text-secondary);margin-bottom:8px">↕</div>
+    <div style="font-size:18px;font-weight:700;color:var(--accent);margin-bottom:20px">${q.ko}</div>
+    <div class="ox-options">
+      <button class="ox-btn" onclick="oxAnswer(true)">⭕<div style="font-size:13px;margin-top:4px">맞아요</div></button>
+      <button class="ox-btn" onclick="oxAnswer(false)">❌<div style="font-size:13px;margin-top:4px">달라요</div></button>
+    </div>
+  </div>
+  <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="oxState=null;renderGameTab()">← 포기</button>`;
   $('game-content').innerHTML=h;
 }
-function fcFlip(){if(fcState){fcState.flipped=!fcState.flipped;renderFC()}}
-function fcAns(know){
-  const c=fcState.cards[fcState.current];const key=c[0]+'_'+c[1]+'_'+c[2];
-  const prog=getCardProgress();const p=prog[key]||{box:0};
-  p.box=know?Math.min(4,p.box+1):Math.max(0,p.box-1);p.lastReview=today();prog[key]=p;setCardProgress(prog);
-  const cr=LS.get('cardReviews',0);LS.set('cardReviews',cr+1);trackDailyCard();
-  fcState.current++;fcState.flipped=false;renderFC();checkBadges();
+function oxAnswer(ans){
+  const s=oxState;const q=s.questions[s.current];const correct=ans===q.correct;
+  if(correct){s.score+=10+(s.streak>=3?5:0);s.streak++;s.maxStreak=Math.max(s.maxStreak,s.streak)}
+  else{s.lives--;s.streak=0}
+  document.querySelectorAll('.ox-btn').forEach((b,i)=>{const v=i===0;if(v===q.correct)b.classList.add('correct');if(v===ans&&!correct)b.classList.add('wrong');b.onclick=null;});
+  s.current++;
+  setTimeout(()=>{if(s.lives<=0)endOXMarathon();else renderOXQ()},correct?400:800);
+}
+function endOXMarathon(){
+  const s=oxState;const best=LS.get('oxBest',0);
+  if(s.score>best)LS.set('oxBest',s.score);
+  addXP(Math.floor(s.score/2));trackDailyGame();checkBadges();
+  const qh=LS.get('quizHistory',[]);qh.push({mode:'⭕OX',score:s.score,total:0,date:today()});LS.set('quizHistory',qh);
+  $('game-content').innerHTML=`<div style="text-align:center;padding:20px">
+    <div style="font-size:60px;margin-bottom:12px">⭕</div>
+    <div style="font-size:32px;font-weight:800;color:var(--primary)">${s.score}점</div>
+    <div style="font-size:14px;color:var(--text-secondary);margin:8px 0">최대 콤보: ${s.maxStreak} · 최고기록: ${Math.max(s.score,best)}</div>
+    ${s.score>best?'<div style="font-size:16px;color:var(--secondary);font-weight:700;margin-bottom:8px">🏆 신기록!</div>':''}
+    <div style="font-size:14px;color:var(--secondary);font-weight:700;margin-bottom:20px">+${Math.floor(s.score/2)} XP</div>
+    <button class="btn btn-primary btn-full" style="margin-bottom:8px" onclick="startOXMarathon()">다시하기</button>
+    <button class="btn btn-outline btn-full" onclick="renderGameTab()">확인</button></div>`;
 }
 
 /* ===== HOME TAB ===== */
@@ -2675,13 +2817,13 @@ function renderHomeTab(){
   }
   // Daily Mission
   const todayLessons=LS.get('todayLessons',{date:'',count:0});const lessonToday=todayLessons.date===today()?todayLessons.count:0;
-  const todayCards=LS.get('todayCards',{date:'',count:0});const cardToday=todayCards.date===today()?todayCards.count:0;
-  const m1=lessonToday>=1,m2=dailyDone,m3=cardToday>=5,m4=lessonToday>=3;
+  const todayGame=LS.get('todayGame',{date:'',done:false});
+  const m1=lessonToday>=1,m2=dailyDone,m3=todayGame.date===today()&&todayGame.done,m4=lessonToday>=3;
   const missionsDone=[m1,m2,m3,m4].filter(Boolean).length;
   html+=`<div class="home-section"><div class="home-section-title">🎯 일일 미션 <span style="font-size:12px;color:var(--accent);font-weight:800">${missionsDone}/4</span></div>
   <div class="daily-mission ${m1?'complete':''}"><span class="mission-icon">📖</span><span class="mission-text">레슨 1개 완료</span><span class="mission-check">${m1?'✅':'⬜'}</span></div>
   <div class="daily-mission ${m2?'complete':''}"><span class="mission-icon">🎮</span><span class="mission-text">일일 퀴즈 완료</span><span class="mission-check">${m2?'✅':'⬜'}</span></div>
-  <div class="daily-mission ${m3?'complete':''}"><span class="mission-icon">🃏</span><span class="mission-text">플래시카드 5장 복습</span><span class="mission-check">${m3?'✅':'⬜'}</span></div>
+  <div class="daily-mission ${m3?'complete':''}"><span class="mission-icon">🎮</span><span class="mission-text">챔린지 게임 1회 완료</span><span class="mission-check">${m3?'✅':'⬜'}</span></div>
   <div class="daily-mission ${m4?'complete':''}"><span class="mission-icon">🏆</span><span class="mission-text">레슨 3개 완료 (보너스)</span><span class="mission-check">${m4?'✅':'⬜'}</span></div></div>`;
   // Weakness Analysis
   if(weakTracks.length>0){
@@ -2729,7 +2871,7 @@ function renderMyTab(){
     <div class="stat-row"><span class="stat-label">🎮 게임 횟수</span><span class="stat-value">${qh.length}회</span></div>
     <div class="stat-row"><span class="stat-label">⚡ 스피드 최고</span><span class="stat-value">${LS.get('speedBest',0)}점</span></div>
     <div class="stat-row"><span class="stat-label">🛡️ 서바이벌 최고</span><span class="stat-value">${LS.get('survivalBest',0)}연속</span></div>
-    <div class="stat-row"><span class="stat-label">🃏 카드 복습</span><span class="stat-value">${LS.get('cardReviews',0)}장</span></div>
+    <div class="stat-row"><span class="stat-label">🔤 초성 최고</span><span class="stat-value">${LS.get('chosungBest',0)}점</span></div>
     <div class="stat-row"><span class="stat-label">🏅 뱃지</span><span class="stat-value">${earned.length}/${BADGE_DEFS.length}</span></div>`;
   // SRS 현황 시각화
   const allCards=FLASHCARDS;const cardProg=getCardProgress();
@@ -2815,7 +2957,7 @@ function doSearch(query){
 
 /* ===== BACKUP / RESTORE ===== */
 function exportData(){
-  const data={};['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','theme','speedBest','survivalBest','typingBest'].forEach(k=>{const v=LS.get(k);if(v!==null)data[k]=v});
+  const data={};['xp','progress','quizHistory','bookmarks','attendance','badges','wrongAnswers','dailyQuiz','lastLesson','theme','speedBest','survivalBest','typingBest','chosungBest','hintBest','oxBest','todayGame'].forEach(k=>{const v=LS.get(k);if(v!==null)data[k]=v});
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`learnnote-backup-${today()}.json`;a.click();toast('백업 완료','success');
 }
@@ -2826,7 +2968,7 @@ function importData(event){
 }
 function resetData(){
   if(!confirm('모든 학습 데이터가 삭제됩니다. 계속?'))return;
-  ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','typingBest'].forEach(k=>localStorage.removeItem('ln_'+k));
+  ['xp','progress','quizHistory','flashProgress','bookmarks','attendance','badges','wrongAnswers','cardReviews','dailyQuiz','lastLesson','settings','speedBest','survivalBest','typingBest','chosungBest','hintBest','oxBest','todayGame'].forEach(k=>localStorage.removeItem('ln_'+k));
   toast('초기화 완료','success');setTimeout(()=>location.reload(),800);
 }
 
@@ -2867,7 +3009,7 @@ function startSmartReview(){
       return;
     }
   }
-  if(due.length>0){switchTab('game');startFlashcardGame();return}
+  if(due.length>0){switchTab('game');startTypingChallenge();return}
   switchTab('game');startDailyQuiz();
 }
 function startWeaknessQuiz(trackId){
